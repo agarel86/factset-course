@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Cours FactSet : données financières dans Excel</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Raleway:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Sora:wght@600;700;800&display=swap" rel="stylesheet">
+<style>
+/* Audencia identity (from audencia.com): navy #002941, text grey #4D5562, blue #2A6FEC, sky #91E3FF, cream #FFF5E9,
+   button grey-blue #DCE4ED, Sora headings (800) + Raleway text. Single light theme, like the school's site. */
+:root{
+  --navy:#002941; --navy-2:#012D5A; --text:#4D5562; --blue:#2A6FEC; --sky:#91E3FF; --sky-soft:rgba(145,227,255,.35);
+  --cream:#FFF5E9; --btn:#DCE4ED; --grey-050:#F3F4F9; --grey-200:#D3D4D9; --pink:#F2AAF0; --orange:#FDA959;
+  --ok:#26A769; --warn:#B26A00; --bad:#C62828;
+  --input:#FFF4C2; --fds:#DDEBF7; --calc:#E2F0D9; --paste:#EEEEEE;
+  --display:"Sora", Arial, sans-serif; --body:"Raleway", Arial, sans-serif; --mono:Consolas, "Courier New", monospace;
+  color-scheme: light;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:80px}
+@media (prefers-reduced-motion: reduce){html{scroll-behavior:auto}}
+body{margin:0;background:#fff;color:var(--text);font-family:var(--body);font-size:16.5px;line-height:1.65}
+a{color:var(--blue);text-underline-offset:3px}
+a:hover{color:var(--navy)}
+a:focus-visible,button:focus-visible,input:focus-visible,summary:focus-visible{outline:3px solid var(--ok);outline-offset:2px}
+h1,h2,h3,h4{font-family:var(--display);color:var(--navy);line-height:1.2;text-wrap:balance;margin:0}
+h1{font-size:2.4rem;font-weight:800}
+h2{font-size:2rem;font-weight:800;margin-bottom:.5rem}
+h3{font-size:1.3rem;font-weight:700;margin:1.8rem 0 .6rem}
+h4{font-size:1.02rem;font-weight:700;margin:1.3rem 0 .4rem}
+p,li{max-width:74ch}
+b,strong{color:var(--navy);font-weight:700}
+code,kbd{font-family:var(--mono);font-size:.88em}
+code{background:var(--grey-050);color:var(--navy);padding:.1em .4em;border-radius:6px;overflow-wrap:anywhere}
+kbd{border:1px solid var(--grey-200);border-bottom-width:2px;border-radius:6px;padding:.05em .45em;background:#fff;color:var(--navy);white-space:nowrap}
+pre{background:var(--navy);color:#fff;border-radius:1rem;padding:1rem 1.2rem;overflow-x:auto;font-family:var(--mono);font-size:.86rem;line-height:1.55;margin:.8rem 0}
+pre code{background:none;color:inherit}
+
+/* header */
+.topbar{position:sticky;top:0;z-index:20;background:var(--navy);color:#fff;display:flex;align-items:center;gap:18px;padding:12px 28px;flex-wrap:wrap}
+.brand{font-family:var(--display);font-weight:800;font-size:1.1rem;margin-right:auto;color:#fff}
+.brand small{font-family:var(--body);font-weight:500;color:var(--sky);margin-left:10px;font-size:.85rem}
+.os-switch{display:flex;align-items:center;gap:8px;font-size:.9rem;color:#fff}
+.seg{display:inline-flex;background:rgba(255,255,255,.12);border-radius:999px;padding:3px}
+.seg button{border:0;background:transparent;color:#fff;padding:7px 18px;font:inherit;font-weight:600;cursor:pointer;border-radius:999px}
+.seg button[aria-pressed="true"]{background:#fff;color:var(--navy)}
+.toplink{color:var(--navy);background:var(--btn);text-decoration:none;font-weight:600;font-size:.9rem;border-radius:999px;padding:8px 18px}
+.toplink:hover{background:var(--sky);color:var(--navy)}
+.progress-pill{font-size:.85rem;color:var(--sky);font-weight:600}
+
+/* layout */
+.shell{display:grid;grid-template-columns:280px minmax(0,1fr);max-width:1360px;margin:0 auto}
+nav.toc{position:sticky;top:62px;align-self:start;height:calc(100vh - 62px);overflow-y:auto;padding:28px 18px 40px 24px;background:var(--grey-050);font-size:.92rem}
+nav.toc ol{list-style:none;margin:0;padding:0}
+nav.toc a{display:block;padding:5px 12px;border-radius:999px;color:var(--navy);text-decoration:none;font-weight:600}
+nav.toc a:hover{background:#fff}
+nav.toc a.active{background:var(--navy);color:#fff}
+nav.toc .sub a{padding-left:24px;font-weight:500;color:var(--text);font-size:.87rem}
+nav.toc .sub a.active{color:#fff}
+nav.toc .sub a.done::after{content:" ✓";color:var(--ok);font-weight:700}
+nav.toc .part{font-family:var(--display);font-size:.72rem;letter-spacing:.06em;text-transform:uppercase;color:var(--blue);margin:20px 12px 6px;font-weight:700}
+main{padding:36px 48px 90px;min-width:0}
+section.module{padding:8px 0 40px;margin-bottom:36px;border-bottom:2px solid var(--grey-050)}
+.modnum{display:inline-block;font-family:var(--display);font-weight:700;font-size:.78rem;letter-spacing:.05em;text-transform:uppercase;color:var(--navy);background:var(--sky);border-radius:999px;padding:3px 14px;margin-bottom:12px}
+.lead{font-size:1.12rem;color:var(--text);max-width:72ch}
+@media (max-width:900px){
+  .shell{grid-template-columns:1fr}
+  nav.toc{position:static;height:auto}
+  main{padding:24px 16px 60px}
+  .topbar{padding:10px 16px}
+}
+
+/* boxes: Audencia "bubbles" */
+.box{border-radius:1.5rem;padding:16px 22px;margin:16px 0;background:var(--grey-050)}
+.box > :first-child{margin-top:0}.box > :last-child{margin-bottom:0}
+.box.tip{background:var(--sky-soft)}
+.box.warn{background:var(--cream)}
+.box.ok{background:#E6F6EE}
+.box.bad{background:#FDECEC}
+.box-title{display:block;font-family:var(--display);font-weight:700;color:var(--navy);margin-bottom:4px}
+.os-box{border:2px solid var(--sky);border-radius:1.5rem;padding:14px 20px;margin:16px 0}
+.os-label{display:inline-block;font-family:var(--display);font-size:.72rem;font-weight:700;letter-spacing:.05em;text-transform:uppercase;background:var(--navy);color:#fff;border-radius:999px;padding:2px 12px;margin-bottom:8px}
+body.os-mac .win-only{display:none}
+body.os-win .mac-only{display:none}
+
+/* tables */
+.tablewrap{overflow-x:auto;margin:14px 0;border-radius:1rem;border:1px solid var(--grey-200)}
+table{border-collapse:collapse;width:100%;font-size:.92rem}
+th,td{padding:9px 12px;text-align:left;vertical-align:top;border-bottom:1px solid var(--grey-200)}
+tr:last-child td{border-bottom:0}
+th{background:var(--navy);color:#fff;font-family:var(--display);font-weight:600;font-size:.85rem}
+td code{white-space:nowrap}
+table.compact td,table.compact th{padding:6px 10px}
+
+/* numbered steps */
+ol.steps{counter-reset:s;list-style:none;padding-left:0}
+ol.steps > li{counter-increment:s;position:relative;padding-left:46px;margin:12px 0}
+ol.steps > li::before{content:counter(s);position:absolute;left:0;top:-1px;width:30px;height:30px;border-radius:50%;background:var(--navy);color:#fff;font-family:var(--display);font-weight:700;display:grid;place-items:center;font-size:.85rem}
+
+/* cell-colour legend (same as the workbooks) */
+.chip{display:inline-block;padding:2px 10px;border-radius:999px;font-size:.85rem;color:var(--navy);white-space:nowrap;margin:2px 0}
+.chip.in{background:var(--input)}.chip.fd{background:var(--fds)}.chip.ca{background:var(--calc)}.chip.pa{background:var(--paste)}
+
+/* formula anatomy */
+.anatomy{font-family:var(--mono);font-size:1.15rem;display:flex;flex-wrap:wrap;gap:6px;align-items:flex-end;margin:18px 0;overflow-x:auto;color:var(--navy)}
+.anatomy span{display:inline-flex;flex-direction:column;align-items:center}
+.anatomy b{font-weight:600;padding:5px 8px;border-radius:8px}
+.anatomy i{font-family:var(--body);font-style:normal;font-size:.74rem;color:var(--text);margin-top:4px}
+.a1{background:var(--btn)}.a2{background:var(--input)}.a3{background:var(--fds)}.a4{background:var(--sky-soft)}
+
+/* tests */
+.test{border-radius:1.5rem;padding:24px 28px;margin:22px 0;background:#fff;border:2px solid var(--grey-050)}
+.test-head{display:flex;flex-wrap:wrap;gap:10px 16px;align-items:baseline;justify-content:space-between}
+.test-head h3{margin:0}
+.meta{display:flex;flex-wrap:wrap;gap:6px}
+.pill{font-size:.75rem;font-weight:600;border-radius:999px;padding:2px 12px;color:var(--navy);background:var(--btn)}
+.pill.lvl1{background:#D7F2E4}.pill.lvl2{background:#FFE7CF}.pill.lvl3{background:#FBDDFA}
+.dl{display:inline-flex;align-items:center;gap:10px;background:var(--navy);color:#fff;text-decoration:none;font-weight:600;padding:12px 26px;border-radius:999px;margin:8px 0;min-height:48px}
+.dl::after{content:"→"}
+.dl:hover{background:var(--blue);color:#fff}
+.done-toggle{display:inline-flex;gap:8px;align-items:center;font-size:.92rem;font-weight:600;color:var(--navy);cursor:pointer;margin-top:10px}
+.done-toggle input{accent-color:var(--navy);width:18px;height:18px}
+details{border-radius:1rem;padding:10px 16px;margin:10px 0;background:var(--grey-050)}
+details summary{cursor:pointer;font-weight:700;color:var(--navy)}
+.cols2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+@media (max-width:700px){.cols2{grid-template-columns:1fr}}
+.copy{float:right;font:inherit;font-size:.75rem;font-weight:600;border:0;background:var(--sky);color:var(--navy);border-radius:999px;padding:2px 12px;cursor:pointer;margin:-2px -4px 0 8px}
+
+/* screenshots and data tour */
+figure.shot{margin:16px 0;border-radius:1rem;overflow:hidden;background:var(--grey-050);border:1px solid var(--grey-200)}
+figure.shot img{display:block;width:100%;height:auto}
+figure.shot figcaption{padding:8px 14px;margin:0;font-size:.84rem;color:var(--text)}
+figure.shot.small{max-width:660px}
+.shots2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+.shots3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+.shots2 figure.shot,.shots3 figure.shot{margin:0}
+@media (max-width:800px){.shots2,.shots3{grid-template-columns:1fr}}
+article.data{padding-top:20px;margin-top:26px;border-top:2px solid var(--grey-050)}
+article.data h3{margin-top:0}
+.where{display:inline-block;font-size:.84rem;font-weight:600;color:var(--navy);background:var(--cream);border-radius:999px;padding:3px 14px;margin:.3rem 0 .9rem}
+.use{background:var(--sky-soft);border-radius:1.5rem;padding:10px 18px}
+.doc{font-size:.9rem}
+.res-group{margin:18px 0}
+.res-group li{margin:7px 0}
+
+
+.pagenav{display:flex;justify-content:space-between;gap:12px;margin:30px 0 10px;flex-wrap:wrap}
+.pn{display:inline-flex;align-items:center;background:var(--btn);color:var(--navy);text-decoration:none;font-weight:700;padding:12px 24px;border-radius:999px}
+.pn:hover{background:var(--navy);color:#fff}
+.lang{display:inline-flex;background:rgba(255,255,255,.12);border-radius:999px;padding:3px}
+.lang a,.lang span{color:#fff;text-decoration:none;font-weight:700;font-size:.85rem;padding:6px 14px;border-radius:999px}
+.lang span{background:#fff;color:var(--navy)}
+.lang a.cur{background:#fff;color:var(--navy)}
+
+.rx{display:grid;grid-template-columns:300px minmax(0,1fr);gap:18px;margin:16px 0;align-items:start}
+.rx-menu{background:var(--grey-050);border-radius:1rem;padding:10px;max-height:640px;overflow-y:auto}
+.rx-head{display:flex;justify-content:space-between;align-items:center;width:100%;border:0;background:#fff;color:var(--navy);font:inherit;font-weight:700;font-size:.92rem;text-align:left;padding:9px 14px;border-radius:.7rem;margin:3px 0;cursor:pointer}
+.rx-head::after{content:"›";transition:transform .15s}
+.rx-folder.open .rx-head::after{transform:rotate(90deg)}
+.rx-list{display:none;padding:2px 0 6px 8px}
+.rx-folder.open .rx-list{display:block}
+.rx-item{display:block;width:100%;border:0;background:transparent;color:var(--text);font:inherit;font-size:.9rem;text-align:left;padding:6px 12px;border-radius:999px;cursor:pointer}
+.rx-item:hover{background:#fff;color:var(--navy)}
+.rx-item.on{background:var(--navy);color:#fff}
+.rx-cam{color:var(--blue);font-size:.8rem}
+.rx-item.on .rx-cam{color:var(--sky)}
+.rx-panel{background:var(--sky-soft);border-radius:1.5rem;padding:20px 26px;min-height:300px;position:sticky;top:80px}
+.rx-panel h4{font-size:1.35rem;margin:.2rem 0 .6rem}
+.rx-path{display:inline-block;font-size:.8rem;font-weight:600;color:var(--navy);background:#fff;border-radius:999px;padding:2px 12px}
+.rx-sub{font-family:var(--display);font-weight:700;color:var(--navy);margin-top:12px}
+.rx-panel ul{margin:.3rem 0;padding-left:1.2rem}
+.rx-link{display:inline-block;margin-top:10px;background:var(--navy);color:#fff;text-decoration:none;font-weight:600;padding:9px 18px;border-radius:999px}
+.rx-link:hover{background:var(--blue);color:#fff}
+.rx-none{font-size:.88rem;font-style:italic}
+.rx-note{font-size:.9rem}
+@media (max-width:900px){.rx{grid-template-columns:1fr}.rx-panel{position:static}}
+</style>
+</head>
+<body class="os-win">
+
+<header class="topbar">
+  <div class="brand">Audencia - SFIR <small>Collecter des données financières avec FactSet</small></div>
+  <span class="lang" aria-label="Langue"><a href="../reference.html" lang="en">EN</a><a class="cur" href="reference.html" lang="fr" aria-current="page">FR</a></span>
+  <div class="os-switch" role="group" aria-label="Choisissez votre ordinateur">
+    <span>J'utilise :</span>
+    <span class="seg">
+      <button type="button" aria-pressed="true" data-os="win">Windows</button>
+      <button type="button" aria-pressed="false" data-os="mac">Mac</button>
+    </span>
+  </div>
+  <a class="toplink" href="resources.html">Ressources clés</a>
+  <span class="progress-pill" id="progress">0 / 14 tests réalisés</span>
+</header>
+
+<div class="shell">
+<nav class="toc" aria-label="Sommaire du cours">
+  <ol>
+    <li><a href="index.html#welcome">0. Fonctionnement du cours</a></li>
+    <li class="part">Partie I · La plateforme en ligne FactSet</li>
+    <li><a href="index.html#access">1. FactSet et votre accès</a></li>
+    <li class="sub"><a href="index.html#login">1.1 Première connexion</a></li>
+    <li class="sub"><a href="index.html#screen">1.2 L'écran après la connexion</a></li>
+    <li class="sub"><a href="index.html#search">1.3 Trouver une entreprise</a></li>
+    <li class="sub"><a href="index.html#reports">1.4 Le menu Reports</a></li>
+    <li class="sub"><a href="index.html#apps">1.5 My Apps</a></li>
+    <li class="sub"><a href="index.html#download">1.6 Télécharger un tableau</a></li>
+    <li><a href="data-1.html#tour">2. Les données, avec Microsoft</a></li>
+    <li class="sub"><a href="data-1.html#d-snapshot">Snapshot</a></li>
+    <li class="sub"><a href="data-1.html#d-profile">Profil &amp; structure</a></li>
+    <li class="sub"><a href="data-1.html#d-prices">Cours boursiers</a></li>
+    <li class="sub"><a href="data-1.html#d-fin">Financials</a></li>
+    <li class="sub"><a href="data-1.html#d-est">Estimations des analystes</a></li>
+    <li class="sub"><a href="data-2.html#d-own">Actionnariat</a></li>
+    <li class="sub"><a href="data-2.html#d-debt">Dette, obligations, crédit</a></li>
+    <li class="sub"><a href="data-2.html#d-tx">Transactions, fusions-acquisitions, PE/VC</a></li>
+    <li class="sub"><a href="data-2.html#d-news">Actualités, StreetAccount, documents réglementaires</a></li>
+    <li class="sub"><a href="data-2.html#d-rel">Chaîne d'approvisionnement &amp; chiffre d'affaires</a></li>
+    <li class="sub"><a href="data-3.html#d-esg">ESG</a></li>
+    <li class="sub"><a href="data-3.html#d-opt">Options</a></li>
+    <li class="sub"><a href="data-3.html#d-fund">Fonds &amp; ETF</a></li>
+    <li class="sub"><a href="data-3.html#d-macro">Marchés &amp; économie</a></li>
+    <li class="sub"><a href="data-3.html#d-screen">Screening</a></li>
+    <li class="sub"><a href="data-3.html#d-summary">Tableau récapitulatif</a></li>
+    <li class="part">Partie II · Excel</li>
+    <li><a href="excel.html#install">3. Installer FactSet 365</a></li>
+    <li><a href="excel.html#formulas">4. Les formules FactSet</a></li>
+    <li class="part">Partie III · Constituer des échantillons</li>
+    <li><a href="tests.html#method">5. Méthode</a></li>
+    <li><a href="tests.html#tests">6. Les 14 tests</a></li>
+    <li class="sub"><a href="tests.html#t1" data-t="1">1 · Apple : cours, rentabilités, graphique</a></li>
+    <li class="sub"><a href="tests.html#t2" data-t="2">2 · Obligations vertes françaises, coupon</a></li>
+    <li class="sub"><a href="tests.html#t3" data-t="3">3 · Fusions-acquisitions France 2024</a></li>
+    <li class="sub"><a href="tests.html#t4" data-t="4">4 · Le portefeuille d'un fonds et l'ESG</a></li>
+    <li class="sub"><a href="tests.html#t5" data-t="5">5 · BPA (EPS) FY1 de MSFT, tous les analystes</a></li>
+    <li class="sub"><a href="tests.html#t6" data-t="6">6 · Panel de données fondamentales</a></li>
+    <li class="sub"><a href="tests.html#t7" data-t="7">7 · Change, pétrole, or, taux</a></li>
+    <li class="sub"><a href="tests.html#t8" data-t="8">8 · Notes ESG du CAC 40</a></li>
+    <li class="sub"><a href="tests.html#t9" data-t="9">9 · Actualité de Tesla</a></li>
+    <li class="sub"><a href="tests.html#t10" data-t="10">10 · Actualité ESG de TotalEnergies</a></li>
+    <li class="sub"><a href="tests.html#t11" data-t="11">11 · Qui détient LVMH ?</a></li>
+    <li class="sub"><a href="tests.html#t12" data-t="12">12 · Rentabilités et bêta</a></li>
+    <li class="sub"><a href="tests.html#t13" data-t="13">13 · CAC 40, cours mensuels</a></li>
+    <li class="sub"><a href="tests.html#t14" data-t="14">14 · NASDAQ-100, fondamentaux</a></li>
+    <li><a href="tests.html#thesis">7. Les données de votre mémoire</a></li>
+    <li class="part">Référence</li>
+    <li><a href="#trouble">8. Résolution des problèmes</a></li>
+    <li><a href="#cheat">9. Aide-mémoire &amp; glossaire</a></li>
+    <li><a href="resources.html">Ressources clés (page séparée)</a></li>
+  </ol>
+</nav>
+<main>
+<!-- ============================================================ 7 -->
+<section class="module" id="trouble">
+  <div class="modnum">Module 8</div>
+  <h2>Résolution des problèmes</h2>
+  <p>D'après la page officielle de FactSet <a href="https://my.apps.factset.com/oa/pages/22644" target="_blank">FactSet 365 Troubleshooting Steps (OA 22644)</a>.</p>
+  <div class="tablewrap"><table>
+    <tr><th>Ce que vous voyez</th><th>Cause</th><th>Que faire</th></tr>
+    <tr><td><code>#NAME?</code> dans toutes les cellules FactSet, et Refresh ne change rien</td><td>Le fichier a été ouvert avant la fin du chargement du complément FactSet 365 : Excel n'a pas reconnu FDS. Refresh ignore les cellules déjà en erreur.</td><td>1. Vérifiez que l'onglet FactSet 365 est présent et que vous êtes connecté (Refresh n'est pas grisé).<br>2. Sélectionnez la feuille (<span class="win-only"><kbd>Ctrl</kbd>+<kbd>A</kbd></span><span class="mac-only"><kbd>⌘ Cmd</kbd>+<kbd>A</kbd></span>), ouvrez <b>Rechercher et remplacer</b> (<kbd>Ctrl</kbd>+<kbd>H</kbd>), remplacez <code>=</code> par <code>=</code>, cliquez sur <b>Remplacer tout</b>. Toutes les formules sont ressaisies et affichent <code>#Calc</code>.<br>3. <b>FactSet 365 › Refresh › Workbook</b>.</td></tr>
+    <tr><td><code>#NAME?</code> dans une seule cellule</td><td>FDS tapé en minuscules, ou complément non chargé.</td><td>Retapez FDS en majuscules. Rechargez le complément : <b>Home › Add-ins › FactSet 365</b> (sous My Add-ins).</td></tr>
+    <tr><td>Refresh est grisé, ou toutes les cellules restent sur <code>#Calc</code></td><td>Vous n'êtes pas connecté à FactSet 365.</td><td><b>FactSet 365 › Sign In</b>, puis Refresh › Workbook. Les gros fichiers prennent une minute : attendez qu'il ne reste plus de <code>#Calc</code>.</td></tr>
+    <tr><td>« Add-in Error » à l'ouverture d'un fichier</td><td>Le fichier a été enregistré avec une autre instance du complément.</td><td>Cliquez sur <b>Restart</b> dans la notification, ou cliquez sur Insert Formula.</td></tr>
+    <tr><td>« Page Expired » dans Excel sur le web</td><td>Safari.</td><td>Utilisez Google Chrome.</td></tr>
+    <tr><td>Impossible d'ajouter FactSet 365 sur un PC</td><td>Un ancien complément FactSet pour ordinateur est installé (sur certains PC de l'université).</td><td>Utilisez Excel sur le web dans Chrome, ou adressez-vous au service informatique.</td></tr>
+    <tr><td><code>#SPILL!</code></td><td>Une série n'a pas de cellules vides dans lesquelles se déverser.</td><td>Videz les cellules situées en dessous ou à droite.</td></tr>
+    <tr><td><code>NA</code> ou résultat vide</td><td>Identifiant erroné, code erroné, pas de données à cette date.</td><td>Vérifiez l'identifiant dans la barre de recherche, reconstruisez la formule avec Insert Formula, essayez une autre date, consultez la même donnée sur la plateforme en ligne FactSet.</td></tr>
+    <tr><td>Date renvoyée incorrecte</td><td>Date saisie au format DD/MM/YYYY.</td><td>Les dates FactSet sont au format MM/DD/YYYY (mois/jour/année).</td></tr>
+    <tr><td>Formule refusée</td><td>Séparateur propre à la langue de votre Excel.</td><td>Utilisez <code>;</code> entre les arguments Excel si votre Excel n'est pas en anglais.</td></tr>
+    <tr><td>Valeurs différentes de celles de la plateforme en ligne FactSet</td><td>La devise, l'unité, la date ou la période fiscale diffèrent.</td><td>Vérifiez les arguments dans Insert Formula (période ANN/QTR, date, devise).</td></tr>
+  </table></div>
+  <p>Toujours bloqué : le chat en direct et l'aide de FactSet (icône <b>?</b> en haut à droite de la plateforme en ligne FactSet ; Office Assistance dans l'onglet FactSet), ou les contacts du support sur la page <a href="resources.html">Ressources clés</a>.</p>
+</section><!-- ============================================================ 8 -->
+<section class="module" id="cheat">
+  <div class="modnum">Module 9</div>
+  <h2>Aide-mémoire &amp; glossaire</h2>
+  <p>Tous les codes FactSet, arguments et fonctions Excel utilisés dans ce cours. <b>M4</b> = Module 4 (formules FactSet), <b>T1…T14</b> = les tests. <code>A1</code> contient l'identifiant. Excel en français : remplacez la virgule entre les deux arguments de FDS par <code>;</code>.</p>
+  <h3>Codes FactSet</h3>
+  <div class="tablewrap"><table class="compact">
+    <tr><th>Besoin</th><th>Formule</th><th>Utilisé dans</th></tr>
+    <tr><th colspan="3">Prix (P_)</th></tr>
+    <tr><td>Dernier cours de clôture</td><td><code>=FDS(A1,"P_PRICE(0)")</code></td><td><a href="excel.html#formulas">M4</a></td></tr>
+    <tr><td>Cours de clôture à une date (MM/DD/YYYY)</td><td><code>=FDS(A1,"P_PRICE(12/31/2025)")</code></td><td><a href="excel.html#formulas">M4</a>, <a href="tests.html#t12">T12</a></td></tr>
+    <tr><td>Cours quotidiens du dernier mois, et leurs dates</td><td><code>=FDS(A1,"P_PRICE(-1M,0,D)")</code><br><code>=FDS(A1,"P_DATE(-1M,0,D,""DATEJ"")")</code></td><td><a href="excel.html#formulas">M4</a>, <a href="tests.html#t1">T1</a></td></tr>
+    <tr><td>Série quotidienne entre deux dates</td><td><code>=FDS(A1,"P_PRICE(01/01/2024,12/31/2024,D)")</code></td><td><a href="tests.html#t7">T7</a></td></tr>
+    <tr><td>Cours de fin de mois sur 10 ans, et leurs dates</td><td><code>=FDS(A1,"P_PRICE(-10AY,0,M)")</code><br><code>=FDS(A1,"P_DATE(-10AY,0,M,""DATEJ"")")</code></td><td><a href="tests.html#t13">T13</a></td></tr>
+    <tr><td>Rentabilité totale composée entre deux dates</td><td><code>=FDS(A1,"P_TOTAL_RETURNC(12/31/2024,12/31/2025)")</code></td><td><a href="excel.html#formulas">M4</a>, <a href="../../covid project/covid_project_fr.html">COVID</a></td></tr>
+    <tr><td>Cours de fin de mois des 12 derniers mois, et leurs dates</td><td><code>=FDS(A1,"P_PRICE(-12M,0,M)")</code><br><code>=FDS(A1,"P_DATE(-12M,0,M,""DATEJ"")")</code></td><td><a href="tests.html#t4">T4</a></td></tr>
+    <tr><td>Devise de cotation</td><td><code>=FDS(A1,"P_CURRENCY")</code></td><td><a href="excel.html#formulas">M4</a></td></tr>
+    <tr><td>Taux de change EUR→USD</td><td><code>=FDS("EURUSD","P_PRICE(0)")</code></td><td><a href="excel.html#formulas">M4</a>, <a href="tests.html#t7">T7</a></td></tr>
+    <tr><td>Capitalisation boursière de l'entreprise (millions)</td><td><code>=FDS(A1,"P_MARKET_VAL_CO(EUR,1)")</code></td><td><a href="excel.html#formulas">M4</a>, <a href="tests.html#t8">T8</a></td></tr>
+    <tr><th colspan="3">Descriptif et ratios (FG_)</th></tr>
+    <tr><td>Nom de l'entreprise</td><td><code>=FDS(A1,"FG_COMPANY_NAME")</code></td><td><a href="excel.html#formulas">M4</a></td></tr>
+    <tr><td>Secteur / industrie FactSet</td><td><code>=FDS(A1,"FG_FACTSET_SECTOR")</code><br><code>=FDS(A1,"FG_FACTSET_IND")</code></td><td><a href="excel.html#formulas">M4</a>, <a href="tests.html#t4">T4</a></td></tr>
+    <tr><td>Ratio cours / bénéfice (PER)</td><td><code>=FDS(A1,"FG_PE")</code></td><td><a href="tests.html#t8">T8</a></td></tr>
+    <tr><td>Série de taux (taux d'emprunt d'État)</td><td><code>=FDS("TRYFR10Y-FDS","FG_YIELD(01/01/2024,12/31/2024,D)")</code></td><td><a href="tests.html#t7">T7</a></td></tr>
+    <tr><th colspan="3">Données comptables (FF_)</th></tr>
+    <tr><td>Chiffre d'affaires, dernier exercice</td><td><code>=FDS(A1,"FF_SALES(ANN,0,,,RF)")</code></td><td><a href="excel.html#formulas">M4</a>, <a href="tests.html#t3">T3</a></td></tr>
+    <tr><td>Chiffre d'affaires, exercice 2024</td><td><code>=FDS(A1,"FF_SALES(ANN,2024)")</code></td><td><a href="excel.html#formulas">M4</a>, <a href="tests.html#t6">T6</a></td></tr>
+    <tr><td>Chiffre d'affaires, exercices 2016 à 2025 (10 valeurs)</td><td><code>=FDS(A1,"FF_SALES(ANN,2016,2025)")</code></td><td><a href="tests.html#t14">T14</a></td></tr>
+    <tr><td>EBIT / EBITDA</td><td><code>=FDS(A1,"FF_EBIT_OPER(ANN,2024)")</code><br><code>=FDS(A1,"FF_EBITDA_OPER(ANN,2024)")</code></td><td><a href="excel.html#formulas">M4</a>, <a href="tests.html#t6">T6</a></td></tr>
+    <tr><td>Résultat net</td><td><code>=FDS(A1,"FF_NET_INC(ANN,2024)")</code></td><td><a href="excel.html#formulas">M4</a>, <a href="tests.html#t6">T6</a></td></tr>
+    <tr><td>Total de l'actif / dette totale</td><td><code>=FDS(A1,"FF_ASSETS(ANN,2024)")</code><br><code>=FDS(A1,"FF_DEBT(ANN,2024)")</code></td><td><a href="excel.html#formulas">M4</a>, <a href="tests.html#t6">T6</a></td></tr>
+    <tr><td>Nombre d'actions en circulation</td><td><code>=FDS(A1,"FF_COM_SHS_OUT(ANN,0,,,RF)")</code></td><td><a href="excel.html#formulas">M4</a></td></tr>
+    <tr><td>Investissements (capex) / dépenses de R&amp;D</td><td><code>=FDS(A1,"FF_CAPEX(ANN,2016,2025)")</code><br><code>=FDS(A1,"FF_RD_EXP(ANN,2016,2025)")</code></td><td><a href="tests.html#t14">T14</a></td></tr>
+    <tr><td>Date de clôture d'un exercice (date Excel)</td><td><code>=FDS(A1,"FF_FISCAL_DATE(ANN,2024,,,,""DATEJ"")")</code></td><td><a href="tests.html#t6">T6</a>, <a href="tests.html#t14">T14</a></td></tr>
+    <tr><th colspan="3">Estimations (FE_)</th></tr>
+    <tr><td>Consensus : prévision moyenne de BPA, FY1</td><td><code>=FDS(A1,"FE_ESTIMATE(EPS,MEAN,ANNUAL_ROLL,+1,0,,,'')")</code></td><td><a href="excel.html#formulas">M4</a>, <a href="tests.html#t5">T5</a></td></tr>
+    <tr><td>Nombre d'estimations du consensus</td><td><code>=FDS(A1,"FE_ESTIMATE(EPS,NEST,ANNUAL_ROLL,+1,0,,,'')")</code></td><td><a href="excel.html#formulas">M4</a>, <a href="tests.html#t5">T5</a></td></tr>
+    <tr><td>Prévision moyenne de chiffre d'affaires, FY2</td><td><code>=FDS(A1,"FE_ESTIMATE(SALES,MEAN,ANNUAL_ROLL,+2,0,,,'')")</code></td><td><a href="excel.html#formulas">M4</a></td></tr>
+    <tr><td>BPA moyen, douze prochains mois</td><td><code>=FDS(A1,"FE_ESTIMATE(EPS,MEAN,NTMA,,0,,,'')")</code></td><td><a href="excel.html#formulas">M4</a></td></tr>
+    <tr><td>Clôture de l'exercice FY1 / publication attendue du réel FY1 (AAAAMMJJ)</td><td><code>=FDS(A1,"FE_ACTUAL_DATE(FISCALPERIODEND,,ANN_ROLL,+1,'YYYYMMDD',,,,'')")</code><br><code>=FDS(A1,"FE_ACTUAL_DATE(RPT_DATE,,ANN_ROLL,+1,'YYYYMMDD',,,,'')")</code></td><td><a href="tests.html#t5">T5</a></td></tr>
+    <tr><td>Chaque broker : nom / analyste / estimation / date de l'estimation (BPA FY1)</td><td><code>=FDS(A1,"FE_BROKER_ESTIMATE(SNAP,EPS,BKR_NAME,ANNUAL_ROLL,+1,0,,,'')")</code><br><code>=FDS(A1,"FE_BROKER_ESTIMATE(SNAP,EPS,AN_NAME,ANNUAL_ROLL,+1,0,,,'')")</code><br><code>=FDS(A1,"FE_BROKER_ESTIMATE(SNAP,EPS,EST_VALUE,ANNUAL_ROLL,+1,0,,,'')")</code><br><code>=FDS(A1,"FE_BROKER_ESTIMATE(SNAP,EPS,DATE,ANNUAL_ROLL,+1,0,,,'')")</code></td><td><a href="tests.html#t5">T5</a></td></tr>
+    <tr><th colspan="3">Actionnariat (LSD_)</th></tr>
+    <tr><td>Détenteurs institutionnels d'une entreprise : nom, actions, %OS, date</td><td><code>=FDS(A1,"LSD_NAME_TOP_INST(-1,""H"")")</code><br><code>=FDS(A1,"LSD_POS_TOP_INST(-1,""H"")")</code><br><code>=FDS(A1,"LSD_PCTOS_TOP_INST(-1,""H"")")</code><br><code>=FDS(A1,"LSD_RD_TOP_INST(-1,""H"")")</code></td><td><a href="excel.html#formulas">M4</a>, <a href="tests.html#t11">T11</a></td></tr>
+    <tr><td>Positions d'un fonds : identifiant, nom, actions, valeur, poids</td><td><code>=FDS(A1,"LSD_ID_TOP_HLDG(-1)")</code><br><code>=FDS(A1,"LSD_NAME_TOP_HLDG(-1)")</code><br><code>=FDS(A1,"LSD_POS_TOP_HLDG(-1)")</code><br><code>=FDS(A1,"LSD_MV_TOP_HLDG(-1)")</code><br><code>=FDS(A1,"LSD_PCPRT_TOP_HLDG(-1)")</code></td><td><a href="excel.html#formulas">M4</a>, <a href="tests.html#t4">T4</a></td></tr>
+    <tr><td>Date de reporting des positions d'un fonds</td><td><code>=FDS(A1,"LSD_RD_TOP_HLDG(1)")</code></td><td><a href="tests.html#t4">T4</a></td></tr>
+    <tr><th colspan="3">Obligations (FI_)</th></tr>
+    <tr><td>Taux de coupon à l'émission (%), à partir de l'ISIN</td><td><code>=FDS(A1,"FI_COUPON(CPN,CPN,0)")</code></td><td><a href="tests.html#t2">T2</a></td></tr>
+    <tr><td>Colonnes du screen : ISIN / devise / date d'échéance</td><td><code>FI_IDENTIFIER(ISIN)</code> · <code>FI_CURR(DENOM,CODE)</code> · <code>FI_ISSUE_DETAILS(MAT_DATE,MAT_DATE,0,LOCAL_DATE)</code></td><td><a href="tests.html#t2">T2</a></td></tr>
+    <tr><th colspan="3">ESG (FESG_)</th></tr>
+    <tr><td>Note ESG FTSE Russell, la plus récente (0 à 5, 5 = meilleure)</td><td><code>=FDS(A1,"FESG_RATING(0,,,""ABS"")")</code></td><td><a href="tests.html#t4">T4</a>, <a href="tests.html#t8">T8</a></td></tr>
+    <tr><td>Note ESG FTSE Russell à une date</td><td><code>=FDS(A1,"FESG_RATING(12/31/2019,,,""ABS"")")</code></td><td><a href="../../covid project/covid_project_fr.html">COVID</a></td></tr>
+    <tr><th colspan="3">Membres d'indice et identifiants</th></tr>
+    <tr><td>Membres d'un indice (CAC 40 = 180454, NASDAQ-100 = NDX, CAC All-Tradable = CACT-ENX)</td><td><code>=FDS("180454","FG_CONSTITUENTS")</code></td><td><a href="tests.html#t8">T8</a>, <a href="tests.html#t13">T13</a>, <a href="tests.html#t14">T14</a></td></tr>
+    <tr><td>Membres d'un indice à une date passée (MM/DD/YYYY)</td><td><code>=FDS("CACT-ENX","FG_CONSTITUENTS(02/20/2020)")</code></td><td><a href="../../covid project/covid_project_fr.html">COVID</a></td></tr>
+    <tr><td>ISIN d'un titre</td><td><code>=FDS(A1,"FSYM_ISIN(NOW,""ID"")")</code></td><td><a href="tests.html#t4">T4</a></td></tr>
+  </table></div>
+  <h3>Arguments</h3>
+  <div class="tablewrap"><table class="compact">
+    <tr><th>Écrire</th><th>Signification</th></tr>
+    <tr><td><code>0</code></td><td>date la plus récente / dernier exercice</td></tr>
+    <tr><td><code>-5D, -1W, -1M, -1Q, -1Y</code></td><td>dates relatives : jours, semaines, mois, trimestres, années avant aujourd'hui</td></tr>
+    <tr><td><code>-1AY, -10AY</code></td><td>il y a 1 / 10 exercices</td></tr>
+    <tr><td><code>12/31/2025</code></td><td>un jour, toujours MM/DD/YYYY (le mois d'abord)</td></tr>
+    <tr><td><code>11/2025</code></td><td>une fin de mois, MM/YYYY</td></tr>
+    <tr><td><code>2024 · 2016,2025</code></td><td>un exercice · une plage d'exercices</td></tr>
+    <tr><td><code>(SD,ED,FRQ)</code></td><td>date de début, date de fin, fréquence : renvoie une série</td></tr>
+    <tr><td><code>D, W, M, Q, Y</code></td><td>fréquences : quotidienne, hebdomadaire, mensuelle, trimestrielle, annuelle</td></tr>
+    <tr><td><code>""DATEJ""</code></td><td>renvoie des dates Excel (guillemets doublés dans la requête)</td></tr>
+    <tr><td><code>ANN, QTR, SEMI, LTM</code></td><td>données comptables : annuel, trimestriel, semestriel, douze derniers mois</td></tr>
+    <tr><td><code>RF</code></td><td>valeurs telles que publiées la première fois</td></tr>
+    <tr><td><code>ANNUAL_ROLL,+1 · +2</code></td><td>estimations : FY1 · FY2, comptés à partir d'aujourd'hui</td></tr>
+    <tr><td><code>NTMA</code></td><td>estimations : douze prochains mois</td></tr>
+    <tr><td><code>MEAN, MED, HIGH, LOW, STDDEV, NEST</code></td><td>statistique du consensus : moyenne, médiane, haut, bas, écart-type, nombre d'estimations</td></tr>
+    <tr><td><code>SNAP</code></td><td>estimations des brokers qui composent le consensus du jour</td></tr>
+    <tr><td><code>BKR_NAME, AN_NAME, EST_VALUE</code></td><td>nom du broker, nom de l'analyste, estimation</td></tr>
+    <tr><td><code>(-1)</code></td><td>listes : toutes les lignes (tous les détenteurs, toutes les positions)</td></tr>
+    <tr><td><code>""H""</code></td><td>actionnariat : détenteurs</td></tr>
+    <tr><td><code>(EUR,1)</code></td><td>capitalisation : devise, en millions</td></tr>
+  </table></div>
+  <h3>Fonctions Excel</h3>
+  <div class="tablewrap"><table class="compact">
+    <tr><th>Excel en anglais</th><th>Excel en français</th><th>À quoi ça sert</th><th>Utilisé dans</th></tr>
+    <tr><td><code>IFERROR(x,"")</code></td><td><code>SIERREUR(x;"")</code></td><td>cellule vide au lieu d'une erreur</td><td>T2–T14</td></tr>
+    <tr><td><code>IF, ISNUMBER</code></td><td><code>SI, ESTNUM</code></td><td>tester une condition / si une cellule contient un nombre</td><td>T1, T4, T13</td></tr>
+    <tr><td><code>COUNT, COUNTA</code></td><td><code>NB, NBVAL</code></td><td>compter les nombres / les cellules non vides</td><td>T1–T12</td></tr>
+    <tr><td><code>COUNTIF(S), SUMIF(S), AVERAGEIF(S)</code></td><td><code>NB.SI(.ENS), SOMME.SI(.ENS), MOYENNE.SI(.ENS)</code></td><td>compter, additionner, faire la moyenne des lignes qui remplissent un ou plusieurs critères</td><td>T2, T3, T4</td></tr>
+    <tr><td><code>SUM, AVERAGE, MEDIAN, MIN, MAX</code></td><td><code>SOMME, MOYENNE, MEDIANE, MIN, MAX</code></td><td>statistiques de base</td><td>T1–T12</td></tr>
+    <tr><td><code>STDEV.S</code></td><td><code>ECARTYPE.STANDARD</code></td><td>écart-type d'un échantillon</td><td>T1</td></tr>
+    <tr><td><code>AGGREGATE(1,6,range)</code></td><td><code>AGREGAT(1;6;plage)</code></td><td>moyenne qui ignore les cellules en erreur</td><td>T5</td></tr>
+    <tr><td><code>LARGE(range,{1,…,10})</code></td><td><code>GRANDE.VALEUR(plage;{1;…;10})</code></td><td>les n plus grandes valeurs (top 5, top 10)</td><td>T11</td></tr>
+    <tr><td><code>SUMPRODUCT</code></td><td><code>SOMMEPROD</code></td><td>somme de produits : indice de Herfindahl, comptes par mois</td><td>T3, T11</td></tr>
+    <tr><td><code>CORREL, SLOPE, LN</code></td><td><code>COEFFICIENT.CORRELATION, PENTE, LN</code></td><td>corrélation, bêta (pente), logarithme népérien</td><td>T7, T8, T12</td></tr>
+    <tr><td><code>INDEX, MATCH</code></td><td><code>INDEX, EQUIV</code></td><td>valeur à une position / position d'une valeur</td><td>T1, T11</td></tr>
+    <tr><td><code>XLOOKUP(…,-1)</code></td><td><code>RECHERCHEX(…;-1)</code></td><td>aligner des séries sur un calendrier (dernière valeur si absente)</td><td>T7</td></tr>
+    <tr><td><code>UNIQUE, SORT, SORTBY, TAKE, HSTACK</code></td><td><code>UNIQUE, TRIER, TRIERPAR, PRENDRE, ASSEMB.H</code></td><td>valeurs distinctes, triées, n premières, côte à côte</td><td>T2, T3, T4</td></tr>
+    <tr><td><code>FILTER</code></td><td><code>FILTRE</code></td><td>garder les lignes qui remplissent une condition</td><td>T8, T13, T14</td></tr>
+    <tr><td><code>TOCOL, SEQUENCE</code></td><td><code>DANSCOL, SEQUENCE</code></td><td>générer les lignes entreprise × année d'un panel</td><td>T6</td></tr>
+    <tr><td><code>TRANSPOSE</code></td><td><code>TRANSPOSE</code></td><td>transformer une colonne en ligne</td><td>T13, T14</td></tr>
+    <tr><td><code>EOMONTH, TODAY</code></td><td><code>FIN.MOIS, AUJOURDHUI</code></td><td>dates de fin de mois</td><td>T12</td></tr>
+    <tr><td><code>MONTH, DAY, YEAR, &amp;</code></td><td><code>MOIS, JOUR, ANNEE, &amp;</code></td><td>construire MM/DD/YYYY ou une requête à partir de cellules</td><td>M4, T6, T12</td></tr>
+    <tr><td><code>$A$1 (F4)</code></td><td><code>$A$1 (F4)</code></td><td>figer une référence lors de la copie</td><td>M4</td></tr>
+  </table></div>
+  <h3>Glossaire</h3>
+  <div class="tablewrap"><table class="compact">
+    <tr><td>Identifiant</td><td>Code d'un titre : ticker-région (MSFT-US), ISIN, CUSIP, SEDOL, ou identifiant d'entité FactSet (007XXT-E).</td></tr>
+    <tr><td>ISIN</td><td>Identifiant international de titre à 12 caractères (code pays + code national + clé), ex. FR0014004628.</td></tr>
+    <tr><td>CUSIP / SEDOL</td><td>Identifiants nationaux : CUSIP (États-Unis, 9 caractères), SEDOL (Royaume-Uni, 7 caractères ; désigne une cotation).</td></tr>
+    <tr><td>Report</td><td>Une page de la plateforme en ligne FactSet sur une entreprise ou un titre (Snapshot, Price History…).</td></tr>
+    <tr><td>Screen</td><td>Une requête qui renvoie la liste des titres ou opérations remplissant des critères (Universal Screening, Screen On).</td></tr>
+    <tr><td>Insert Formula</td><td>Panneau de FactSet 365 qui cherche les données et construit la formule =FDS.</td></tr>
+    <tr><td>Donnée / code / source</td><td>La variable (Price), son code (P_PRICE) et la base dont elle vient (Prices).</td></tr>
+    <tr><td>Débordement (spill)</td><td>Une formule qui renvoie plusieurs valeurs remplissant les cellules en dessous ou à droite.</td></tr>
+    <tr><td>#Calc</td><td>Une formule FactSet en attente de FactSet 365 › Refresh.</td></tr>
+    <tr><td>Rentabilité</td><td>Variation du cours sur une période : P(t) / P(t−1) − 1.</td></tr>
+    <tr><td>Exercice</td><td>La période comptable de 12 mois d'une entreprise ; elle peut ne pas finir en décembre (Microsoft : juin).</td></tr>
+    <tr><td>FY1 / FY2</td><td>Premier / deuxième exercice non encore publié.</td></tr>
+    <tr><td>BPA (EPS)</td><td>Bénéfice par action.</td></tr>
+    <tr><td>Consensus</td><td>Agrégat (moyenne, médiane) des prévisions des analystes.</td></tr>
+    <tr><td>Broker</td><td>Banque ou société de recherche dont l'analyste publie une estimation.</td></tr>
+    <tr><td>EBIT / EBITDA</td><td>Résultat d'exploitation / résultat d'exploitation avant amortissements.</td></tr>
+    <tr><td>Capex</td><td>Investissements en immobilisations.</td></tr>
+    <tr><td>Capitalisation boursière</td><td>Cours de l'action × nombre d'actions.</td></tr>
+    <tr><td>PER (P/E)</td><td>Cours / bénéfice par action.</td></tr>
+    <tr><td>Positions / poids</td><td>Les titres détenus par un fonds / la part de chacun dans la valeur du fonds (%).</td></tr>
+    <tr><td>Date de reporting</td><td>Date du document qui donne une position.</td></tr>
+    <tr><td>ETF</td><td>Fonds coté ; celui qui réplique un indice détient ses membres (IVV-US, CAC-FR, QQQ-US).</td></tr>
+    <tr><td>%OS</td><td>Pourcentage des actions en circulation détenu par un actionnaire.</td></tr>
+    <tr><td>Détenteur institutionnel</td><td>Gérant, banque ou assureur qui déclare ses positions (familles et sociétés non incluses).</td></tr>
+    <tr><td>Indice de Herfindahl</td><td>Somme des parts au carré (poids en % : 0 à 10 000) ; mesure la concentration.</td></tr>
+    <tr><td>Bêta</td><td>Pente des rentabilités d'une action sur celles du marché.</td></tr>
+    <tr><td>Corrélation</td><td>Co-mouvement de deux séries, de −1 à 1.</td></tr>
+    <tr><td>Point de base</td><td>0,01 point de pourcentage ; les variations de taux se mesurent en points de base.</td></tr>
+    <tr><td>Coupon / coupon à l'émission</td><td>Taux d'intérêt annuel versé par une obligation / le taux fixé à son émission.</td></tr>
+    <tr><td>Échéance / durée résiduelle</td><td>Date de remboursement de l'obligation / temps restant jusque-là.</td></tr>
+    <tr><td>Obligation verte</td><td>Obligation dont les fonds financent des projets environnementaux.</td></tr>
+    <tr><td>Pays de domicile / de risque</td><td>Là où l'émetteur a son siège (sa nationalité) / là où son activité est exposée.</td></tr>
+    <tr><td>Montant (publié)</td><td>Prix d'une opération de fusion-acquisition ; souvent non publié, ce qui n'est pas 0.</td></tr>
+    <tr><td>Panel en format long</td><td>Une ligne par unité × période.</td></tr>
+    <tr><td>Biais du survivant</td><td>Biais lié au fait de ne garder que les entreprises qui existent encore.</td></tr>
+  </table></div>
+  <p>Gardez les classeurs : changez les cellules jaunes et ils deviennent des modèles pour vos propres recherches. Toute la documentation officielle est listée sur la page <a href="resources.html">Ressources clés</a>.</p>
+</section>
+<div class="pagenav"><a class="pn prev" href="tests.html">← Méthode & tests</a><a class="pn next" href="resources.html">Ressources clés →</a></div>
+</main>
+</div>
+<script>
+(function(){
+  var store={get:function(k){try{return localStorage.getItem(k)}catch(e){return null}},
+             set:function(k,v){try{localStorage.setItem(k,v)}catch(e){}}};
+  function setOS(os){
+    document.body.classList.remove('os-win','os-mac');
+    document.body.classList.add('os-'+os);
+    document.querySelectorAll('.seg button').forEach(function(b){b.setAttribute('aria-pressed',b.dataset.os===os?'true':'false');});
+    store.set('fds-course-os',os);
+  }
+  var saved=store.get('fds-course-os');
+  if(!saved){saved=/Mac|iPhone|iPad/.test(navigator.platform||navigator.userAgent)?'mac':'win';}
+  setOS(saved);
+  document.querySelectorAll('.seg button').forEach(function(b){b.addEventListener('click',function(){setOS(b.dataset.os);});});
+
+  var prog=document.getElementById('progress');
+  function refresh(){
+    var n=0;
+    for(var i=1;i<=14;i++){
+      var cb=document.getElementById('done-'+i),on=cb?cb.checked:store.get('fds-course-done-'+i)==='1';
+      if(on)n++;
+      var link=document.querySelector('nav.toc a[data-t="'+i+'"]');
+      if(link)link.classList.toggle('done',!!on);
+    }
+    if(prog)prog.textContent=n+' / 14 tests réalisés';
+  }
+  document.querySelectorAll('.done-toggle input').forEach(function(cb){
+    cb.checked=store.get('fds-course-'+cb.id)==='1';
+    cb.addEventListener('change',function(){store.set('fds-course-'+cb.id,cb.checked?'1':'0');refresh();});
+  });
+  refresh();
+
+  document.querySelectorAll('pre .copy').forEach(function(btn){
+    btn.addEventListener('click',function(){
+      var text=btn.parentElement.innerText.replace(/^Copy\s*/,'');
+      if(navigator.clipboard){navigator.clipboard.writeText(text).then(function(){btn.textContent='Copied';setTimeout(function(){btn.textContent='Copy'},1500);},function(){btn.textContent='Select & copy';});}
+    });
+  });
+
+  var links=Array.prototype.slice.call(document.querySelectorAll('nav.toc a[href^="#"]'));
+  if('IntersectionObserver' in window){
+    var obs=new IntersectionObserver(function(entries){
+      entries.forEach(function(en){
+        if(en.isIntersecting){links.forEach(function(a){a.classList.toggle('active',a.getAttribute('href')==='#'+en.target.id);});}
+      });
+    },{rootMargin:'-70px 0px -70% 0px'});
+    links.forEach(function(a){var t=document.querySelector(a.getAttribute('href'));if(t)obs.observe(t);});
+  }
+})();
+
+</script>
+</body>
+</html>

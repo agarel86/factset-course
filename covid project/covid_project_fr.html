@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Projet COVID</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Raleway:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Sora:wght@600;700;800&display=swap" rel="stylesheet">
+<style>
+/* Audencia identity (from audencia.com): navy #002941, text grey #4D5562, blue #2A6FEC, sky #91E3FF, cream #FFF5E9,
+   button grey-blue #DCE4ED, Sora headings (800) + Raleway text. Single light theme, like the school's site. */
+:root{
+  --navy:#002941; --navy-2:#012D5A; --text:#4D5562; --blue:#2A6FEC; --sky:#91E3FF; --sky-soft:rgba(145,227,255,.35);
+  --cream:#FFF5E9; --btn:#DCE4ED; --grey-050:#F3F4F9; --grey-200:#D3D4D9; --pink:#F2AAF0; --orange:#FDA959;
+  --ok:#26A769; --warn:#B26A00; --bad:#C62828;
+  --input:#FFF4C2; --fds:#DDEBF7; --calc:#E2F0D9; --paste:#EEEEEE;
+  --display:"Sora", Arial, sans-serif; --body:"Raleway", Arial, sans-serif; --mono:Consolas, "Courier New", monospace;
+  color-scheme: light;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:80px}
+@media (prefers-reduced-motion: reduce){html{scroll-behavior:auto}}
+body{margin:0;background:#fff;color:var(--text);font-family:var(--body);font-size:16.5px;line-height:1.65}
+a{color:var(--blue);text-underline-offset:3px}
+a:hover{color:var(--navy)}
+a:focus-visible,button:focus-visible,input:focus-visible,summary:focus-visible{outline:3px solid var(--ok);outline-offset:2px}
+h1,h2,h3,h4{font-family:var(--display);color:var(--navy);line-height:1.2;text-wrap:balance;margin:0}
+h1{font-size:2.4rem;font-weight:800}
+h2{font-size:2rem;font-weight:800;margin-bottom:.5rem}
+h3{font-size:1.3rem;font-weight:700;margin:1.8rem 0 .6rem}
+h4{font-size:1.02rem;font-weight:700;margin:1.3rem 0 .4rem}
+p,li{max-width:74ch}
+b,strong{color:var(--navy);font-weight:700}
+code,kbd{font-family:var(--mono);font-size:.88em}
+code{background:var(--grey-050);color:var(--navy);padding:.1em .4em;border-radius:6px;overflow-wrap:anywhere}
+kbd{border:1px solid var(--grey-200);border-bottom-width:2px;border-radius:6px;padding:.05em .45em;background:#fff;color:var(--navy);white-space:nowrap}
+pre{background:var(--navy);color:#fff;border-radius:1rem;padding:1rem 1.2rem;overflow-x:auto;font-family:var(--mono);font-size:.86rem;line-height:1.55;margin:.8rem 0}
+pre code{background:none;color:inherit}
+
+/* header */
+.topbar{position:sticky;top:0;z-index:20;background:var(--navy);color:#fff;display:flex;align-items:center;gap:18px;padding:12px 28px;flex-wrap:wrap}
+.brand{font-family:var(--display);font-weight:800;font-size:1.1rem;margin-right:auto;color:#fff}
+.brand small{font-family:var(--body);font-weight:500;color:var(--sky);margin-left:10px;font-size:.85rem}
+.os-switch{display:flex;align-items:center;gap:8px;font-size:.9rem;color:#fff}
+.seg{display:inline-flex;background:rgba(255,255,255,.12);border-radius:999px;padding:3px}
+.seg button{border:0;background:transparent;color:#fff;padding:7px 18px;font:inherit;font-weight:600;cursor:pointer;border-radius:999px}
+.seg button[aria-pressed="true"]{background:#fff;color:var(--navy)}
+.toplink{color:var(--navy);background:var(--btn);text-decoration:none;font-weight:600;font-size:.9rem;border-radius:999px;padding:8px 18px}
+.toplink:hover{background:var(--sky);color:var(--navy)}
+.progress-pill{font-size:.85rem;color:var(--sky);font-weight:600}
+
+/* layout */
+.shell{display:grid;grid-template-columns:280px minmax(0,1fr);max-width:1360px;margin:0 auto}
+nav.toc{position:sticky;top:62px;align-self:start;height:calc(100vh - 62px);overflow-y:auto;padding:28px 18px 40px 24px;background:var(--grey-050);font-size:.92rem}
+nav.toc ol{list-style:none;margin:0;padding:0}
+nav.toc a{display:block;padding:5px 12px;border-radius:999px;color:var(--navy);text-decoration:none;font-weight:600}
+nav.toc a:hover{background:#fff}
+nav.toc a.active{background:var(--navy);color:#fff}
+nav.toc .sub a{padding-left:24px;font-weight:500;color:var(--text);font-size:.87rem}
+nav.toc .sub a.active{color:#fff}
+nav.toc .sub a.done::after{content:" ✓";color:var(--ok);font-weight:700}
+nav.toc .part{font-family:var(--display);font-size:.72rem;letter-spacing:.06em;text-transform:uppercase;color:var(--blue);margin:20px 12px 6px;font-weight:700}
+main{padding:36px 48px 90px;min-width:0}
+section.module{padding:8px 0 40px;margin-bottom:36px;border-bottom:2px solid var(--grey-050)}
+.modnum{display:inline-block;font-family:var(--display);font-weight:700;font-size:.78rem;letter-spacing:.05em;text-transform:uppercase;color:var(--navy);background:var(--sky);border-radius:999px;padding:3px 14px;margin-bottom:12px}
+.lead{font-size:1.12rem;color:var(--text);max-width:72ch}
+@media (max-width:900px){
+  .shell{grid-template-columns:1fr}
+  nav.toc{position:static;height:auto}
+  main{padding:24px 16px 60px}
+  .topbar{padding:10px 16px}
+}
+
+/* boxes: Audencia "bubbles" */
+.box{border-radius:1.5rem;padding:16px 22px;margin:16px 0;background:var(--grey-050)}
+.box > :first-child{margin-top:0}.box > :last-child{margin-bottom:0}
+.box.tip{background:var(--sky-soft)}
+.box.warn{background:var(--cream)}
+.box.ok{background:#E6F6EE}
+.box.bad{background:#FDECEC}
+.box-title{display:block;font-family:var(--display);font-weight:700;color:var(--navy);margin-bottom:4px}
+.os-box{border:2px solid var(--sky);border-radius:1.5rem;padding:14px 20px;margin:16px 0}
+.os-label{display:inline-block;font-family:var(--display);font-size:.72rem;font-weight:700;letter-spacing:.05em;text-transform:uppercase;background:var(--navy);color:#fff;border-radius:999px;padding:2px 12px;margin-bottom:8px}
+body.os-mac .win-only{display:none}
+body.os-win .mac-only{display:none}
+
+/* tables */
+.tablewrap{overflow-x:auto;margin:14px 0;border-radius:1rem;border:1px solid var(--grey-200)}
+table{border-collapse:collapse;width:100%;font-size:.92rem}
+th,td{padding:9px 12px;text-align:left;vertical-align:top;border-bottom:1px solid var(--grey-200)}
+tr:last-child td{border-bottom:0}
+th{background:var(--navy);color:#fff;font-family:var(--display);font-weight:600;font-size:.85rem}
+td code{white-space:nowrap}
+table.compact td,table.compact th{padding:6px 10px}
+
+/* numbered steps */
+ol.steps{counter-reset:s;list-style:none;padding-left:0}
+ol.steps > li{counter-increment:s;position:relative;padding-left:46px;margin:12px 0}
+ol.steps > li::before{content:counter(s);position:absolute;left:0;top:-1px;width:30px;height:30px;border-radius:50%;background:var(--navy);color:#fff;font-family:var(--display);font-weight:700;display:grid;place-items:center;font-size:.85rem}
+
+/* cell-colour legend (same as the workbooks) */
+.chip{display:inline-block;padding:2px 10px;border-radius:999px;font-size:.85rem;color:var(--navy);white-space:nowrap;margin:2px 0}
+.chip.in{background:var(--input)}.chip.fd{background:var(--fds)}.chip.ca{background:var(--calc)}.chip.pa{background:var(--paste)}
+
+/* formula anatomy */
+.anatomy{font-family:var(--mono);font-size:1.15rem;display:flex;flex-wrap:wrap;gap:6px;align-items:flex-end;margin:18px 0;overflow-x:auto;color:var(--navy)}
+.anatomy span{display:inline-flex;flex-direction:column;align-items:center}
+.anatomy b{font-weight:600;padding:5px 8px;border-radius:8px}
+.anatomy i{font-family:var(--body);font-style:normal;font-size:.74rem;color:var(--text);margin-top:4px}
+.a1{background:var(--btn)}.a2{background:var(--input)}.a3{background:var(--fds)}.a4{background:var(--sky-soft)}
+
+/* tests */
+.test{border-radius:1.5rem;padding:24px 28px;margin:22px 0;background:#fff;border:2px solid var(--grey-050)}
+.test-head{display:flex;flex-wrap:wrap;gap:10px 16px;align-items:baseline;justify-content:space-between}
+.test-head h3{margin:0}
+.meta{display:flex;flex-wrap:wrap;gap:6px}
+.pill{font-size:.75rem;font-weight:600;border-radius:999px;padding:2px 12px;color:var(--navy);background:var(--btn)}
+.pill.lvl1{background:#D7F2E4}.pill.lvl2{background:#FFE7CF}.pill.lvl3{background:#FBDDFA}
+.dl{display:inline-flex;align-items:center;gap:10px;background:var(--navy);color:#fff;text-decoration:none;font-weight:600;padding:12px 26px;border-radius:999px;margin:8px 0;min-height:48px}
+.dl::after{content:"→"}
+.dl:hover{background:var(--blue);color:#fff}
+.done-toggle{display:inline-flex;gap:8px;align-items:center;font-size:.92rem;font-weight:600;color:var(--navy);cursor:pointer;margin-top:10px}
+.done-toggle input{accent-color:var(--navy);width:18px;height:18px}
+details{border-radius:1rem;padding:10px 16px;margin:10px 0;background:var(--grey-050)}
+details summary{cursor:pointer;font-weight:700;color:var(--navy)}
+.cols2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+@media (max-width:700px){.cols2{grid-template-columns:1fr}}
+.copy{float:right;font:inherit;font-size:.75rem;font-weight:600;border:0;background:var(--sky);color:var(--navy);border-radius:999px;padding:2px 12px;cursor:pointer;margin:-2px -4px 0 8px}
+
+/* screenshots and data tour */
+figure.shot{margin:16px 0;border-radius:1rem;overflow:hidden;background:var(--grey-050);border:1px solid var(--grey-200)}
+figure.shot img{display:block;width:100%;height:auto}
+figure.shot figcaption{padding:8px 14px;margin:0;font-size:.84rem;color:var(--text)}
+figure.shot.small{max-width:660px}
+.shots2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+.shots3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+.shots2 figure.shot,.shots3 figure.shot{margin:0}
+@media (max-width:800px){.shots2,.shots3{grid-template-columns:1fr}}
+article.data{padding-top:20px;margin-top:26px;border-top:2px solid var(--grey-050)}
+article.data h3{margin-top:0}
+.where{display:inline-block;font-size:.84rem;font-weight:600;color:var(--navy);background:var(--cream);border-radius:999px;padding:3px 14px;margin:.3rem 0 .9rem}
+.use{background:var(--sky-soft);border-radius:1.5rem;padding:10px 18px}
+.doc{font-size:.9rem}
+.res-group{margin:18px 0}
+.res-group li{margin:7px 0}
+
+
+.pagenav{display:flex;justify-content:space-between;gap:12px;margin:30px 0 10px;flex-wrap:wrap}
+.pn{display:inline-flex;align-items:center;background:var(--btn);color:var(--navy);text-decoration:none;font-weight:700;padding:12px 24px;border-radius:999px}
+.pn:hover{background:var(--navy);color:#fff}
+.lang{display:inline-flex;background:rgba(255,255,255,.12);border-radius:999px;padding:3px}
+.lang a,.lang span{color:#fff;text-decoration:none;font-weight:700;font-size:.85rem;padding:6px 14px;border-radius:999px}
+.lang span{background:#fff;color:var(--navy)}
+.lang a.cur{background:#fff;color:var(--navy)}
+
+.try{background:var(--sky-soft);border-radius:1.5rem;padding:18px 22px;margin:16px 0}
+.try h4{margin:0 0 8px}
+.try dl{margin:0;display:grid;grid-template-columns:minmax(120px,170px) 1fr;gap:8px 16px}
+.try dt{font-family:var(--display);font-weight:700;color:var(--navy)}
+.try dd{margin:0}
+.try dd ul{margin:0;padding-left:18px}
+@media (max-width:640px){.try dl{grid-template-columns:1fr}.try dt{margin-top:6px}}
+details.hint{background:var(--cream)}
+details.sol{background:#fff;border:2px solid var(--navy);padding:12px 20px}
+details.sol[open]{padding-bottom:18px}
+details.sol > summary{font-family:var(--display)}
+details.hint > summary::after,details.sol > summary::after{content:"  (click to open)";font-weight:400;color:var(--text);font-size:.9em}
+html[lang=fr] details.hint > summary::after,html[lang=fr] details.sol > summary::after{content:"  (cliquez pour ouvrir)"}
+table.args{border-collapse:collapse;width:100%;margin:10px 0;font-size:.95rem}
+table.args th,table.args td{border-bottom:1px solid var(--grey-200);padding:6px 10px;text-align:left;vertical-align:top}
+table.args th{color:var(--navy);font-family:var(--display)}
+
+.obj{margin:10px 0 6px}
+.obj ol{margin:6px 0 0;padding-left:22px}
+.obj li{margin:3px 0}
+
+.res{border-collapse:collapse;width:100%;margin:10px 0;font-size:.92rem}
+.res th,.res td{border-bottom:1px solid var(--grey-200);padding:5px 9px;text-align:right}
+.res th:first-child,.res td:first-child{text-align:left}
+.res th{color:var(--navy);font-family:var(--display)}
+.eq{background:var(--grey-050);border-radius:1rem;padding:14px 18px;font-family:var(--mono);font-size:.95rem;overflow-x:auto}
+.files a.dl{margin-right:10px}
+</style>
+</head>
+<body class="os-win">
+<header class="topbar">
+  <div class="brand">Audencia - SFIR <small>Mini-projet de recherche avec FactSet</small></div>
+  <span class="lang" aria-label="Language"><a href="covid_project.html" lang="en">EN</a><a class="cur" href="covid_project_fr.html" lang="fr" aria-current="page">FR</a></span>
+  <div class="os-switch" role="group" aria-label="Choose your computer">
+    <span>J'utilise :</span>
+    <span class="seg"><button type="button" aria-pressed="true" data-os="win">Windows</button><button type="button" aria-pressed="false" data-os="mac">Mac</button></span>
+  </div>
+  <a class="toplink" href="../course/fr/index.html">← Retour au cours</a>
+  <span class="progress-pill" id="progress">0 / 9</span>
+</header>
+<div class="shell">
+<nav class="toc" aria-label="Sommaire du projet"><ol><li><a href="#overview">Projet</a></li><li><a href="#question">1. Question de recherche</a></li><li><a href="#hypotheses">2. Hypothèses</a></li><li><a href="#data">3. Données</a></li><li><a href="#model">4. Régression</a></li><li><a href="#own">5. À vous</a></li><li><a href="#steps">6. Étapes et solutions</a></li><li class="sub"><a href="#s1" data-t="1">Étape 1</a></li><li class="sub"><a href="#s2" data-t="2">Étape 2</a></li><li class="sub"><a href="#s3" data-t="3">Étape 3</a></li><li class="sub"><a href="#s4" data-t="4">Étape 4</a></li><li class="sub"><a href="#s5" data-t="5">Étape 5</a></li><li class="sub"><a href="#s6" data-t="6">Étape 6</a></li><li class="sub"><a href="#s7" data-t="7">Étape 7</a></li><li class="sub"><a href="#s8" data-t="8">Étape 8</a></li><li class="sub"><a href="#s9" data-t="9">Étape 9</a></li><li><a href="#files">Fichiers</a></li></ol></nav>
+<main>
+
+<section class="module" id="overview">
+  <div class="modnum">Projet</div>
+  <h2>Quelles entreprises cotées françaises ont le plus perdu pendant le krach du COVID-19, et pourquoi ?</h2>
+  <p class="lead">Un petit projet de recherche, de la question à la conclusion, réalisé entièrement avec FactSet : les données viennent des formules FactSet 365 dans Excel et chaque analyse est une formule Excel. Chaque étape est une feuille du classeur. Essayez d'abord chaque étape ; ouvrez l'<b>indice</b> si vous êtes bloqué et la <b>solution</b> une fois que vous avez un résultat.</p>
+</section>
+<section class="module" id="question">
+  <div class="modnum">1</div>
+  <h2>Question de recherche</h2>
+  <p>La pandémie de COVID-19 a été un choc important et inattendu. Entre le 20 février et le 16 mars 2020, la bourse française a perdu plus d'un tiers de sa valeur. Les investisseurs ont révisé leurs anticipations de flux de trésorerie futurs et de risque, mais pas de la même façon pour toutes les entreprises.</p>
+  <p><b>Question :</b> quelles caractéristiques des entreprises cotées françaises, mesurées avant la crise, expliquent leur performance boursière pendant le krach du COVID-19 ?</p>
+  <p>Unité d'observation : l'entreprise. Univers : les membres de l'indice <b>CAC All-Tradable</b> au 20 février 2020, premier jour de la fenêtre. Fenêtre de l'événement : <b>20 février – 16 mars 2020</b>. Caractéristiques : exercice 2019.</p>
+</section>
+<section class="module" id="hypotheses">
+  <div class="modnum">2</div>
+  <h2>Arguments et hypothèses</h2>
+  <p>Si les investisseurs anticipent des profits futurs plus faibles ou un risque de défaillance plus élevé, le cours baisse davantage ; s'ils anticipent une demande stable ou plus forte, il baisse moins.</p>
+  <table class="args"><tr><th>Hypothèse</th><th>Argument</th><th>Signe attendu</th></tr>
+  <tr><td><b>H1</b> Les secteurs exposés ont plus baissé</td><td>Confinements et interdictions de voyager arrêtent les transports, la demande d'énergie, le tourisme, la restauration et les loisirs.</td><td>Exposé −</td></tr>
+  <tr><td><b>H2</b> Les secteurs défensifs ont moins baissé</td><td>Santé, pharmacie et biens de consommation courante gardent une demande stable ou plus forte.</td><td>Défensif +</td></tr>
+  <tr><td><b>H3</b> Les entreprises contraintes financièrement ont plus baissé</td><td>Quand le chiffre d'affaires s'arrête, une dette élevée et peu de trésorerie augmentent le risque de manque de liquidité et de défaillance.</td><td>Endettement −, Trésorerie +</td></tr>
+  <tr><td><b>H4</b> Les entreprises rentables ont moins baissé</td><td>La rentabilité d'avant crise signale des marges capables d'absorber un choc et un accès plus facile au financement.</td><td>Rentabilité +</td></tr>
+  <tr><td><b>H5</b> Les entreprises mieux notées en ESG ont moins baissé</td><td>La qualité ESG peut refléter une meilleure gestion des risques et des investisseurs plus fidèles (l'argument de la « résilience »).</td><td>ESG +</td></tr></table>
+  <p>La distribution est traitée avec prudence : les enseignes physiques et les ventes en ligne n'ont pas été touchées de la même façon, la distribution n'est donc ni « exposée » ni « défensive ».</p>
+</section>
+<section class="module" id="data">
+  <div class="modnum">3</div>
+  <h2>Les données idéales, et ce que FactSet donne</h2>
+  <table class="args"><tr><th>Concept</th><th>Mesure idéale</th><th>Donnée FactSet (code)</th><th>Commentaire</th></tr>
+  <tr><td>Univers</td><td>Toutes les entreprises cotées françaises au début de la crise</td><td>Benchmark Constituents du CAC All-Tradable au 20 février 2020 (<code>FG_CONSTITUENTS(02/20/2020)</code>, indice <code>CACT-ENX</code>)</td><td>Une formule renvoie les membres de l'indice à cette date, y compris les entreprises sorties de l'indice ou de la cote depuis. Prendre les membres actuels écarterait ces entreprises, souvent petites et déficitaires, et biaiserait l'échantillon vers les survivantes.</td></tr>
+  <tr><td>Performance</td><td>Rentabilité totale, dividendes compris, sur la fenêtre</td><td>Rentabilité totale composée (<code>P_TOTAL_RETURNC</code>)</td><td>La rentabilité est exprimée en pourcentage.</td></tr>
+  <tr><td>Secteur</td><td>Classification sectorielle</td><td>Secteur FactSet (<code>FG_FACTSET_SECTOR</code>)</td><td>Le secteur sert à définir les groupes exposé et défensif.</td></tr>
+  <tr><td>Endettement</td><td>Dette totale / total de l'actif, exercice 2019</td><td><code>FF_DEBT</code>, <code>FF_ASSETS</code></td><td>Pas comparable pour les banques et assureurs : ils sont exclus de l'échantillon final (étape 5).</td></tr>
+  <tr><td>Trésorerie</td><td>Trésorerie et placements à court terme / total de l'actif</td><td><code>FF_CASH_ST</code></td><td></td></tr>
+  <tr><td>Rentabilité</td><td>EBITDA / total de l'actif</td><td><code>FF_EBITDA_OPER</code></td><td></td></tr>
+  <tr><td>Taille</td><td>Log de la capitalisation avant la crise</td><td><code>P_MARKET_VAL</code> au 31/12/2019</td><td>Capitalisation de l'action cotée, en millions d'euros pour une cotation à Paris, mesurée avant le krach. Elle existe aussi pour les entreprises sorties de la cote depuis.</td></tr>
+  <tr><td>ESG</td><td>Un score ESG pour chaque entreprise</td><td>FTSE Russell ESG Rating (<code>FESG_RATING</code>, de 0 à 5) au 31/12/2019</td><td>La note va de 0 à 5, et 5 est la meilleure. Elle couvre surtout les grandes entreprises, l'ESG est donc testé sur le sous-échantillon des entreprises notées.</td></tr></table>
+</section>
+<section class="module" id="model">
+  <div class="modnum">4</div>
+  <h2>La régression</h2>
+  <div class="eq">CovidReturn<sub>i</sub> = α + β<sub>1</sub> Endettement<sub>i</sub> + β<sub>2</sub> Trésorerie<sub>i</sub> + β<sub>3</sub> Rentabilité éco<sub>i</sub> + β<sub>4</sub> Taille<sub>i</sub> + γ<sub>1</sub> Exposé<sub>i</sub> + γ<sub>2</sub> Défensif<sub>i</sub> (+ δ ESG<sub>i</sub>) + ε<sub>i</sub></div>
+  <p>CovidReturn<sub>i</sub> : rentabilité totale de l'entreprise i du 20 février au 16 mars 2020 (%). Exposé / Défensif : variables indicatrices égales à 1 pour les entreprises des secteurs exposés / défensifs. Estimée par MCO (<code>DROITEREG</code> dans Excel) en quatre spécifications : (1) caractéristiques des entreprises, (2) indicatrices sectorielles, (3) les deux, (4) les deux plus l'ESG sur les entreprises notées.</p>
+</section>
+
+<section class="module" id="own">
+  <div class="modnum">5</div>
+  <h2>À vous : réalisez le projet seul</h2>
+  <p class="lead">Avant d'ouvrir les étapes ci-dessous, construisez le projet vous-même dans Excel avec FactSet 365, de la liste des entreprises aux régressions. Réfléchissez à chaque point.</p>
+  <ol class="steps">
+    <li><b>Univers.</b> Quel indice couvre le plus grand ensemble d'entreprises cotées françaises ? Trouvez son identifiant FactSet et obtenez, avec une formule, ses membres au début de la crise plutôt qu'aujourd'hui. Pourquoi la date de la liste compte-t-elle ?</li>
+    <li><b>Performance.</b> Quelle mesure de performance, sur quelle fenêtre ? Rentabilité totale ou variation du cours ? Comment écrire les dates dans la requête FactSet ?</li>
+    <li><b>Caractéristiques des entreprises.</b> Quelles données mesurent l'endettement, la trésorerie, la rentabilité, la taille et l'ESG ? Pour quel exercice et à quelle date, pour qu'elles soient connues <b>avant</b> la crise ? Dans quelle unité et quelle devise ?</li>
+    <li><b>Secteur.</b> Comment classer les entreprises en exposées ou défensives avec le secteur FactSet ? Quels secteurs dans chaque groupe, et lesquels laisser de côté ?</li>
+    <li><b>Échantillon.</b> Quelles entreprises ont toutes les variables ? Que faire des valeurs manquantes ? Les banques et assureurs doivent-ils rester dans une étude qui utilise la dette sur l'actif ? Combien d'entreprises ont une note ESG ?</li>
+    <li><b>Analyse.</b> Statistiques descriptives et corrélations ; différences de rentabilité moyenne entre groupes (tests t) ; régressions MCO avec plusieurs spécifications.</li>
+    <li><b>Conclusion.</b> Quelles hypothèses sont validées, à quel seuil, et quelles sont les limites de votre analyse ?</li>
+  </ol>
+  <p>Comparez ensuite votre travail avec les étapes et leurs solutions ci-dessous.</p>
+</section>
+
+<section class="module" id="steps">
+  <div class="modnum">6</div>
+  <h2>Les étapes et leurs solutions : une feuille chacune</h2>
+  <p>Téléchargez le classeur dans la section Fichiers, ou construisez le vôtre feuille par feuille. Chaque étape donne le nom de sa feuille.</p>
+
+  <article class="test" id="s1">
+    <div class="test-head"><h3>Étape 1 · Membres du CAC All-Tradable au 20 février 2020</h3></div>
+    <div class="obj"><b>L'étape demande :</b> une ligne par membre de l'indice CAC All-Tradable au 20 février 2020, avec le nom de l'entreprise et son secteur FactSet (feuille <b>1_Constituents</b>).</div>
+    <div class="try"><h4>À vous</h4><dl>
+      <dt>Où chercher</dt><dd>Excel, <b>FactSet 365 › Insert Formula</b> : cherchez <i>constituents</i>, puis <i>company name</i> et <i>sector</i>.</dd>
+      <dt>Attention à</dt><dd><ul><li>La liste vient d'une seule formule sur l'identifiant de l'indice : pas de téléchargement depuis la plateforme.</li><li>Demandez les membres au premier jour de la fenêtre, pas les membres actuels. La liste actuelle oublie les entreprises sorties de l'indice ou de la cote après 2020, et elle inclut des entreprises entrées plus tard ; une étude de 2020 construite sur elle ne regarderait que les survivantes.</li></ul></dd>
+      <dt>Résultat attendu</dt><dd>Près de trois cents entreprises débordent vers le bas, chacune avec un nom et un secteur. C'est plus que dans l'indice actuel, car beaucoup d'entreprises en sont sorties depuis 2020.</dd>
+    </dl></div>
+    <details class="hint"><summary>Indice</summary><p>La donnée <b>Benchmark Constituents</b> (<code>FG_CONSTITUENTS</code>) lit l'indice dans la cellule de l'identifiant ; le CAC All-Tradable est <code>CACT-ENX</code>. Sans argument, elle renvoie les membres actuels. Avec une date entre parenthèses, <code>FG_CONSTITUENTS(02/20/2020)</code>, elle renvoie les membres à cette date.</p></details>
+    <details class="sol"><summary>Solution</summary>
+<pre><button type="button" class="copy">Copier</button>B3: CACT-ENX    B4: 02/20/2020
+A6: =FDS($B$3;"FG_CONSTITUENTS("&amp;$B$4&amp;")")
+B6: =SI($A6="";"";SIERREUR(FDS($A6;"FG_COMPANY_NAME");""))
+C6: =SI($A6="";"";SIERREUR(FDS($A6;"FG_FACTSET_SECTOR");""))</pre><p>La date en B4 s'écrit MM/DD/YYYY, comme dans toute requête FactSet. A6 déborde avec un identifiant (SEDOL) par membre, et B6:C6 sont recopiées vers le bas. Le classeur solution compte <b>294</b> entreprises au 20 février 2020.</p>
+    </details>
+    <label class="done-toggle"><input type="checkbox" id="done-1"> J'ai terminé l'étape 1</label>
+  </article>
+
+  <article class="test" id="s2">
+    <div class="test-head"><h3>Étape 2 · Performance pendant le krach</h3></div>
+    <div class="obj"><b>L'étape demande :</b> la rentabilité totale de chaque entreprise du 20 février au 16 mars 2020, en % (feuille <b>2_Returns</b>).</div>
+    <div class="try"><h4>À vous</h4><dl>
+      <dt>Où chercher</dt><dd>Insert Formula : cherchez <i>total return</i>.</dd>
+      <dt>Attention à</dt><dd><ul><li>La rentabilité totale inclut les dividendes.</li><li>Les dates dans la requête s'écrivent MM/DD/YYYY ; gardez-les dans des cellules jaunes pour pouvoir changer la fenêtre.</li></ul></dd>
+      <dt>Résultat attendu</dt><dd>Presque toutes les entreprises ont une rentabilité négative. Quelques entreprises n'ont pas de cours sur la fenêtre, et leur cellule reste vide.</dd>
+    </dl></div>
+    <details class="hint"><summary>Indice</summary><p><code>P_TOTAL_RETURNC(début,fin)</code>, la rentabilité totale composée entre deux dates, vue au module 4.</p></details>
+    <details class="sol"><summary>Solution</summary>
+<pre><button type="button" class="copy">Copier</button>B3: 02/20/2020    B4: 03/16/2020
+B6: =SI($A6="";"";SIERREUR(FDS($A6;"P_TOTAL_RETURNC("&amp;$B$3&amp;","&amp;$B$4&amp;")");""))</pre>
+    </details>
+    <label class="done-toggle"><input type="checkbox" id="done-2"> J'ai terminé l'étape 2</label>
+  </article>
+
+  <article class="test" id="s3">
+    <div class="test-head"><h3>Étape 3 · Caractéristiques d'avant crise et ESG</h3></div>
+    <div class="obj"><b>L'étape demande :</b> pour l'exercice 2019 : dette totale, trésorerie et placements à court terme, EBITDA, total de l'actif ; la capitalisation au 31 décembre 2019 ; la note ESG à la même date (feuille <b>3_Fundamentals_ESG</b>).</div>
+    <div class="try"><h4>À vous</h4><dl>
+      <dt>Où chercher</dt><dd>Insert Formula : cherchez <i>debt</i>, <i>cash</i>, <i>EBITDA</i>, <i>total assets</i>, <i>market value</i>, <i>FTSE ESG</i>.</dd>
+      <dt>Attention à</dt><dd><ul><li>Mesurez les caractéristiques <b>avant</b> la crise : exercice 2019, capitalisation et ESG fin 2019.</li><li>Les valeurs comptables sont en millions de la devise de publication : les ratios de l'étape 4 éliminent la devise.</li><li>La note ESG FTSE Russell couvre surtout les grandes entreprises.</li></ul></dd>
+      <dt>Résultat attendu</dt><dd>Presque toutes les entreprises ont leurs données comptables, mais seule une minorité a une note ESG.</dd>
+    </dl></div>
+    <details class="hint"><summary>Indice</summary><p><code>FF_DEBT</code>, <code>FF_CASH_ST</code>, <code>FF_EBITDA_OPER</code>, <code>FF_ASSETS</code> avec <code>(ANN,2019)</code> ; <code>P_MARKET_VAL(12/31/2019)</code> ; <code>FESG_RATING(12/31/2019,,,"ABS")</code>.</p></details>
+    <details class="sol"><summary>Solution</summary>
+<pre><button type="button" class="copy">Copier</button>B3: 2019    D3: 12/31/2019
+B6: =SI($A6="";"";SIERREUR(FDS($A6;"FF_DEBT(ANN,"&amp;$B$3&amp;")");""))
+C6: idem avec FF_CASH_ST     D6: FF_EBITDA_OPER     E6: FF_ASSETS
+F6: =SI($A6="";"";SIERREUR(FDS($A6;"P_MARKET_VAL("&amp;$D$3&amp;")");""))
+G6: =SI($A6="";"";SIERREUR(FDS($A6;"FESG_RATING("&amp;$D$3&amp;",,,""ABS"")");""))</pre><table class='res'><tr><th>Donnée</th><th>Code</th><th>Signification</th></tr><tr><td>Total Debt</td><td>FF_DEBT</td><td>dette à court et long terme</td></tr><tr><td>Cash & ST Investments</td><td>FF_CASH_ST</td><td>trésorerie et placements à court terme</td></tr><tr><td>EBITDA</td><td>FF_EBITDA_OPER</td><td>résultat d'exploitation avant amortissements</td></tr><tr><td>Total Assets</td><td>FF_ASSETS</td><td>total de l'actif</td></tr><tr><td>Market Value</td><td>P_MARKET_VAL(date)</td><td>capitalisation de l'action cotée à la date, en millions de la devise de cotation (EUR à Paris)</td></tr><tr><td>FTSE ESG Rating</td><td>FESG_RATING(date,,,"ABS")</td><td>note ESG FTSE Russell de 0 à 5 (absolue)</td></tr></table><p><b>La note ESG FTSE Russell.</b> De 0 à 5 ; <b>5 est la meilleure note</b>. Elle est construite à partir des pratiques de l'entreprise sur des thèmes environnementaux, sociaux et de gouvernance (changement climatique, pollution, conditions de travail, droits humains, lutte contre la corruption, gestion des risques…), chaque note de thème étant pondérée par l'exposition de l'entreprise à ce thème selon ses activités et ses pays. <code>"ABS"</code> demande la note absolue, comparable entre secteurs ; une note relative compare une entreprise aux autres de son secteur. Une valeur manquante signifie que FactSet n'a pas de note FTSE Russell pour l'entreprise, pas une note de 0.</p>
+    </details>
+    <label class="done-toggle"><input type="checkbox" id="done-3"> J'ai terminé l'étape 3</label>
+  </article>
+
+  <article class="test" id="s4">
+    <div class="test-head"><h3>Étape 4 · Une base, les variables</h3></div>
+    <div class="obj"><b>L'étape demande :</b> une ligne par entreprise avec la rentabilité, l'endettement (dette / actif), le ratio de trésorerie (trésorerie / actif), la rentabilité économique (EBITDA / actif), la taille (log de la capitalisation), l'ESG, les indicatrices Exposé et Défensif, et un repère des lignes complètes (feuille <b>4_Dataset</b>).</div>
+    <div class="try"><h4>À vous</h4><dl>
+      <dt>Où chercher</dt><dd>Cette étape n'utilise qu'Excel : aucune formule FactSet n'est nécessaire, les données sont déjà dans le classeur.</dd>
+      <dt>Attention à</dt><dd><ul><li>Même ligne = même entreprise dans toutes les feuilles : les identifiants de la feuille 1 pilotent les autres, aucune fusion n'est nécessaire.</li><li>Un ratio dont une composante manque doit rester vide, pas 0.</li><li>Exposé : Transportation, Energy Minerals, Consumer Services. Défensif : Health Technology, Health Services, Consumer Non-Durables.</li></ul></dd>
+      <dt>Résultat attendu</dt><dd>La plupart des entreprises ont toutes les variables sauf l'ESG. Beaucoup moins ont toutes les variables, ESG compris.</dd>
+    </dl></div>
+    <details class="hint"><summary>Indice</summary><p>Placez chaque division dans <code>SIERREUR(…;"")</code> pour qu'une donnée manquante donne une cellule vide. Prenez le logarithme népérien de la capitalisation avec <code>LN</code> pour la taille. Construisez chaque indicatrice avec <code>OU</code> sur les noms de secteurs.</p></details>
+    <details class="sol"><summary>Solution</summary>
+<pre><button type="button" class="copy">Copier</button>E6: =SIERREUR('3_Fundamentals_ESG'!B6/'3_Fundamentals_ESG'!E6;"")      endettement
+F6: =SIERREUR('3_Fundamentals_ESG'!C6/'3_Fundamentals_ESG'!E6;"")      ratio de trésorerie
+G6: =SIERREUR('3_Fundamentals_ESG'!D6/'3_Fundamentals_ESG'!E6;"")      rentabilité économique
+H6: =SIERREUR(LN('3_Fundamentals_ESG'!F6);"")                       taille
+J6: =SI(A6="";"";SI(OU(C6="Transportation";C6="Energy Minerals";C6="Consumer Services");1;0))
+L6: =SI(A6="";"";SI(ET(ESTNUM(D6);ESTNUM(E6);ESTNUM(F6);ESTNUM(G6);ESTNUM(H6));1;0))</pre><p>Dans le classeur solution, <b>282</b> des 294 entreprises sont complètes sans l'ESG.</p>
+    </details>
+    <label class="done-toggle"><input type="checkbox" id="done-4"> J'ai terminé l'étape 4</label>
+  </article>
+
+  <article class="test" id="s5">
+    <div class="test-head"><h3>Étape 5 · Échantillon final</h3></div>
+    <div class="obj"><b>L'étape demande :</b> les lignes complètes uniquement, sans les banques et assureurs (feuille <b>5_Final_Sample</b>).</div>
+    <div class="try"><h4>À vous</h4><dl>
+      <dt>Où chercher</dt><dd>Cette étape n'utilise qu'Excel : aucune formule FactSet n'est nécessaire, les données sont déjà dans le classeur.</dd>
+      <dt>Attention à</dt><dd><ul><li>Les banques et assureurs (secteur FactSet Finance) se financent surtout par la dette et les dépôts : leur dette sur actif ne mesure pas la même chose que pour les autres entreprises, ils sont donc exclus.</li><li>L'ESG n'est pas exigé : une entreprise sans note ESG reste dans l'échantillon ; l'ESG est testé sur les seules entreprises notées (étape 8).</li></ul></dd>
+      <dt>Résultat attendu</dt><dd>L'échantillon final compte moins d'entreprises qu'à l'étape 4, et environ un quart d'entre elles ont une note ESG.</dd>
+    </dl></div>
+    <details class="hint"><summary>Indice</summary><p>Utilisez <code>FILTRE</code> avec deux conditions multipliées : la ligne est complète, et le secteur est différent de Finance.</p></details>
+    <details class="sol"><summary>Solution</summary>
+<pre><button type="button" class="copy">Copier</button>A6: =FILTRE('4_Dataset'!A6:K405;('4_Dataset'!L6:L405=1)*('4_Dataset'!C6:C405&lt;&gt;"Finance");"")
+N3: =NBVAL(A6:A405)       observations
+N4: =COUNT(I6:I405)        firms with an ESG rating</pre><p>Dans le classeur solution : <b>256</b> entreprises, dont <b>69</b> avec une note ESG.</p>
+    </details>
+    <label class="done-toggle"><input type="checkbox" id="done-5"> J'ai terminé l'étape 5</label>
+  </article>
+
+  <article class="test" id="s6">
+    <div class="test-head"><h3>Étape 6 · Statistiques descriptives</h3></div>
+    <div class="obj"><b>L'étape demande :</b> le nombre d'observations, la moyenne, l'écart-type, le minimum, les quartiles et le maximum de chaque variable, et la matrice de corrélation (feuille <b>6_Summary_Stats</b>).</div>
+    <div class="try"><h4>À vous</h4><dl>
+      <dt>Où chercher</dt><dd>Cette étape n'utilise qu'Excel : aucune formule FactSet n'est nécessaire, les données sont déjà dans le classeur.</dd>
+      <dt>Attention à</dt><dd><ul><li>Exposé = 1 pour Transportation, Energy Minerals et Consumer Services (compagnies aériennes, transport, pétrole et gaz, hôtels, restaurants, loisirs) ; Défensif = 1 pour Health Technology, Health Services et Consumer Non-Durables (pharmacie, dispositifs médicaux, santé, alimentation, boissons, produits ménagers) ; 0 sinon.</li><li>L'ESG a moins d'observations : calculez ses statistiques et corrélations sur les entreprises notées.</li></ul></dd>
+      <dt>Résultat attendu</dt><dd>L'entreprise moyenne a perdu une grande partie de sa valeur, et les corrélations entre la rentabilité et chaque caractéristique sont faibles.</dd>
+    </dl></div>
+    <details class="hint"><summary>Indice</summary><p>Utilisez <code>NB</code> pour le nombre d'observations, <code>MOYENNE</code> et <code>ECARTYPE.STANDARD</code> pour la moyenne et l'écart-type, <code>QUARTILE.INCLURE</code> et <code>MEDIANE</code> pour la distribution, et <code>COEFFICIENT.CORRELATION</code> pour chaque paire de variables.</p></details>
+    <details class="sol"><summary>Solution</summary>
+<pre><button type="button" class="copy">Copier</button>C5: =MOYENNE(FILTRE(x;ESTNUM(x)))      x = la colonne de l'échantillon final ; N premières lignes
+B15: =COEFFICIENT.CORRELATION(FILTRE(x;ESTNUM(x)*ESTNUM(y));FILTRE(y;ESTNUM(x)*ESTNUM(y)))</pre><table class='res'><tr><th>Indicatrice</th><th>Entreprises = 1</th><th>Part</th></tr><tr><td>Exposed</td><td>23</td><td>9.0%</td></tr><tr><td>Defensive</td><td>52</td><td>20.3%</td></tr></table><table class='res'><tr><th></th><th>N</th><th>Moyenne</th><th>É.-t.</th><th>Min</th><th>P25</th><th>Médiane</th><th>P75</th><th>Max</th></tr><tr><td>Covid Return</td><td>256</td><td>-37.917</td><td>12.734</td><td>-72.764</td><td>-46.872</td><td>-38.683</td><td>-31.086</td><td>10.072</td></tr><tr><td>Leverage</td><td>256</td><td>0.287</td><td>0.185</td><td>0.000</td><td>0.162</td><td>0.263</td><td>0.374</td><td>1.300</td></tr><tr><td>Cash ratio</td><td>256</td><td>0.170</td><td>0.157</td><td>0.005</td><td>0.073</td><td>0.126</td><td>0.198</td><td>0.893</td></tr><tr><td>Profitability</td><td>256</td><td>0.030</td><td>0.214</td><td>-1.169</td><td>0.048</td><td>0.088</td><td>0.122</td><td>0.420</td></tr><tr><td>Size</td><td>256</td><td>6.416</td><td>2.514</td><td>0.533</td><td>4.455</td><td>6.278</td><td>8.431</td><td>12.252</td></tr><tr><td>ESG</td><td>69</td><td>3.762</td><td>0.679</td><td>2.000</td><td>3.300</td><td>3.900</td><td>4.300</td><td>4.800</td></tr></table><table class='res'><tr><th></th><th>Covid Return</th><th>Leverage</th><th>Cash ratio</th><th>Profitability</th><th>Size</th><th>ESG</th></tr><tr><td>Covid Return</td><td>1.00</td><td>-0.12</td><td>-0.08</td><td>0.16</td><td>0.05</td><td>0.01</td></tr><tr><td>Leverage</td><td>-0.12</td><td>1.00</td><td>-0.20</td><td>0.03</td><td>0.04</td><td>0.01</td></tr><tr><td>Cash ratio</td><td>-0.08</td><td>-0.20</td><td>1.00</td><td>-0.49</td><td>-0.24</td><td>-0.13</td></tr><tr><td>Profitability</td><td>0.16</td><td>0.03</td><td>-0.49</td><td>1.00</td><td>0.37</td><td>-0.18</td></tr><tr><td>Size</td><td>0.05</td><td>0.04</td><td>-0.24</td><td>0.37</td><td>1.00</td><td>0.28</td></tr><tr><td>ESG</td><td>0.01</td><td>0.01</td><td>-0.13</td><td>-0.18</td><td>0.28</td><td>1.00</td></tr></table><p><b>Première lecture au regard des hypothèses.</b> Les corrélations avec la Covid Return sont toutes faibles. L'endettement (−0,12) et la rentabilité (+0,16) ont les signes attendus par H3a et H4. La trésorerie (−0,08) a le signe opposé à H3b. L'ESG (+0,01) n'est pas du tout lié à la rentabilité, sur les seules entreprises notées (H5). La trésorerie est négativement corrélée à la rentabilité (−0,49) et à la taille (−0,24) : les entreprises qui ont le plus de trésorerie sont souvent petites et déficitaires. La rentabilité est positivement corrélée à la taille (+0,37). Comme ces variables évoluent ensemble, les régressions doivent les considérer ensemble. Les indicatrices montrent qu'environ une entreprise sur onze est exposée et une sur cinq défensive.</p>
+    </details>
+    <label class="done-toggle"><input type="checkbox" id="done-6"> J'ai terminé l'étape 6</label>
+  </article>
+
+  <article class="test" id="s7">
+    <div class="test-head"><h3>Étape 7 · Tests t et répartition sectorielle</h3></div>
+    <div class="obj"><b>L'étape demande :</b> le nombre d'entreprises et la rentabilité moyenne et médiane de chaque secteur ; des tests t de la différence de rentabilité moyenne entre entreprises exposées et autres, défensives et autres, et entre les entreprises au-dessus et en dessous de la médiane de l'endettement, de la trésorerie, de la rentabilité, de la taille et de l'ESG (feuille <b>7_TTests_Industry</b>).</div>
+    <div class="try"><h4>À vous</h4><dl>
+      <dt>Où chercher</dt><dd>Cette étape n'utilise qu'Excel : aucune formule FactSet n'est nécessaire, les données sont déjà dans le classeur.</dd>
+      <dt>Attention à</dt><dd><ul><li>Test t bilatéral à variances inégales : <code>T.TEST(groupe1;groupe2;2;3)</code>.</li><li>Un secteur avec peu d'entreprises donne une moyenne fragile.</li></ul></dd>
+      <dt>Résultat attendu</dt><dd>Les biens de consommation courante sont le secteur le moins touché, et les entreprises défensives ont fait significativement mieux que les autres.</dd>
+    </dl></div>
+    <details class="hint"><summary>Indice</summary><p>Construisez la liste des secteurs avec <code>TRIERPAR(UNIQUE(secteur);NB.SI(…);-1)</code>, la rentabilité moyenne de chaque secteur avec <code>MOYENNE.SI</code>, chaque groupe avec <code>FILTRE</code>, et comparez deux groupes avec <code>T.TEST</code>.</p></details>
+    <details class="sol"><summary>Solution</summary>
+<pre><button type="button" class="copy">Copier</button>A5: =TRIERPAR(UNIQUE(secteur);NB.SI(secteur;UNIQUE(secteur));-1)
+C5: =MOYENNE.SI(secteur;A5;rentabilité)
+J5: =T.TEST(FILTRE(rentabilité;exposé=1);FILTRE(rentabilité;exposé=0);2;3)</pre><table class='res'><tr><th>Secteur</th><th>Entreprises</th><th>Rentabilité moyenne (%)</th><th>Médiane (%)</th></tr><tr><td>Technology Services</td><td>35</td><td>-32.46</td><td>-33.66</td></tr><tr><td>Electronic Technology</td><td>33</td><td>-41.17</td><td>-42.83</td></tr><tr><td>Health Technology</td><td>32</td><td>-35.77</td><td>-36.16</td></tr><tr><td>Commercial Services</td><td>26</td><td>-39.85</td><td>-38.28</td></tr><tr><td>Producer Manufacturing</td><td>23</td><td>-38.85</td><td>-39.20</td></tr><tr><td>Consumer Non-Durables</td><td>16</td><td>-29.88</td><td>-27.61</td></tr><tr><td>Consumer Services</td><td>14</td><td>-39.44</td><td>-37.83</td></tr><tr><td>Consumer Durables</td><td>13</td><td>-39.41</td><td>-42.86</td></tr><tr><td>Retail Trade</td><td>9</td><td>-41.80</td><td>-47.76</td></tr><tr><td>Process Industries</td><td>9</td><td>-36.65</td><td>-36.08</td></tr><tr><td>Industrial Services</td><td>8</td><td>-48.81</td><td>-45.11</td></tr><tr><td>Utilities</td><td>8</td><td>-35.10</td><td>-39.03</td></tr><tr><td>Distribution Services</td><td>7</td><td>-42.07</td><td>-46.93</td></tr><tr><td>Transportation</td><td>6</td><td>-39.86</td><td>-38.29</td></tr><tr><td>Non-Energy Minerals</td><td>6</td><td>-46.91</td><td>-46.18</td></tr><tr><td>Communications</td><td>4</td><td>-34.29</td><td>-31.50</td></tr><tr><td>Health Services</td><td>4</td><td>-34.99</td><td>-35.02</td></tr><tr><td>Energy Minerals</td><td>3</td><td>-41.97</td><td>-45.53</td></tr></table><table class='res'><tr><th>Comparaison</th><th>Groupe 1</th><th>Groupe 2</th><th>Différence</th><th>p-value</th><th>N1 / N2</th></tr><tr><td>Exposed sectors vs others</td><td>-39.88</td><td>-37.72</td><td>-2.16</td><td>0.444 </td><td>23 / 233</td></tr><tr><td>Defensive sectors vs others</td><td>-33.90</td><td>-38.94</td><td>5.05</td><td>0.026 **</td><td>52 / 204</td></tr><tr><td>High vs low leverage (median split)</td><td>-38.66</td><td>-37.18</td><td>-1.48</td><td>0.353 </td><td>128 / 128</td></tr><tr><td>High vs low cash ratio</td><td>-39.42</td><td>-36.42</td><td>-3.00</td><td>0.060 *</td><td>128 / 128</td></tr><tr><td>High vs low profitability</td><td>-37.03</td><td>-38.81</td><td>1.78</td><td>0.265 </td><td>128 / 128</td></tr><tr><td>Large vs small firms</td><td>-38.02</td><td>-37.82</td><td>-0.20</td><td>0.899 </td><td>128 / 128</td></tr><tr><td>High vs low ESG rating (rated firms)</td><td>-36.70</td><td>-36.80</td><td>0.10</td><td>0.971 </td><td>34 / 35</td></tr></table><h4>Ce que les tests t disent des hypothèses</h4>
+<p>Chaque test t compare deux groupes d'entreprises tels quels, sans rien maintenir constant. Le groupe 1 est le groupe exposé, défensif ou au-dessus de la médiane ; la différence est le groupe 1 moins le groupe 2, en points de rentabilité.</p>
+<ul>
+<li><b>H1 :</b> les entreprises exposées ont perdu environ 2 points de plus que les autres, ce qui est le signe attendu, mais l'écart n'est pas significatif (p = 0,44). Le groupe exposé est petit, une vingtaine d'entreprises.</li>
+<li><b>H2 :</b> les entreprises défensives ont perdu environ 5 points de moins que les autres, et l'écart est significatif à 5 % (p = 0,026). C'est le résultat le plus net des tests t.</li>
+<li><b>H3a :</b> la moitié la plus endettée de l'échantillon a perdu environ 1,5 point de plus que la moitié la moins endettée, ce qui est le signe attendu, mais l'écart n'est pas significatif (p = 0,35).</li>
+<li><b>H3b :</b> la moitié qui a le plus de trésorerie a perdu environ 3 points de plus que l'autre moitié. C'est l'opposé de H3b, et l'écart n'est significatif qu'à 10 % (p = 0,060).</li>
+<li><b>H4 :</b> la moitié la plus rentable a perdu environ 1,8 point de moins que la moitié la moins rentable, ce qui est le signe attendu, mais l'écart n'est pas significatif (p = 0,26).</li>
+<li><b>H5 :</b> parmi les entreprises notées, celles au-dessus de la note ESG médiane n'ont pas fait mieux que celles en dessous (p = 0,97).</li>
+</ul>
+<p>Une coupure à la médiane cache ce qui se passe dans les extrêmes. L'effet de l'endettement et de la rentabilité vient surtout des entreprises aux extrêmes, les plus endettées et les déficitaires, et comparer deux moitiés les dilue parmi beaucoup d'entreprises moyennes. Les régressions de l'étape 8 utilisent les valeurs réelles de chaque variable et maintiennent les autres constantes.</p>
+    </details>
+    <label class="done-toggle"><input type="checkbox" id="done-7"> J'ai terminé l'étape 7</label>
+  </article>
+
+  <article class="test" id="s8">
+    <div class="test-head"><h3>Étape 8 · Analyse par régression</h3></div>
+    <div class="obj"><b>L'étape demande :</b> la régression MCO de la rentabilité pendant la crise en quatre spécifications : (1) caractéristiques des entreprises, (2) indicatrices sectorielles, (3) les deux, (4) les deux plus l'ESG sur les entreprises notées ; coefficients, erreurs types, statistiques t, p-values, R² et observations (feuille <b>8_Regressions</b>).</div>
+    <div class="try"><h4>À vous</h4><dl>
+      <dt>Où chercher</dt><dd>Cette étape n'utilise qu'Excel, avec la fonction <code>DROITEREG</code>.</dd>
+      <dt>Attention à</dt><dd><ul><li><code>DROITEREG(y;X;VRAI;VRAI)</code> renvoie 5 lignes ; les colonnes de X reviennent dans l'<b>ordre inverse</b>, la constante en dernier.</li><li>t = coefficient / erreur type ; p-value = <code>LOI.STUDENT.BILATERALE(ABS(t);ddl)</code>, ddl en ligne 4, colonne 2 de DROITEREG.</li><li>La spécification 4 n'utilise que les entreprises notées en ESG : comparez-la à la spécification 3 avant de conclure.</li></ul></dd>
+      <dt>Résultat attendu</dt><dd>Chaque bloc de variables seul donne un R² faible. Ensemble, ils expliquent davantage, et l'indicatrice défensive, l'endettement et la rentabilité ressortent significatifs.</dd>
+    </dl></div>
+    <details class="hint"><summary>Indice</summary><p><code>ASSEMB.H</code> met les variables explicatives côte à côte ; <code>INDEX</code> lit chaque cellule de la sortie de DROITEREG.</p></details>
+    <details class="sol"><summary>Solution</summary>
+<pre><button type="button" class="copy">Copier</button>J5: =DROITEREG(rentabilité;ASSEMB.H(endettement;trésorerie;rentabilité_éco;taille);VRAI;VRAI)
+B6: =INDEX($J$5:$N$9;1;4)      coefficient de l'endettement (1re colonne de X = dernière colonne de DROITEREG)
+C6: =INDEX($J$5:$N$9;2;4)      erreur type
+D6: =B6/C6                     t-stat
+E6: =LOI.STUDENT.BILATERALE(ABS(D6);INDEX($J$5:$N$9;4;2))   p-value</pre><p>* p < 0,10, ** p < 0,05, *** p < 0,01.</p><h4>(1) Firm characteristics</h4><table class='res'><tr><th>Variable</th><th>Coefficient</th><th>Erreur type</th><th>t</th><th>p</th></tr><tr><td>Leverage</td><td>-8.724 **</td><td>4.356</td><td>-2.00</td><td>0.046</td></tr><tr><td>Cash ratio</td><td>-2.965 </td><td>5.889</td><td>-0.50</td><td>0.615</td></tr><tr><td>Profitability</td><td>8.944 **</td><td>4.431</td><td>2.02</td><td>0.045</td></tr><tr><td>Size</td><td>-0.062 </td><td>0.338</td><td>-0.18</td><td>0.854</td></tr><tr><td>Constant</td><td>-34.778 ***</td><td>2.938</td><td>-11.84</td><td>0.000</td></tr><tr><td>R²</td><td>0.041</td><td></td><td></td><td></td></tr><tr><td>Observations</td><td>256</td><td></td><td></td><td></td></tr></table><h4>(2) Industry exposure</h4><table class='res'><tr><th>Variable</th><th>Coefficient</th><th>Erreur type</th><th>t</th><th>p</th></tr><tr><td>Exposed</td><td>-1.058 </td><td>2.793</td><td>-0.38</td><td>0.705</td></tr><tr><td>Defensive</td><td>4.927 **</td><td>1.985</td><td>2.48</td><td>0.014</td></tr><tr><td>Constant</td><td>-38.823 ***</td><td>0.938</td><td>-41.40</td><td>0.000</td></tr><tr><td>R²</td><td>0.026</td><td></td><td></td><td></td></tr><tr><td>Observations</td><td>256</td><td></td><td></td><td></td></tr></table><h4>(3) Both</h4><table class='res'><tr><th>Variable</th><th>Coefficient</th><th>Erreur type</th><th>t</th><th>p</th></tr><tr><td>Leverage</td><td>-9.385 **</td><td>4.218</td><td>-2.23</td><td>0.027</td></tr><tr><td>Cash ratio</td><td>-7.780 </td><td>5.804</td><td>-1.34</td><td>0.181</td></tr><tr><td>Profitability</td><td>15.415 ***</td><td>4.534</td><td>3.40</td><td>0.001</td></tr><tr><td>Size</td><td>-0.300 </td><td>0.332</td><td>-0.90</td><td>0.366</td></tr><tr><td>Exposed</td><td>-1.811 </td><td>2.708</td><td>-0.67</td><td>0.504</td></tr><tr><td>Defensive</td><td>9.049 ***</td><td>2.136</td><td>4.24</td><td>0.000</td></tr><tr><td>Constant</td><td>-34.109 ***</td><td>2.854</td><td>-11.95</td><td>0.000</td></tr><tr><td>R²</td><td>0.110</td><td></td><td></td><td></td></tr><tr><td>Observations</td><td>256</td><td></td><td></td><td></td></tr></table><h4>(4) Both + ESG (firms with an FTSE ESG rating)</h4><table class='res'><tr><th>Variable</th><th>Coefficient</th><th>Erreur type</th><th>t</th><th>p</th></tr><tr><td>Leverage</td><td>-6.028 </td><td>10.460</td><td>-0.58</td><td>0.567</td></tr><tr><td>Cash ratio</td><td>1.728 </td><td>17.200</td><td>0.10</td><td>0.920</td></tr><tr><td>Profitability</td><td>45.414 </td><td>31.248</td><td>1.45</td><td>0.151</td></tr><tr><td>Size</td><td>-0.605 </td><td>1.499</td><td>-0.40</td><td>0.688</td></tr><tr><td>Exposed</td><td>-4.345 </td><td>4.289</td><td>-1.01</td><td>0.315</td></tr><tr><td>Defensive</td><td>11.058 ***</td><td>3.938</td><td>2.81</td><td>0.007</td></tr><tr><td>ESG</td><td>1.369 </td><td>2.021</td><td>0.68</td><td>0.501</td></tr><tr><td>Constant</td><td>-41.094 **</td><td>15.623</td><td>-2.63</td><td>0.011</td></tr><tr><td>R²</td><td>0.264</td><td></td><td></td><td></td></tr><tr><td>Observations</td><td>69</td><td></td><td></td><td></td></tr></table><h4>Ce que les régressions disent des hypothèses</h4>
+<p>H1 à H4 se lisent dans la spécification 3 (toutes les entreprises, secteur et caractéristiques financières ensemble, R² 0,110) ; H5 dans la spécification 4 (les 69 entreprises notées en ESG).</p>
+<ul>
+<li><b>H1, les secteurs exposés ont plus baissé :</b> Exposé −1,81 (p = 0,504). Le signe est celui attendu, mais l'effet est faible et non significatif : H1 n'est pas validée. Peu d'entreprises sont dans le groupe exposé, et le secteur FactSet Consumer Services mélange les hôtels et restaurants avec des entreprises de médias et d'édition, beaucoup moins touchées.</li>
+<li><b>H2, les secteurs défensifs ont moins baissé :</b> Défensif +9,05 (p < 0,001). Le signe est celui attendu et l'effet est significatif à 1 % : H2 est validée. À caractéristiques financières égales, les entreprises défensives ont perdu environ 9 points de moins que les autres.</li>
+<li><b>H3a, endettement élevé, rentabilité plus faible :</b> Endettement −9,38 (p = 0,027). Le signe est celui attendu et l'effet est significatif à 5 % : H3a est validée. Une entreprise avec 10 points de dette sur actif en plus a perdu presque 1 point de plus.</li>
+<li><b>H3b, trésorerie élevée, meilleure rentabilité :</b> Trésorerie −7,78 (p = 0,181). Le signe est l'opposé de H3b, mais l'effet n'est pas significatif : H3b n'est pas validée. Les entreprises qui ont le plus de trésorerie sont surtout des biotechs déficitaires (corrélation de −0,49 entre trésorerie et rentabilité) ; une fois la rentabilité dans le modèle, la trésorerie n'apporte presque plus d'information propre.</li>
+<li><b>H4, les entreprises rentables ont moins baissé :</b> Rentabilité +15,42 (p < 0,001). Le signe est celui attendu et l'effet est significatif à 1 % : H4 est validée. 10 points d'EBITDA sur actif en plus vont avec une rentabilité meilleure d'environ 1,5 point.</li>
+<li><b>H5, meilleure note ESG, meilleure rentabilité :</b> ESG +1,37 (p = 0,501) dans la spécification 4. L'effet n'est pas significatif : H5 n'est pas validée.</li>
+</ul>
+<p><b>Pourquoi la date de la liste compte.</b> Avec les membres actuels de l'indice au lieu des membres de février 2020, l'endettement et la rentabilité n'étaient pas significatifs et le coefficient de la trésorerie était significativement négatif. Les entreprises sorties de l'indice depuis 2020 représentent une grande partie de l'échantillon, et elles sont plus petites et plus souvent déficitaires que les autres. Les écarter retire précisément les entreprises où l'endettement et la rentabilité ont fait la différence, et change les conclusions sur H3 et H4.</p>
+    </details>
+    <label class="done-toggle"><input type="checkbox" id="done-8"> J'ai terminé l'étape 8</label>
+  </article>
+
+  <article class="test" id="s9">
+    <div class="test-head"><h3>Étape 9 · Quelles hypothèses sont validées ? Conclusion</h3></div>
+    <div class="obj"><b>L'étape demande :</b> pour chaque hypothèse, le coefficient et la p-value de la spécification 3 (spécification 4 pour l'ESG), le verdict à 5 % et à 10 %, et une courte conclusion qui discute les limites (feuille <b>9_Hypotheses</b>).</div>
+    <div class="try"><h4>À vous</h4><dl>
+      <dt>Où chercher</dt><dd>Utilisez les résultats des feuilles 7 (tests t) et 8 (régressions).</dd>
+      <dt>Attention à</dt><dd><ul><li>Validée = significative avec le signe attendu. Un coefficient significatif de signe opposé contredit l'hypothèse.</li><li>Lisez ensemble les tests t et les régressions : un effet peut être invisible dans un test t et apparaître dans la régression une fois les autres variables maintenues constantes, ou l'inverse.</li></ul></dd>
+      <dt>Résultat attendu</dt><dd>Les entreprises défensives, peu endettées et rentables ont moins perdu ; les secteurs exposés, la trésorerie et l'ESG ne trouvent pas de soutien.</dd>
+    </dl></div>
+    <details class="hint"><summary>Indice</summary><p><code>SI(p&lt;0,05;SI(SIGNE(coefficient)=signe attendu;"Validée";"Signe opposé");"Non validée")</code></p></details>
+    <details class="sol"><summary>Solution</summary>
+<table class='res'><tr><th></th><th>Hypothèse</th><th>Signe</th><th>Coefficient</th><th>p</th><th>Verdict 5 %</th><th>Verdict 10 %</th></tr><tr><td>H1</td><td>Exposed sectors (transport, energy, tourism) fell more</td><td>-</td><td>-1.811</td><td>0.504</td><td>Non validée</td><td>Non validée</td></tr><tr><td>H2</td><td>Defensive sectors (health, staples) fell less</td><td>+</td><td>9.049</td><td>0.000</td><td>Validée</td><td>Validée</td></tr><tr><td>H3a</td><td>High leverage: worse return</td><td>-</td><td>-9.385</td><td>0.027</td><td>Validée</td><td>Validée</td></tr><tr><td>H3b</td><td>High cash holdings: better return</td><td>+</td><td>-7.780</td><td>0.181</td><td>Non validée</td><td>Non validée</td></tr><tr><td>H4</td><td>High pre-crisis profitability: better return</td><td>+</td><td>15.415</td><td>0.001</td><td>Validée</td><td>Validée</td></tr><tr><td>H5</td><td>Higher ESG rating: better return (resilience)</td><td>+</td><td>1.369</td><td>0.501</td><td>Non validée</td><td>Non validée</td></tr></table><h4>Conclusion de la solution</h4>
+<ul>
+<li><b>Secteur : H2 est validée, H1 ne l'est pas.</b> Les entreprises défensives (santé, consommation courante) ont perdu environ 9 points de moins que les autres à caractéristiques financières égales, significatif à 1 % ; le test t donne le même résultat. Les entreprises exposées n'ont pas baissé significativement plus, ni dans le test t ni dans la régression. Le groupe exposé est petit, et le secteur FactSet Consumer Services contient aussi des entreprises de médias et d'édition, ce qui dilue l'effet des hôtels, restaurants et loisirs.</li>
+<li><b>Contraintes financières : H3a est validée, H3b ne l'est pas.</b> À rentabilité, taille et secteur égaux, les entreprises les plus endettées ont perdu davantage (significatif à 5 %), comme attendu quand le chiffre d'affaires s'arrête et que la dette doit toujours être servie. La trésorerie a le signe opposé à H3b mais n'est pas significative : les entreprises qui ont le plus de trésorerie sont surtout des biotechs déficitaires, et leur trésorerie reflète leur modèle d'activité plus que leur solidité.</li>
+<li><b>Rentabilité : H4 est validée, bien que le test t ne le montre pas.</b> Les deux outils répondent à des questions différentes. Le test t compare telles quelles la moitié la plus rentable et la moitié la moins rentable de l'échantillon, et trouve un petit écart non significatif. La régression trouve un effet fort pour deux raisons. D'abord, elle utilise les valeurs réelles : la moitié la moins rentable est surtout composée d'entreprises rentables, et les entreprises déficitaires, qui ont perdu environ 41 % contre 37 % pour les autres, y sont diluées. Ensuite, elle maintient le secteur constant : environ la moitié des entreprises défensives sont des biotechs ou medtechs déficitaires, et la bonne performance du groupe défensif dans son ensemble cache leurs pertes dans une comparaison simple. Une fois que l'indicatrice Défensif capte le bonus sectoriel, l'effet de la rentabilité apparaît nettement.</li>
+<li><b>ESG : H5 n'est pas validée.</b> La note ESG n'a pas d'effet sur les entreprises couvertes, ni dans le test t ni dans la spécification 4.</li>
+<li><b>La date de la liste change les conclusions.</b> Avec les membres actuels de l'indice, l'endettement et la rentabilité n'étaient pas significatifs. Les entreprises sorties de l'indice depuis 2020 sont plus petites et plus souvent déficitaires ; les écarter biaise l'échantillon vers les survivantes et cache le rôle de la santé financière dans le krach.</li>
+<li><b>Qualité d'ajustement.</b> Le R² reste faible, environ 0,11 dans la spécification 3. L'essentiel du krach a été commun à toutes les entreprises : toutes les entreprises sauf trois ont baissé, et l'entreprise médiane a perdu environ 39 %. Les caractéristiques du modèle n'expliquent qu'une petite partie des écarts entre entreprises ; le reste vient de facteurs que le modèle ne capte pas.</li>
+<li><b>Limites.</b> Plusieurs limites invitent à la prudence dans la lecture de ces résultats.
+<ul>
+<li>La fenêtre de l'événement est courte : elle couvre moins d'un mois, du 20 février au 16 mars 2020. Elle capte la panique du krach, pas la reprise qui a suivi, et une entreprise qui a fortement baissé a pu remonter rapidement ensuite.</li>
+<li>Le secteur FactSet n'est qu'une mesure grossière de l'exposition d'une entreprise à la pandémie. Toutes les entreprises d'un secteur reçoivent la même indicatrice, alors qu'elles peuvent être touchées très différemment : Health Technology mélange groupes pharmaceutiques et biotechs déficitaires, et Consumer Services mélange hôtels, restaurants et médias.</li>
+<li>Les banques et les assureurs sont exclus, car la dette sur l'actif ne mesure pas la même chose pour eux. Les résultats ne disent donc rien du secteur financier.</li>
+<li>La note ESG de FTSE Russell ne couvre qu'environ un quart de l'échantillon, surtout des grandes entreprises. Le test de H5 repose sur un petit groupe d'entreprises qui n'est pas représentatif de tout l'indice.</li>
+<li>Les régressions mesurent des corrélations, pas des effets causaux. Un coefficient indique que les entreprises ayant une caractéristique ont fait mieux ou moins bien en moyenne, pas que cette caractéristique a causé l'écart : une autre variable absente du modèle peut expliquer les deux.</li>
+</ul></li>
+</ul>
+    </details>
+    <label class="done-toggle"><input type="checkbox" id="done-9"> J'ai terminé l'étape 9</label>
+  </article>
+</section>
+
+<section class="module" id="files">
+  <div class="modnum">Fichiers</div>
+  <h2>Fichiers</h2>
+  <p class="files"><a class="dl" href="covid_project.xlsx">Classeur solution covid_project.xlsx</a> <a class="dl" href="covid_final_sample.csv">Échantillon final covid_final_sample.csv</a> <a class="dl" href="covid_dataset_raw.csv">Base brute covid_dataset_raw.csv</a></p>
+  <p>Le classeur garde les formules FactSet : connectez-vous à FactSet 365 et actualisez (FactSet 365 › Refresh › Workbook) pour le mettre à jour. Les fichiers CSV contiennent les données figées de la solution, prêtes pour Stata, R ou Python.</p>
+  <p>Raccourcis : recopier une formule vers le bas avec <span class="win-only"><kbd>Ctrl</kbd>+<kbd>D</kbd></span><span class="mac-only"><kbd>⌘ Cmd</kbd>+<kbd>D</kbd></span>; coller les valeurs seulement avec <span class="win-only"><kbd>Ctrl</kbd>+<kbd>Alt</kbd>+<kbd>V</kbd> › Valeurs</span><span class="mac-only"><kbd>Ctrl</kbd>+<kbd>⌘ Cmd</kbd>+<kbd>V</kbd> › Valeurs</span>.</p>
+</section>
+</main>
+</div>
+<script>
+(function(){
+  var store={get:function(k){try{return localStorage.getItem(k)}catch(e){return null}},
+             set:function(k,v){try{localStorage.setItem(k,v)}catch(e){}}};
+  function setOS(os){
+    document.body.classList.remove('os-win','os-mac');
+    document.body.classList.add('os-'+os);
+    document.querySelectorAll('.seg button').forEach(function(b){b.setAttribute('aria-pressed',b.dataset.os===os?'true':'false');});
+    store.set('fds-course-os',os);
+  }
+  var saved=store.get('fds-course-os');
+  if(!saved){saved=/Mac|iPhone|iPad/.test(navigator.platform||navigator.userAgent)?'mac':'win';}
+  setOS(saved);
+  document.querySelectorAll('.seg button').forEach(function(b){b.addEventListener('click',function(){setOS(b.dataset.os);});});
+
+  var prog=document.getElementById('progress');
+  function refresh(){
+    var n=0;
+    for(var i=1;i<=14;i++){
+      var cb=document.getElementById('done-'+i),on=cb?cb.checked:store.get('covid-done-'+i)==='1';
+      if(on)n++;
+      var link=document.querySelector('nav.toc a[data-t="'+i+'"]');
+      if(link)link.classList.toggle('done',!!on);
+    }
+    if(prog)prog.textContent=n+' / 14 tests done';
+  }
+  document.querySelectorAll('.done-toggle input').forEach(function(cb){
+    cb.checked=store.get('covid-'+cb.id)==='1';
+    cb.addEventListener('change',function(){store.set('covid-'+cb.id,cb.checked?'1':'0');refresh();});
+  });
+  refresh();
+
+  document.querySelectorAll('pre .copy').forEach(function(btn){
+    btn.addEventListener('click',function(){
+      var text=btn.parentElement.innerText.replace(/^Cop(y|ier)\s*/,'');
+      if(navigator.clipboard){navigator.clipboard.writeText(text).then(function(){btn.textContent='Copié';setTimeout(function(){btn.textContent='Copier'},1500);},function(){btn.textContent='Select & copy';});}
+    });
+  });
+
+  var links=Array.prototype.slice.call(document.querySelectorAll('nav.toc a[href^="#"]'));
+  if('IntersectionObserver' in window){
+    var obs=new IntersectionObserver(function(entries){
+      entries.forEach(function(en){
+        if(en.isIntersecting){links.forEach(function(a){a.classList.toggle('active',a.getAttribute('href')==='#'+en.target.id);});}
+      });
+    },{rootMargin:'-70px 0px -70% 0px'});
+    links.forEach(function(a){var t=document.querySelector(a.getAttribute('href'));if(t)obs.observe(t);});
+  }
+})();
+
+</script>
+</body>
+</html>

@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>FactSet Excel Data Course</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Raleway:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Sora:wght@600;700;800&display=swap" rel="stylesheet">
+<style>
+/* Audencia identity (from audencia.com): navy #002941, text grey #4D5562, blue #2A6FEC, sky #91E3FF, cream #FFF5E9,
+   button grey-blue #DCE4ED, Sora headings (800) + Raleway text. Single light theme, like the school's site. */
+:root{
+  --navy:#002941; --navy-2:#012D5A; --text:#4D5562; --blue:#2A6FEC; --sky:#91E3FF; --sky-soft:rgba(145,227,255,.35);
+  --cream:#FFF5E9; --btn:#DCE4ED; --grey-050:#F3F4F9; --grey-200:#D3D4D9; --pink:#F2AAF0; --orange:#FDA959;
+  --ok:#26A769; --warn:#B26A00; --bad:#C62828;
+  --input:#FFF4C2; --fds:#DDEBF7; --calc:#E2F0D9; --paste:#EEEEEE;
+  --display:"Sora", Arial, sans-serif; --body:"Raleway", Arial, sans-serif; --mono:Consolas, "Courier New", monospace;
+  color-scheme: light;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:80px}
+@media (prefers-reduced-motion: reduce){html{scroll-behavior:auto}}
+body{margin:0;background:#fff;color:var(--text);font-family:var(--body);font-size:16.5px;line-height:1.65}
+a{color:var(--blue);text-underline-offset:3px}
+a:hover{color:var(--navy)}
+a:focus-visible,button:focus-visible,input:focus-visible,summary:focus-visible{outline:3px solid var(--ok);outline-offset:2px}
+h1,h2,h3,h4{font-family:var(--display);color:var(--navy);line-height:1.2;text-wrap:balance;margin:0}
+h1{font-size:2.4rem;font-weight:800}
+h2{font-size:2rem;font-weight:800;margin-bottom:.5rem}
+h3{font-size:1.3rem;font-weight:700;margin:1.8rem 0 .6rem}
+h4{font-size:1.02rem;font-weight:700;margin:1.3rem 0 .4rem}
+p,li{max-width:74ch}
+b,strong{color:var(--navy);font-weight:700}
+code,kbd{font-family:var(--mono);font-size:.88em}
+code{background:var(--grey-050);color:var(--navy);padding:.1em .4em;border-radius:6px;overflow-wrap:anywhere}
+kbd{border:1px solid var(--grey-200);border-bottom-width:2px;border-radius:6px;padding:.05em .45em;background:#fff;color:var(--navy);white-space:nowrap}
+pre{background:var(--navy);color:#fff;border-radius:1rem;padding:1rem 1.2rem;overflow-x:auto;font-family:var(--mono);font-size:.86rem;line-height:1.55;margin:.8rem 0}
+pre code{background:none;color:inherit}
+
+/* header */
+.topbar{position:sticky;top:0;z-index:20;background:var(--navy);color:#fff;display:flex;align-items:center;gap:18px;padding:12px 28px;flex-wrap:wrap}
+.brand{font-family:var(--display);font-weight:800;font-size:1.1rem;margin-right:auto;color:#fff}
+.brand small{font-family:var(--body);font-weight:500;color:var(--sky);margin-left:10px;font-size:.85rem}
+.os-switch{display:flex;align-items:center;gap:8px;font-size:.9rem;color:#fff}
+.seg{display:inline-flex;background:rgba(255,255,255,.12);border-radius:999px;padding:3px}
+.seg button{border:0;background:transparent;color:#fff;padding:7px 18px;font:inherit;font-weight:600;cursor:pointer;border-radius:999px}
+.seg button[aria-pressed="true"]{background:#fff;color:var(--navy)}
+.toplink{color:var(--navy);background:var(--btn);text-decoration:none;font-weight:600;font-size:.9rem;border-radius:999px;padding:8px 18px}
+.toplink:hover{background:var(--sky);color:var(--navy)}
+.progress-pill{font-size:.85rem;color:var(--sky);font-weight:600}
+
+/* layout */
+.shell{display:grid;grid-template-columns:280px minmax(0,1fr);max-width:1360px;margin:0 auto}
+nav.toc{position:sticky;top:62px;align-self:start;height:calc(100vh - 62px);overflow-y:auto;padding:28px 18px 40px 24px;background:var(--grey-050);font-size:.92rem}
+nav.toc ol{list-style:none;margin:0;padding:0}
+nav.toc a{display:block;padding:5px 12px;border-radius:999px;color:var(--navy);text-decoration:none;font-weight:600}
+nav.toc a:hover{background:#fff}
+nav.toc a.active{background:var(--navy);color:#fff}
+nav.toc .sub a{padding-left:24px;font-weight:500;color:var(--text);font-size:.87rem}
+nav.toc .sub a.active{color:#fff}
+nav.toc .sub a.done::after{content:" ✓";color:var(--ok);font-weight:700}
+nav.toc .part{font-family:var(--display);font-size:.72rem;letter-spacing:.06em;text-transform:uppercase;color:var(--blue);margin:20px 12px 6px;font-weight:700}
+main{padding:36px 48px 90px;min-width:0}
+section.module{padding:8px 0 40px;margin-bottom:36px;border-bottom:2px solid var(--grey-050)}
+.modnum{display:inline-block;font-family:var(--display);font-weight:700;font-size:.78rem;letter-spacing:.05em;text-transform:uppercase;color:var(--navy);background:var(--sky);border-radius:999px;padding:3px 14px;margin-bottom:12px}
+.lead{font-size:1.12rem;color:var(--text);max-width:72ch}
+@media (max-width:900px){
+  .shell{grid-template-columns:1fr}
+  nav.toc{position:static;height:auto}
+  main{padding:24px 16px 60px}
+  .topbar{padding:10px 16px}
+}
+
+/* boxes: Audencia "bubbles" */
+.box{border-radius:1.5rem;padding:16px 22px;margin:16px 0;background:var(--grey-050)}
+.box > :first-child{margin-top:0}.box > :last-child{margin-bottom:0}
+.box.tip{background:var(--sky-soft)}
+.box.warn{background:var(--cream)}
+.box.ok{background:#E6F6EE}
+.box.bad{background:#FDECEC}
+.box-title{display:block;font-family:var(--display);font-weight:700;color:var(--navy);margin-bottom:4px}
+.os-box{border:2px solid var(--sky);border-radius:1.5rem;padding:14px 20px;margin:16px 0}
+.os-label{display:inline-block;font-family:var(--display);font-size:.72rem;font-weight:700;letter-spacing:.05em;text-transform:uppercase;background:var(--navy);color:#fff;border-radius:999px;padding:2px 12px;margin-bottom:8px}
+body.os-mac .win-only{display:none}
+body.os-win .mac-only{display:none}
+
+/* tables */
+.tablewrap{overflow-x:auto;margin:14px 0;border-radius:1rem;border:1px solid var(--grey-200)}
+table{border-collapse:collapse;width:100%;font-size:.92rem}
+th,td{padding:9px 12px;text-align:left;vertical-align:top;border-bottom:1px solid var(--grey-200)}
+tr:last-child td{border-bottom:0}
+th{background:var(--navy);color:#fff;font-family:var(--display);font-weight:600;font-size:.85rem}
+td code{white-space:nowrap}
+table.compact td,table.compact th{padding:6px 10px}
+
+/* numbered steps */
+ol.steps{counter-reset:s;list-style:none;padding-left:0}
+ol.steps > li{counter-increment:s;position:relative;padding-left:46px;margin:12px 0}
+ol.steps > li::before{content:counter(s);position:absolute;left:0;top:-1px;width:30px;height:30px;border-radius:50%;background:var(--navy);color:#fff;font-family:var(--display);font-weight:700;display:grid;place-items:center;font-size:.85rem}
+
+/* cell-colour legend (same as the workbooks) */
+.chip{display:inline-block;padding:2px 10px;border-radius:999px;font-size:.85rem;color:var(--navy);white-space:nowrap;margin:2px 0}
+.chip.in{background:var(--input)}.chip.fd{background:var(--fds)}.chip.ca{background:var(--calc)}.chip.pa{background:var(--paste)}
+
+/* formula anatomy */
+.anatomy{font-family:var(--mono);font-size:1.15rem;display:flex;flex-wrap:wrap;gap:6px;align-items:flex-end;margin:18px 0;overflow-x:auto;color:var(--navy)}
+.anatomy span{display:inline-flex;flex-direction:column;align-items:center}
+.anatomy b{font-weight:600;padding:5px 8px;border-radius:8px}
+.anatomy i{font-family:var(--body);font-style:normal;font-size:.74rem;color:var(--text);margin-top:4px}
+.a1{background:var(--btn)}.a2{background:var(--input)}.a3{background:var(--fds)}.a4{background:var(--sky-soft)}
+
+/* tests */
+.test{border-radius:1.5rem;padding:24px 28px;margin:22px 0;background:#fff;border:2px solid var(--grey-050)}
+.test-head{display:flex;flex-wrap:wrap;gap:10px 16px;align-items:baseline;justify-content:space-between}
+.test-head h3{margin:0}
+.meta{display:flex;flex-wrap:wrap;gap:6px}
+.pill{font-size:.75rem;font-weight:600;border-radius:999px;padding:2px 12px;color:var(--navy);background:var(--btn)}
+.pill.lvl1{background:#D7F2E4}.pill.lvl2{background:#FFE7CF}.pill.lvl3{background:#FBDDFA}
+.dl{display:inline-flex;align-items:center;gap:10px;background:var(--navy);color:#fff;text-decoration:none;font-weight:600;padding:12px 26px;border-radius:999px;margin:8px 0;min-height:48px}
+.dl::after{content:"→"}
+.dl:hover{background:var(--blue);color:#fff}
+.done-toggle{display:inline-flex;gap:8px;align-items:center;font-size:.92rem;font-weight:600;color:var(--navy);cursor:pointer;margin-top:10px}
+.done-toggle input{accent-color:var(--navy);width:18px;height:18px}
+details{border-radius:1rem;padding:10px 16px;margin:10px 0;background:var(--grey-050)}
+details summary{cursor:pointer;font-weight:700;color:var(--navy)}
+.cols2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+@media (max-width:700px){.cols2{grid-template-columns:1fr}}
+.copy{float:right;font:inherit;font-size:.75rem;font-weight:600;border:0;background:var(--sky);color:var(--navy);border-radius:999px;padding:2px 12px;cursor:pointer;margin:-2px -4px 0 8px}
+
+/* screenshots and data tour */
+figure.shot{margin:16px 0;border-radius:1rem;overflow:hidden;background:var(--grey-050);border:1px solid var(--grey-200)}
+figure.shot img{display:block;width:100%;height:auto}
+figure.shot figcaption{padding:8px 14px;margin:0;font-size:.84rem;color:var(--text)}
+figure.shot.small{max-width:660px}
+.shots2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+.shots3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+.shots2 figure.shot,.shots3 figure.shot{margin:0}
+@media (max-width:800px){.shots2,.shots3{grid-template-columns:1fr}}
+article.data{padding-top:20px;margin-top:26px;border-top:2px solid var(--grey-050)}
+article.data h3{margin-top:0}
+.where{display:inline-block;font-size:.84rem;font-weight:600;color:var(--navy);background:var(--cream);border-radius:999px;padding:3px 14px;margin:.3rem 0 .9rem}
+.use{background:var(--sky-soft);border-radius:1.5rem;padding:10px 18px}
+.doc{font-size:.9rem}
+.res-group{margin:18px 0}
+.res-group li{margin:7px 0}
+
+
+.pagenav{display:flex;justify-content:space-between;gap:12px;margin:30px 0 10px;flex-wrap:wrap}
+.pn{display:inline-flex;align-items:center;background:var(--btn);color:var(--navy);text-decoration:none;font-weight:700;padding:12px 24px;border-radius:999px}
+.pn:hover{background:var(--navy);color:#fff}
+.lang{display:inline-flex;background:rgba(255,255,255,.12);border-radius:999px;padding:3px}
+.lang a,.lang span{color:#fff;text-decoration:none;font-weight:700;font-size:.85rem;padding:6px 14px;border-radius:999px}
+.lang span{background:#fff;color:var(--navy)}
+.lang a.cur{background:#fff;color:var(--navy)}
+</style>
+</head>
+<body class="os-win">
+
+<header class="topbar">
+  <div class="brand">Audencia - SFIR <small>Collecting financial data with FactSet</small></div>
+  <span class="lang" aria-label="Language"><a class="cur" href="excel.html" lang="en" aria-current="page">EN</a><a href="fr/excel.html" lang="fr">FR</a></span>
+  <div class="os-switch" role="group" aria-label="Choose your computer">
+    <span>I use:</span>
+    <span class="seg">
+      <button type="button" aria-pressed="true" data-os="win">Windows</button>
+      <button type="button" aria-pressed="false" data-os="mac">Mac</button>
+    </span>
+  </div>
+  <a class="toplink" href="resources.html">Key resources</a>
+  <span class="progress-pill" id="progress">0 / 14 tests done</span>
+</header>
+
+<div class="shell">
+<nav class="toc" aria-label="Course contents">
+  <ol>
+    <li><a href="index.html#welcome">0. How this course works</a></li>
+    <li class="part">Part I · The FactSet online platform</li>
+    <li><a href="index.html#access">1. FactSet and your access</a></li>
+    <li class="sub"><a href="index.html#login">1.1 First login</a></li>
+    <li class="sub"><a href="index.html#screen">1.2 The screen after login</a></li>
+    <li class="sub"><a href="index.html#search">1.3 Finding a company</a></li>
+    <li class="sub"><a href="index.html#reports">1.4 Reports menu</a></li>
+    <li class="sub"><a href="index.html#apps">1.5 My Apps</a></li>
+    <li class="sub"><a href="index.html#download">1.6 Downloading a table</a></li>
+    <li><a href="data-1.html#tour">2. The data, with Microsoft</a></li>
+    <li class="sub"><a href="data-1.html#d-snapshot">Snapshot</a></li>
+    <li class="sub"><a href="data-1.html#d-profile">Profile &amp; structure</a></li>
+    <li class="sub"><a href="data-1.html#d-prices">Stock prices</a></li>
+    <li class="sub"><a href="data-1.html#d-fin">Financials</a></li>
+    <li class="sub"><a href="data-1.html#d-est">Analyst estimates</a></li>
+    <li class="sub"><a href="data-2.html#d-own">Ownership</a></li>
+    <li class="sub"><a href="data-2.html#d-debt">Debt, bonds, credit</a></li>
+    <li class="sub"><a href="data-2.html#d-tx">Transactions, M&amp;A, PE/VC</a></li>
+    <li class="sub"><a href="data-2.html#d-news">News, StreetAccount, filings</a></li>
+    <li class="sub"><a href="data-2.html#d-rel">Supply chain &amp; revenue</a></li>
+    <li class="sub"><a href="data-3.html#d-esg">ESG</a></li>
+    <li class="sub"><a href="data-3.html#d-opt">Options</a></li>
+    <li class="sub"><a href="data-3.html#d-fund">Funds &amp; ETFs</a></li>
+    <li class="sub"><a href="data-3.html#d-macro">Markets &amp; economics</a></li>
+    <li class="sub"><a href="data-3.html#d-screen">Screening</a></li>
+    <li class="sub"><a href="data-3.html#d-summary">Summary table</a></li>
+    <li class="part">Part II · Excel</li>
+    <li><a href="#install">3. Install FactSet 365</a></li>
+    <li><a href="#formulas">4. FactSet formulas</a></li>
+    <li class="part">Part III · Building samples</li>
+    <li><a href="tests.html#method">5. Method</a></li>
+    <li><a href="tests.html#tests">6. The 14 tests</a></li>
+    <li class="sub"><a href="tests.html#t1" data-t="1">1 · Apple: prices, returns, chart</a></li>
+    <li class="sub"><a href="tests.html#t2" data-t="2">2 · French green bonds, coupon</a></li>
+    <li class="sub"><a href="tests.html#t3" data-t="3">3 · M&amp;A France 2024</a></li>
+    <li class="sub"><a href="tests.html#t4" data-t="4">4 · A fund's portfolio and ESG</a></li>
+    <li class="sub"><a href="tests.html#t5" data-t="5">5 · MSFT EPS FY1, all analysts</a></li>
+    <li class="sub"><a href="tests.html#t6" data-t="6">6 · Fundamentals panel</a></li>
+    <li class="sub"><a href="tests.html#t7" data-t="7">7 · FX, oil, gold, rates</a></li>
+    <li class="sub"><a href="tests.html#t8" data-t="8">8 · ESG ratings of the CAC 40</a></li>
+    <li class="sub"><a href="tests.html#t9" data-t="9">9 · Tesla news</a></li>
+    <li class="sub"><a href="tests.html#t10" data-t="10">10 · TotalEnergies ESG news</a></li>
+    <li class="sub"><a href="tests.html#t11" data-t="11">11 · Who owns LVMH?</a></li>
+    <li class="sub"><a href="tests.html#t12" data-t="12">12 · Returns &amp; beta</a></li>
+    <li class="sub"><a href="tests.html#t13" data-t="13">13 · CAC 40 monthly prices</a></li>
+    <li class="sub"><a href="tests.html#t14" data-t="14">14 · NASDAQ-100 fundamentals</a></li>
+    <li><a href="tests.html#thesis">7. Your thesis data</a></li>
+    <li class="part">Reference</li>
+    <li><a href="reference.html#trouble">8. Troubleshooting</a></li>
+    <li><a href="reference.html#cheat">9. Cheat sheet &amp; glossary</a></li>
+    <li><a href="resources.html">Key resources (separate page)</a></li>
+  </ol>
+</nav>
+<main>
+<!-- ============================================================ 3 -->
+<section class="module" id="install">
+  <div class="modnum">Module 3</div>
+  <h2>Install FactSet 365 in Excel</h2>
+  <p class="lead">FactSet 365 is the FactSet add-in for Excel. It works in desktop Excel on Windows and on Mac, and in Excel on the web. These steps follow FactSet's official page <a href="https://my.apps.factset.com/oa/pages/23024" target="_blank">Getting FactSet 365 (OA 23024)</a>.</p>
+
+  <h3>3.1 Add the add-in</h3>
+  <div class="os-box win-only"><span class="os-label">Windows</span>
+    <ol class="steps">
+      <li>Open Excel (Microsoft 365) and a blank workbook. Sign in to Excel with your institutional Microsoft account (top right) if asked.</li>
+      <li>Go to <b>Home › Add-ins</b> (in some versions <b>Insert › Add-ins</b>), then click <b>More Add-ins</b>.</li>
+      <li>In <b>Store</b>, search <b>FactSet 365</b> and click <b>Add</b>.</li>
+      <li>A <b>FactSet</b> tab appears in the ribbon.</li>
+    </ol>
+  </div>
+  <div class="os-box mac-only"><span class="os-label">Mac</span>
+    <ol class="steps">
+      <li>Open Excel (Microsoft 365) and a blank workbook. Update Excel first if needed (Help › Check for Updates).</li>
+      <li>Go to <b>Home › Add-ins</b> (in some versions <b>Insert › Add-ins</b>), then click <b>More Add-ins</b>.</li>
+      <li>In <b>Store</b>, search <b>FactSet 365</b> and click <b>Add</b>.</li>
+      <li>A <b>FactSet</b> tab appears in the ribbon.</li>
+    </ol>
+  </div>
+  <div class="box"><span class="box-title">Excel on the web (Windows or Mac)</span>
+  If you prefer the browser, FactSet recommends <b>Google Chrome</b> (Safari can show a "Page Expired" error). Go to <code>www.office.com</code>, open an Excel file, then <b>Home › Add-ins › More Add-ins</b>, search <b>FactSet 365</b>, <b>Add</b>. To use a course file online, upload it to your OneDrive first.</div>
+
+  <h3>3.2 Sign in</h3>
+  <ol class="steps">
+    <li>In the FactSet tab, click <b>Sign In</b>. A window opens.</li>
+    <li>Enter the email address of your FactSet account.</li>
+    <li>Choose <b>Sign in with your password</b> and type your password (or <b>Sign in via SSO</b>).</li>
+    <li>Signed in: the <b>Refresh</b> button of the FactSet tab is active. If it is grey, you are not signed in.</li>
+  </ol>
+  <p>The FactSet tab contains: <b>Sign In</b>, <b>Insert Formula</b> (opens the Sidebar to build formulas), <b>Template Library</b> (ready-made models), <b>Refresh</b> (Worksheet / Workbook / Selection) and <b>Office Assistance</b> (opens FactSet's help).</p>
+
+  <h3>3.3 Test the connection</h3>
+  <ol class="steps">
+    <li>Download <a class="dl" href="excel/00_Getting_Started.xlsx">00_Getting_Started.xlsx</a> and open it.
+      <span class="win-only">If a yellow bar says <i>Protected View</i>, click <b>Enable Editing</b>: formulas do not calculate in Protected View.</span>
+      <span class="mac-only">If Excel asks whether to enable the content, accept.</span></li>
+    <li>Sheet <b>Connection test</b>: click <b>FactSet › Refresh › Workbook</b>.</li>
+    <li>Column D shows Apple's name, prices, currency, annual sales and industry, and B17 says <b>YES – you are connected</b>. If not, see <a href="reference.html#trouble">Troubleshooting</a>.</li>
+    <li><b>First file of the day:</b> if every blue cell shows <code>#NAME?</code>, Excel opened the file before the FactSet 365 add-in had finished loading. Select the sheet, use <b>Find &amp; Replace</b> to replace <code>=</code> with <code>=</code> (Replace All), then <b>Refresh › Workbook</b>. The next files you open in the same Excel session are not affected.</li>
+  </ol>
+</section><!-- ============================================================ 4 -->
+<section class="module" id="formulas">
+  <div class="modnum">Module 4</div>
+  <h2>FactSet formulas in Excel</h2>
+  <p class="lead">This module starts from what an Excel formula is, then explains the FactSet function <code>=FDS()</code>, its arguments, dates, time series and the codes of each database.</p>
+
+  <h3>4.1 What is an Excel formula?</h3>
+  <p>A cell can contain a value (a number, a text) or a <b>formula</b>. A formula starts with <code>=</code> and calculates a result. Most formulas use a <b>function</b>: a name followed by <b>arguments</b> in brackets, separated by commas.</p>
+  <pre>=SUM(A1:A10)         function SUM, one argument: the range A1:A10
+=ROUND(B2, 2)        function ROUND, two arguments: the value B2 and 2 decimals</pre>
+  <p>An argument can be a number, a text in quotes (<code>"abc"</code>) or a reference to another cell (<code>B2</code>). When the referenced cell changes, the formula recalculates.</p>
+
+  <h3>4.2 What is =FDS?</h3>
+  <p><code>FDS</code> is a function added to Excel by FactSet 365. Instead of calculating something inside Excel, it sends a request to FactSet's servers and writes the answer in the cell. FactSet's documentation calls these formulas "<i>=FDS codes</i>" (<a href="https://my.apps.factset.com/oa/pages/1967" target="_blank">OA 1967</a>). The function has two arguments:</p>
+  <div class="anatomy" aria-label="Formula anatomy">
+    <span><b class="a1">=FDS(</b><i>function</i></span>
+    <span><b class="a2">"MSFT-US"</b><i>1st argument: which security</i></span>
+    <span><b>,</b><i>&nbsp;</i></span>
+    <span><b class="a3">"P_PRICE</b><i>2nd argument: which data item…</i></span>
+    <span><b class="a4">(0)"</b><i>…and its arguments</i></span>
+    <span><b class="a1">)</b><i>&nbsp;</i></span>
+  </div>
+  <ul>
+    <li><b>1st argument, the identifier</b>: the security, in quotes or as a cell reference. Example: <code>"MSFT-US"</code> or <code>A2</code>.</li>
+    <li><b>2nd argument, the request</b>: a text in quotes containing the FactSet <b>code</b> of the data item (here <code>P_PRICE</code>, the closing price) followed by its own arguments in brackets (here <code>0</code> = the latest date).</li>
+  </ul>
+  <p>So <code>=FDS("MSFT-US","P_PRICE(0)")</code> means "Microsoft's latest closing price". Two rules: type <b>FDS in capital letters</b> (lower case does not work), and refresh with <b>FactSet › Refresh</b>.</p>
+
+  <h3>4.3 Your first formulas</h3>
+  <p>Open a blank workbook, type <code>MSFT-US</code> in A1, then type these formulas in other cells and refresh:</p>
+  <div class="box warn"><span class="box-title">French Excel: use ; instead of ,</span> This course writes formulas with commas, as in English Excel. <b>If your Excel is in French</b> (also German, Spanish, Italian), replace the comma <b>between the two FDS arguments</b> with a semicolon <code>;</code>, otherwise Excel rejects the formula. The commas <b>inside the quotes</b> belong to FactSet: keep them as they are.
+  <table class="compact"><tr><th>English Excel</th><th>French Excel</th></tr>
+  <tr><td><code>=FDS(A1,"P_PRICE(0)")</code></td><td><code>=FDS(A1;"P_PRICE(0)")</code></td></tr>
+  <tr><td><code>=FDS(A1,"FF_SALES(ANN,0,,,RF)")</code></td><td><code>=FDS(A1;"FF_SALES(ANN,0,,,RF)")</code></td></tr>
+  </table></div>
+  <pre><button type="button" class="copy">Copy</button>=FDS(A1,"FG_COMPANY_NAME")          Microsoft Corporation
+=FDS(A1,"P_PRICE(0)")               latest closing price
+=FDS(A1,"P_PRICE(12/31/2025)")      closing price on 31 December 2025
+=FDS(A1,"FF_SALES(ANN,0,,,RF)")     net sales of the latest fiscal year (millions)
+=FDS(A1,"P_CURRENCY")               USD</pre>
+
+  <h3>4.4 Dates</h3>
+  <p>Official formats (<a href="https://my.apps.factset.com/oa/pages/1964" target="_blank">Definitions of Code Arguments, OA 1964</a>):</p>
+  <div class="tablewrap"><table class="compact">
+    <tr><th>Type</th><th>Write</th><th>Example</th></tr>
+    <tr><td>Latest</td><td><code>0</code></td><td><code>P_PRICE(0)</code></td></tr>
+    <tr><td>Relative</td><td><code>-5D</code> days, <code>-1W</code> weeks, <code>-1M</code> months, <code>-1Q</code> quarters, <code>-1Y</code> years, <code>-1AY</code> fiscal years</td><td><code>P_PRICE(-1M)</code> = one month ago</td></tr>
+    <tr><td>A day</td><td><code>MM/DD/YYYY</code> (month first; DD/MM/YYYY is <b>not valid</b>)</td><td><code>P_PRICE(12/31/2025)</code></td></tr>
+    <tr><td>A month-end</td><td><code>MM/YYYY</code></td><td><code>P_PRICE(11/2025)</code></td></tr>
+    <tr><td>A fiscal year</td><td><code>YYYY</code></td><td><code>FF_SALES(ANN,2024)</code> = sales of fiscal year 2024</td></tr>
+  </table></div>
+  <p>If a date is not a trading day, FactSet takes the previous trading day.</p>
+
+  <h3>4.5 Time series</h3>
+  <p>Three date arguments, <i>(start, end, frequency)</i>, ask for a series: <code>P_PRICE(-1M,0,D)</code> = every daily close of the last month. Frequencies: <code>D</code>, <code>W</code>, <code>M</code>, <code>Q</code>, <code>Y</code>. The formula then returns several values. In Microsoft 365 they <b>spill</b> into the cells below. Keep those cells empty, or you get <code>#SPILL!</code>.</p>
+  <p>To get the date of each value, use <code>P_DATE</code> with the same arguments and the format <code>"DATEJ"</code>. Inside an Excel formula, quotes inside quotes are doubled:</p>
+  <pre><button type="button" class="copy">Copy</button>A3: =FDS("MSFT-US","P_DATE(-1M,0,D,""DATEJ"")")     dates
+B3: =FDS("MSFT-US","P_PRICE(-1M,0,D)")              prices</pre>
+
+  <h3>4.6 Insert Formula: building a formula from scratch</h3>
+  <p>You do not have to remember codes. Select an empty cell, then click <b>FactSet 365 › Insert Formula</b>. The FactSet 365 panel opens on the right of Excel. Its parts, from top to bottom:</p>
+  <div class="tablewrap"><table class="compact">
+    <tr><th>Part of the panel</th><th>What it does</th></tr>
+    <tr><td><b>FDS</b> / <b>FDSLIVE</b></td><td>Keep <b>FDS</b> selected: it inserts a formula that you refresh yourself. <b>FDSLIVE</b> inserts a real-time formula that updates continuously; you do not need it in this course.</td></tr>
+    <tr><td><b>Enter identifier</b></td><td>Type a company name or a ticker (<i>Microsoft</i>, <i>MSFT</i>) and choose it in the list that appears.</td></tr>
+    <tr><td><b>Sources</b></td><td>Limits the search to one database (Prices, FactSet Fundamentals, FactSet Estimates…).</td></tr>
+    <tr><td><b>Begin typing to search for a formula</b></td><td>Type keywords (<i>price close</i>, <i>sales</i>, <i>EPS mean</i>). Each result shows the data item and, under it, its source database. Click the name of an item to read its definition.</td></tr>
+    <tr><td><b>Recently Used</b> / <b>Popular Data Items</b></td><td>Shortcuts to the items you used last and to the most common ones (Price – Close, Market Value – Company Level, Sales – LTM…).</td></tr>
+    <tr><td><b>Insert</b></td><td>Writes the <code>=FDS</code> formula in the selected cell. FactSet calculates it straight away.</td></tr>
+  </table></div>
+  <p>After choosing an item, the panel shows its <b>arguments</b> (date, start and end dates, frequency, currency…), depending on the item. Fill them, then click <b>Insert</b>. Always read the formula that appears in the formula bar: it is the syntax you will reuse.</p>
+
+  <h4>Four exercises, with the result you should obtain</h4>
+  <p>Do them in a blank workbook. Check each result on the FactSet online platform (last column).</p>
+  <div class="tablewrap"><table class="compact">
+    <tr><th>Exercise</th><th>In the panel</th><th>Formula you should get</th><th>Result to find</th><th>How to check it on the FactSet online platform</th></tr>
+    <tr><td>1. Microsoft's last closing price</td><td>Identifier <i>Microsoft</i> (MSFT-US) · search <i>price close</i> · item <b>Price – Close</b> (Prices) · date 0</td><td><code>=FDS("MSFT-US","P_PRICE(0)")</code></td><td>the latest closing price, in USD</td><td>MSFT-US › Prices › Price Summary</td></tr>
+    <tr><td>2. LVMH net sales, fiscal year 2024</td><td>Identifier <i>LVMH</i> (MC-FR) · search <i>sales</i> · item <b>Net Sales</b> (FactSet Fundamentals) · periodicity annual · fiscal year 2024</td><td><code>=FDS("MC-FR","FF_SALES(ANN,2024)")</code></td><td>LVMH net sales for 2024, in EUR millions</td><td>MC-FR › Financials › Income Statement, column 2024</td></tr>
+    <tr><td>3. Mean EPS forecast of Microsoft for FY1</td><td>Identifier MSFT-US · search <i>EPS mean</i> · item from <b>FactSet Estimates</b> · statistic mean · next fiscal year</td><td><code>=FDS("MSFT-US","FE_ESTIMATE(EPS,MEAN,ANNUAL_ROLL,+1,0,,,'')")</code></td><td>the mean of the FY1 EPS estimates, in USD; replace MEAN by NEST to get the number of estimates</td><td>MSFT-US › Estimates › Estimate Summary and Broker Outlook</td></tr>
+    <tr><td>4. All the institutional holders of Microsoft (a list)</td><td>Type the formula yourself (or search <i>holders</i>)</td><td><code>=FDS("MSFT-US","LSD_NAME_TOP_INST(-1,""H"")")</code></td><td>the names of all the institutions, spilling down</td><td>MSFT-US › Ownership › Company Summary (Top 15 Institutions)</td></tr>
+  </table></div>
+
+  <h4>You do not find the expected result: what to check, in this order</h4>
+  <ol class="steps">
+    <li><b>The identifier.</b> Is it the right security? <code>MSFT-US</code> is the Nasdaq share; another listing or a company with a similar name gives other figures.</li>
+    <li><b>The date or period.</b> <code>0</code> = latest; <code>2024</code> = fiscal year 2024; a day is written MM/DD/YYYY. Microsoft's fiscal year ends in June: "FY 2024" is July 2023 – June 2024.</li>
+    <li><b>The currency and the unit.</b> FactSet returns the reporting currency by default (EUR for LVMH) and accounting amounts in millions.</li>
+    <li><b>The item.</b> Several items have close names (Sales vs Sales – LTM; reported vs adjusted EPS). Click the name of the item in the panel to read its definition, and compare with the line you look at on the FactSet online platform.</li>
+    <li><b>An error in the cell.</b> <code>#Calc</code>: click Refresh (or sign in). <code>#N/A</code>: FactSet has no value for this security and date. <code>#NAME?</code>: see section 3.3.</li>
+  </ol>
+  <p>Then try again: correct the argument directly in the formula bar, or select the cell and run Insert Formula again. Official page: <a href="https://my.apps.factset.com/oa/pages/21538" target="_blank">Using FactSet 365 (OA 21538)</a>.</p>
+
+  <h3>4.7 Building a formula from cells</h3>
+  <p>The second argument is a text, so you can assemble it from cells with <code>&amp;</code>. That is how one formula is copied to many rows, dates or companies, and how all course workbooks are built.</p>
+  <pre><button type="button" class="copy">Copy</button>B1: -1M     B2: 0     B3: D
+=FDS(A5,"P_PRICE("&amp;$B$1&amp;","&amp;$B$2&amp;","&amp;$B$3&amp;")")      same as "P_PRICE(-1M,0,D)"
+
+An Excel date in C5 converted to MM/DD/YYYY:
+=FDS(A5,"P_PRICE("&amp;MONTH(C5)&amp;"/"&amp;DAY(C5)&amp;"/"&amp;YEAR(C5)&amp;")")</pre>
+  <p>Use <code>$</code> to fix a reference when you copy the formula (<code>$B$1</code> stays B1). <span class="win-only">Shortcut while editing: <kbd>F4</kbd>.</span><span class="mac-only">Shortcut while editing: <kbd>⌘ Cmd</kbd>+<kbd>T</kbd>.</span></p>
+
+  <h3>4.8 The codes of each database</h3>
+  <p>The first letters of a code tell the database. Examples from FactSet's official <a href="https://my.apps.factset.com/oa/cms/oaAttachment/89a642b3-6195-4f59-bb5f-e8e680885703/24730" target="_blank">=FDS Formulas Quick Reference (PDF)</a>:</p>
+  <div class="tablewrap"><table class="compact">
+    <tr><th>Database</th><th>Data</th><th>Formula</th></tr>
+    <tr><td rowspan="5">Prices (<code>P_</code>)</td><td>Closing price</td><td><code>=FDS(A1,"P_PRICE(0)")</code></td></tr>
+    <tr><td>Prices over a period</td><td><code>=FDS(A1,"P_PRICE(SD,ED,FRQ)")</code></td></tr>
+    <tr><td>Dates of that period</td><td><code>=FDS(A1,"P_DATE(SD,ED,FRQ,""DATEJ"")")</code></td></tr>
+    <tr><td>Compounded total return between two dates</td><td><code>=FDS(A1,"P_TOTAL_RETURNC(SD,ED)")</code></td></tr>
+    <tr><td>Exchange rate (price of the currency pair)</td><td><code>=FDS("EURUSD","P_PRICE(0)")</code></td></tr>
+    <tr><td rowspan="5">Fundamentals (<code>FF_</code>)</td><td>Net sales</td><td><code>=FDS(A1,"FF_SALES(ANN,0,,,RF)")</code></td></tr>
+    <tr><td>EBIT / EBITDA</td><td><code>FF_EBIT_OPER</code> / <code>FF_EBITDA_OPER</code></td></tr>
+    <tr><td>Net income</td><td><code>FF_NET_INC</code></td></tr>
+    <tr><td>Total assets / total debt</td><td><code>FF_ASSETS</code> / <code>FF_DEBT</code></td></tr>
+    <tr><td>Shares outstanding</td><td><code>=FDS(A1,"FF_COM_SHS_OUT(ANN,0,,,RF)")</code></td></tr>
+    <tr><td rowspan="3">Estimates (<code>FE_</code>)</td><td>Mean EPS forecast, FY1</td><td><code>=FDS(A1,"FE_ESTIMATE(EPS,MEAN,ANNUAL_ROLL,+1,0,,,'')")</code></td></tr>
+    <tr><td>Same for sales, FY2</td><td><code>=FDS(A1,"FE_ESTIMATE(SALES,MEAN,ANNUAL_ROLL,+2,0,,,'')")</code></td></tr>
+    <tr><td>Next twelve months EPS</td><td><code>=FDS(A1,"FE_ESTIMATE(EPS,MEAN,NTMA,,0,,,'')")</code></td></tr>
+    <tr><td rowspan="3">Descriptive (<code>FG_</code>, <code>P_</code>)</td><td>Company name</td><td><code>=FDS(A1,"FG_COMPANY_NAME")</code></td></tr>
+    <tr><td>FactSet sector / industry</td><td><code>=FDS(A1,"FG_FACTSET_SECTOR")</code> · <code>=FDS(A1,"FG_FACTSET_IND")</code></td></tr>
+    <tr><td>Market cap, company level</td><td><code>=FDS(A1,"P_MARKET_VAL_CO(USD,1)")</code></td></tr>
+  </table></div>
+  <p>In fundamentals, <code>ANN</code> = annual; replace with <code>QTR</code> (quarterly), <code>SEMI</code>, <code>LTM</code>. For any other data, use Insert Formula.</p>
+
+  <h3>4.9 Refreshing and freezing data</h3>
+  <div class="tablewrap"><table class="compact">
+    <tr><th>Action</th><th class="win-only">Windows</th><th class="mac-only">Mac</th></tr>
+    <tr><td>Refresh FactSet formulas</td><td class="win-only">FactSet › Refresh › Worksheet / Workbook / Selection</td><td class="mac-only">FactSet › Refresh › Worksheet / Workbook / Selection</td></tr>
+    <tr><td>Copy a formula down</td><td class="win-only">select the range, <kbd>Ctrl</kbd>+<kbd>D</kbd></td><td class="mac-only">select the range, <kbd>⌘ Cmd</kbd>+<kbd>D</kbd></td></tr>
+    <tr><td>Show formulas instead of results</td><td class="win-only"><kbd>Ctrl</kbd>+<kbd>`</kbd></td><td class="mac-only"><kbd>Ctrl</kbd>+<kbd>`</kbd></td></tr>
+    <tr><td>Paste values only</td><td class="win-only"><kbd>Ctrl</kbd>+<kbd>C</kbd>, then <kbd>Ctrl</kbd>+<kbd>Alt</kbd>+<kbd>V</kbd> › Values</td><td class="mac-only"><kbd>⌘ Cmd</kbd>+<kbd>C</kbd>, then <kbd>Ctrl</kbd>+<kbd>⌘ Cmd</kbd>+<kbd>V</kbd> › Values</td></tr>
+  </table></div>
+  <p>FactSet formulas only calculate for a signed-in FactSet user. Before sending a file or importing it into Stata, R or Python, copy the sheet and paste <b>values only</b> into a new workbook. Keep the formula version: it documents exactly how the data were obtained.</p>
+
+  <h3>4.10 Getting a list of securities into Excel</h3>
+  <div class="cols2">
+    <div class="box"><span class="box-title">You know the securities</span>Prices of Apple, sales of 10 firms, consensus of Microsoft: you type the identifiers and the =FDS formulas.</div>
+    <div class="box"><span class="box-title">The list comes from a FactSet formula</span>Some FactSet formulas return a whole list that spills down: the estimate of each broker (<code>FE_BROKER_ESTIMATE</code>), all the <b>institutional</b> holders of a company (<code>LSD_NAME_TOP_INST(-1,""H"")</code>), all the holdings of a fund (<code>LSD_NAME_TOP_HLDG(-1)</code>), a series of dates (<code>P_DATE</code>). For the two ownership lists, the first argument <code>-1</code> asks for every line.</div>
+    <div class="box"><span class="box-title">The list must be found with a screen</span>All green bonds, all French deals of a year, the members of an index: these lists come from the screening tools of the FactSet online platform (Universal Screening, Screen On). FactSet 365 has no screening tool, so you build the list on the FactSet online platform, download it, paste it into Excel, and add =FDS columns if needed.</div>
+  </div>
+</section>
+<div class="pagenav"><a class="pn prev" href="data-3.html">← Data tour 3/3</a><a class="pn next" href="tests.html">Method & tests →</a></div>
+</main>
+</div>
+<script>
+(function(){
+  var store={get:function(k){try{return localStorage.getItem(k)}catch(e){return null}},
+             set:function(k,v){try{localStorage.setItem(k,v)}catch(e){}}};
+  function setOS(os){
+    document.body.classList.remove('os-win','os-mac');
+    document.body.classList.add('os-'+os);
+    document.querySelectorAll('.seg button').forEach(function(b){b.setAttribute('aria-pressed',b.dataset.os===os?'true':'false');});
+    store.set('fds-course-os',os);
+  }
+  var saved=store.get('fds-course-os');
+  if(!saved){saved=/Mac|iPhone|iPad/.test(navigator.platform||navigator.userAgent)?'mac':'win';}
+  setOS(saved);
+  document.querySelectorAll('.seg button').forEach(function(b){b.addEventListener('click',function(){setOS(b.dataset.os);});});
+
+  var prog=document.getElementById('progress');
+  function refresh(){
+    var n=0;
+    for(var i=1;i<=14;i++){
+      var cb=document.getElementById('done-'+i),on=cb?cb.checked:store.get('fds-course-done-'+i)==='1';
+      if(on)n++;
+      var link=document.querySelector('nav.toc a[data-t="'+i+'"]');
+      if(link)link.classList.toggle('done',!!on);
+    }
+    if(prog)prog.textContent=n+' / 14 tests done';
+  }
+  document.querySelectorAll('.done-toggle input').forEach(function(cb){
+    cb.checked=store.get('fds-course-'+cb.id)==='1';
+    cb.addEventListener('change',function(){store.set('fds-course-'+cb.id,cb.checked?'1':'0');refresh();});
+  });
+  refresh();
+
+  document.querySelectorAll('pre .copy').forEach(function(btn){
+    btn.addEventListener('click',function(){
+      var text=btn.parentElement.innerText.replace(/^Copy\s*/,'');
+      if(navigator.clipboard){navigator.clipboard.writeText(text).then(function(){btn.textContent='Copied';setTimeout(function(){btn.textContent='Copy'},1500);},function(){btn.textContent='Select & copy';});}
+    });
+  });
+
+  var links=Array.prototype.slice.call(document.querySelectorAll('nav.toc a[href^="#"]'));
+  if('IntersectionObserver' in window){
+    var obs=new IntersectionObserver(function(entries){
+      entries.forEach(function(en){
+        if(en.isIntersecting){links.forEach(function(a){a.classList.toggle('active',a.getAttribute('href')==='#'+en.target.id);});}
+      });
+    },{rootMargin:'-70px 0px -70% 0px'});
+    links.forEach(function(a){var t=document.querySelector(a.getAttribute('href'));if(t)obs.observe(t);});
+  }
+})();
+
+</script>
+</body>
+</html>

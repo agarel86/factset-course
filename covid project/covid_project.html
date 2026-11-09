@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>COVID project</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Raleway:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Sora:wght@600;700;800&display=swap" rel="stylesheet">
+<style>
+/* Audencia identity (from audencia.com): navy #002941, text grey #4D5562, blue #2A6FEC, sky #91E3FF, cream #FFF5E9,
+   button grey-blue #DCE4ED, Sora headings (800) + Raleway text. Single light theme, like the school's site. */
+:root{
+  --navy:#002941; --navy-2:#012D5A; --text:#4D5562; --blue:#2A6FEC; --sky:#91E3FF; --sky-soft:rgba(145,227,255,.35);
+  --cream:#FFF5E9; --btn:#DCE4ED; --grey-050:#F3F4F9; --grey-200:#D3D4D9; --pink:#F2AAF0; --orange:#FDA959;
+  --ok:#26A769; --warn:#B26A00; --bad:#C62828;
+  --input:#FFF4C2; --fds:#DDEBF7; --calc:#E2F0D9; --paste:#EEEEEE;
+  --display:"Sora", Arial, sans-serif; --body:"Raleway", Arial, sans-serif; --mono:Consolas, "Courier New", monospace;
+  color-scheme: light;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:80px}
+@media (prefers-reduced-motion: reduce){html{scroll-behavior:auto}}
+body{margin:0;background:#fff;color:var(--text);font-family:var(--body);font-size:16.5px;line-height:1.65}
+a{color:var(--blue);text-underline-offset:3px}
+a:hover{color:var(--navy)}
+a:focus-visible,button:focus-visible,input:focus-visible,summary:focus-visible{outline:3px solid var(--ok);outline-offset:2px}
+h1,h2,h3,h4{font-family:var(--display);color:var(--navy);line-height:1.2;text-wrap:balance;margin:0}
+h1{font-size:2.4rem;font-weight:800}
+h2{font-size:2rem;font-weight:800;margin-bottom:.5rem}
+h3{font-size:1.3rem;font-weight:700;margin:1.8rem 0 .6rem}
+h4{font-size:1.02rem;font-weight:700;margin:1.3rem 0 .4rem}
+p,li{max-width:74ch}
+b,strong{color:var(--navy);font-weight:700}
+code,kbd{font-family:var(--mono);font-size:.88em}
+code{background:var(--grey-050);color:var(--navy);padding:.1em .4em;border-radius:6px;overflow-wrap:anywhere}
+kbd{border:1px solid var(--grey-200);border-bottom-width:2px;border-radius:6px;padding:.05em .45em;background:#fff;color:var(--navy);white-space:nowrap}
+pre{background:var(--navy);color:#fff;border-radius:1rem;padding:1rem 1.2rem;overflow-x:auto;font-family:var(--mono);font-size:.86rem;line-height:1.55;margin:.8rem 0}
+pre code{background:none;color:inherit}
+
+/* header */
+.topbar{position:sticky;top:0;z-index:20;background:var(--navy);color:#fff;display:flex;align-items:center;gap:18px;padding:12px 28px;flex-wrap:wrap}
+.brand{font-family:var(--display);font-weight:800;font-size:1.1rem;margin-right:auto;color:#fff}
+.brand small{font-family:var(--body);font-weight:500;color:var(--sky);margin-left:10px;font-size:.85rem}
+.os-switch{display:flex;align-items:center;gap:8px;font-size:.9rem;color:#fff}
+.seg{display:inline-flex;background:rgba(255,255,255,.12);border-radius:999px;padding:3px}
+.seg button{border:0;background:transparent;color:#fff;padding:7px 18px;font:inherit;font-weight:600;cursor:pointer;border-radius:999px}
+.seg button[aria-pressed="true"]{background:#fff;color:var(--navy)}
+.toplink{color:var(--navy);background:var(--btn);text-decoration:none;font-weight:600;font-size:.9rem;border-radius:999px;padding:8px 18px}
+.toplink:hover{background:var(--sky);color:var(--navy)}
+.progress-pill{font-size:.85rem;color:var(--sky);font-weight:600}
+
+/* layout */
+.shell{display:grid;grid-template-columns:280px minmax(0,1fr);max-width:1360px;margin:0 auto}
+nav.toc{position:sticky;top:62px;align-self:start;height:calc(100vh - 62px);overflow-y:auto;padding:28px 18px 40px 24px;background:var(--grey-050);font-size:.92rem}
+nav.toc ol{list-style:none;margin:0;padding:0}
+nav.toc a{display:block;padding:5px 12px;border-radius:999px;color:var(--navy);text-decoration:none;font-weight:600}
+nav.toc a:hover{background:#fff}
+nav.toc a.active{background:var(--navy);color:#fff}
+nav.toc .sub a{padding-left:24px;font-weight:500;color:var(--text);font-size:.87rem}
+nav.toc .sub a.active{color:#fff}
+nav.toc .sub a.done::after{content:" ✓";color:var(--ok);font-weight:700}
+nav.toc .part{font-family:var(--display);font-size:.72rem;letter-spacing:.06em;text-transform:uppercase;color:var(--blue);margin:20px 12px 6px;font-weight:700}
+main{padding:36px 48px 90px;min-width:0}
+section.module{padding:8px 0 40px;margin-bottom:36px;border-bottom:2px solid var(--grey-050)}
+.modnum{display:inline-block;font-family:var(--display);font-weight:700;font-size:.78rem;letter-spacing:.05em;text-transform:uppercase;color:var(--navy);background:var(--sky);border-radius:999px;padding:3px 14px;margin-bottom:12px}
+.lead{font-size:1.12rem;color:var(--text);max-width:72ch}
+@media (max-width:900px){
+  .shell{grid-template-columns:1fr}
+  nav.toc{position:static;height:auto}
+  main{padding:24px 16px 60px}
+  .topbar{padding:10px 16px}
+}
+
+/* boxes: Audencia "bubbles" */
+.box{border-radius:1.5rem;padding:16px 22px;margin:16px 0;background:var(--grey-050)}
+.box > :first-child{margin-top:0}.box > :last-child{margin-bottom:0}
+.box.tip{background:var(--sky-soft)}
+.box.warn{background:var(--cream)}
+.box.ok{background:#E6F6EE}
+.box.bad{background:#FDECEC}
+.box-title{display:block;font-family:var(--display);font-weight:700;color:var(--navy);margin-bottom:4px}
+.os-box{border:2px solid var(--sky);border-radius:1.5rem;padding:14px 20px;margin:16px 0}
+.os-label{display:inline-block;font-family:var(--display);font-size:.72rem;font-weight:700;letter-spacing:.05em;text-transform:uppercase;background:var(--navy);color:#fff;border-radius:999px;padding:2px 12px;margin-bottom:8px}
+body.os-mac .win-only{display:none}
+body.os-win .mac-only{display:none}
+
+/* tables */
+.tablewrap{overflow-x:auto;margin:14px 0;border-radius:1rem;border:1px solid var(--grey-200)}
+table{border-collapse:collapse;width:100%;font-size:.92rem}
+th,td{padding:9px 12px;text-align:left;vertical-align:top;border-bottom:1px solid var(--grey-200)}
+tr:last-child td{border-bottom:0}
+th{background:var(--navy);color:#fff;font-family:var(--display);font-weight:600;font-size:.85rem}
+td code{white-space:nowrap}
+table.compact td,table.compact th{padding:6px 10px}
+
+/* numbered steps */
+ol.steps{counter-reset:s;list-style:none;padding-left:0}
+ol.steps > li{counter-increment:s;position:relative;padding-left:46px;margin:12px 0}
+ol.steps > li::before{content:counter(s);position:absolute;left:0;top:-1px;width:30px;height:30px;border-radius:50%;background:var(--navy);color:#fff;font-family:var(--display);font-weight:700;display:grid;place-items:center;font-size:.85rem}
+
+/* cell-colour legend (same as the workbooks) */
+.chip{display:inline-block;padding:2px 10px;border-radius:999px;font-size:.85rem;color:var(--navy);white-space:nowrap;margin:2px 0}
+.chip.in{background:var(--input)}.chip.fd{background:var(--fds)}.chip.ca{background:var(--calc)}.chip.pa{background:var(--paste)}
+
+/* formula anatomy */
+.anatomy{font-family:var(--mono);font-size:1.15rem;display:flex;flex-wrap:wrap;gap:6px;align-items:flex-end;margin:18px 0;overflow-x:auto;color:var(--navy)}
+.anatomy span{display:inline-flex;flex-direction:column;align-items:center}
+.anatomy b{font-weight:600;padding:5px 8px;border-radius:8px}
+.anatomy i{font-family:var(--body);font-style:normal;font-size:.74rem;color:var(--text);margin-top:4px}
+.a1{background:var(--btn)}.a2{background:var(--input)}.a3{background:var(--fds)}.a4{background:var(--sky-soft)}
+
+/* tests */
+.test{border-radius:1.5rem;padding:24px 28px;margin:22px 0;background:#fff;border:2px solid var(--grey-050)}
+.test-head{display:flex;flex-wrap:wrap;gap:10px 16px;align-items:baseline;justify-content:space-between}
+.test-head h3{margin:0}
+.meta{display:flex;flex-wrap:wrap;gap:6px}
+.pill{font-size:.75rem;font-weight:600;border-radius:999px;padding:2px 12px;color:var(--navy);background:var(--btn)}
+.pill.lvl1{background:#D7F2E4}.pill.lvl2{background:#FFE7CF}.pill.lvl3{background:#FBDDFA}
+.dl{display:inline-flex;align-items:center;gap:10px;background:var(--navy);color:#fff;text-decoration:none;font-weight:600;padding:12px 26px;border-radius:999px;margin:8px 0;min-height:48px}
+.dl::after{content:"→"}
+.dl:hover{background:var(--blue);color:#fff}
+.done-toggle{display:inline-flex;gap:8px;align-items:center;font-size:.92rem;font-weight:600;color:var(--navy);cursor:pointer;margin-top:10px}
+.done-toggle input{accent-color:var(--navy);width:18px;height:18px}
+details{border-radius:1rem;padding:10px 16px;margin:10px 0;background:var(--grey-050)}
+details summary{cursor:pointer;font-weight:700;color:var(--navy)}
+.cols2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+@media (max-width:700px){.cols2{grid-template-columns:1fr}}
+.copy{float:right;font:inherit;font-size:.75rem;font-weight:600;border:0;background:var(--sky);color:var(--navy);border-radius:999px;padding:2px 12px;cursor:pointer;margin:-2px -4px 0 8px}
+
+/* screenshots and data tour */
+figure.shot{margin:16px 0;border-radius:1rem;overflow:hidden;background:var(--grey-050);border:1px solid var(--grey-200)}
+figure.shot img{display:block;width:100%;height:auto}
+figure.shot figcaption{padding:8px 14px;margin:0;font-size:.84rem;color:var(--text)}
+figure.shot.small{max-width:660px}
+.shots2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+.shots3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+.shots2 figure.shot,.shots3 figure.shot{margin:0}
+@media (max-width:800px){.shots2,.shots3{grid-template-columns:1fr}}
+article.data{padding-top:20px;margin-top:26px;border-top:2px solid var(--grey-050)}
+article.data h3{margin-top:0}
+.where{display:inline-block;font-size:.84rem;font-weight:600;color:var(--navy);background:var(--cream);border-radius:999px;padding:3px 14px;margin:.3rem 0 .9rem}
+.use{background:var(--sky-soft);border-radius:1.5rem;padding:10px 18px}
+.doc{font-size:.9rem}
+.res-group{margin:18px 0}
+.res-group li{margin:7px 0}
+
+
+.pagenav{display:flex;justify-content:space-between;gap:12px;margin:30px 0 10px;flex-wrap:wrap}
+.pn{display:inline-flex;align-items:center;background:var(--btn);color:var(--navy);text-decoration:none;font-weight:700;padding:12px 24px;border-radius:999px}
+.pn:hover{background:var(--navy);color:#fff}
+.lang{display:inline-flex;background:rgba(255,255,255,.12);border-radius:999px;padding:3px}
+.lang a,.lang span{color:#fff;text-decoration:none;font-weight:700;font-size:.85rem;padding:6px 14px;border-radius:999px}
+.lang span{background:#fff;color:var(--navy)}
+.lang a.cur{background:#fff;color:var(--navy)}
+
+.try{background:var(--sky-soft);border-radius:1.5rem;padding:18px 22px;margin:16px 0}
+.try h4{margin:0 0 8px}
+.try dl{margin:0;display:grid;grid-template-columns:minmax(120px,170px) 1fr;gap:8px 16px}
+.try dt{font-family:var(--display);font-weight:700;color:var(--navy)}
+.try dd{margin:0}
+.try dd ul{margin:0;padding-left:18px}
+@media (max-width:640px){.try dl{grid-template-columns:1fr}.try dt{margin-top:6px}}
+details.hint{background:var(--cream)}
+details.sol{background:#fff;border:2px solid var(--navy);padding:12px 20px}
+details.sol[open]{padding-bottom:18px}
+details.sol > summary{font-family:var(--display)}
+details.hint > summary::after,details.sol > summary::after{content:"  (click to open)";font-weight:400;color:var(--text);font-size:.9em}
+html[lang=fr] details.hint > summary::after,html[lang=fr] details.sol > summary::after{content:"  (cliquez pour ouvrir)"}
+table.args{border-collapse:collapse;width:100%;margin:10px 0;font-size:.95rem}
+table.args th,table.args td{border-bottom:1px solid var(--grey-200);padding:6px 10px;text-align:left;vertical-align:top}
+table.args th{color:var(--navy);font-family:var(--display)}
+
+.obj{margin:10px 0 6px}
+.obj ol{margin:6px 0 0;padding-left:22px}
+.obj li{margin:3px 0}
+
+.res{border-collapse:collapse;width:100%;margin:10px 0;font-size:.92rem}
+.res th,.res td{border-bottom:1px solid var(--grey-200);padding:5px 9px;text-align:right}
+.res th:first-child,.res td:first-child{text-align:left}
+.res th{color:var(--navy);font-family:var(--display)}
+.eq{background:var(--grey-050);border-radius:1rem;padding:14px 18px;font-family:var(--mono);font-size:.95rem;overflow-x:auto}
+.files a.dl{margin-right:10px}
+</style>
+</head>
+<body class="os-win">
+<header class="topbar">
+  <div class="brand">Audencia - SFIR <small>Mini research project with FactSet</small></div>
+  <span class="lang" aria-label="Language"><a class="cur" href="covid_project.html" lang="en" aria-current="page">EN</a><a href="covid_project_fr.html" lang="fr">FR</a></span>
+  <div class="os-switch" role="group" aria-label="Choose your computer">
+    <span>I use:</span>
+    <span class="seg"><button type="button" aria-pressed="true" data-os="win">Windows</button><button type="button" aria-pressed="false" data-os="mac">Mac</button></span>
+  </div>
+  <a class="toplink" href="../course/index.html">← Back to the course</a>
+  <span class="progress-pill" id="progress">0 / 9</span>
+</header>
+<div class="shell">
+<nav class="toc" aria-label="Project contents"><ol><li><a href="#overview">Project</a></li><li><a href="#question">1. Research question</a></li><li><a href="#hypotheses">2. Hypotheses</a></li><li><a href="#data">3. Data</a></li><li><a href="#model">4. Regression</a></li><li><a href="#own">5. On your own</a></li><li><a href="#steps">6. Steps and solutions</a></li><li class="sub"><a href="#s1" data-t="1">Step 1</a></li><li class="sub"><a href="#s2" data-t="2">Step 2</a></li><li class="sub"><a href="#s3" data-t="3">Step 3</a></li><li class="sub"><a href="#s4" data-t="4">Step 4</a></li><li class="sub"><a href="#s5" data-t="5">Step 5</a></li><li class="sub"><a href="#s6" data-t="6">Step 6</a></li><li class="sub"><a href="#s7" data-t="7">Step 7</a></li><li class="sub"><a href="#s8" data-t="8">Step 8</a></li><li class="sub"><a href="#s9" data-t="9">Step 9</a></li><li><a href="#files">Files</a></li></ol></nav>
+<main>
+
+<section class="module" id="overview">
+  <div class="modnum">Project</div>
+  <h2>Which French listed firms lost the most during the COVID-19 crash, and why?</h2>
+  <p class="lead">A small research project from the question to the conclusion, done entirely with FactSet: the data come from FactSet 365 formulas in Excel and every analysis is an Excel formula. Each step is one sheet of the workbook. Try each step first; open the <b>hint</b> if you are stuck and the <b>solution</b> once you have a result.</p>
+</section>
+<section class="module" id="question">
+  <div class="modnum">1</div>
+  <h2>Research question</h2>
+  <p>The COVID-19 pandemic was a large and unexpected shock. Between 20 February and 16 March 2020 the French stock market lost more than a third of its value. Investors revised their expectations of firms' future cash flows and risk, but not by the same amount for every firm.</p>
+  <p><b>Question:</b> which characteristics of French listed firms, measured before the crisis, explain their stock-market performance during the COVID-19 crash?</p>
+  <p>Unit of observation: the firm. Universe: the members of the <b>CAC All-Tradable</b> index on 20 February 2020, the first day of the window. Event window: <b>20 February – 16 March 2020</b>. Characteristics: fiscal year 2019.</p>
+</section>
+<section class="module" id="hypotheses">
+  <div class="modnum">2</div>
+  <h2>Arguments and hypotheses</h2>
+  <p>If investors expect lower future profits or a higher risk of distress, prices fall more; if they expect stable or higher demand, prices fall less.</p>
+  <table class="args"><tr><th>Hypothesis</th><th>Argument</th><th>Expected sign</th></tr>
+  <tr><td><b>H1</b> Exposed industries fell more</td><td>Lockdowns and travel bans stop transport, energy demand, tourism, restaurants and leisure.</td><td>Exposed −</td></tr>
+  <tr><td><b>H2</b> Defensive industries fell less</td><td>Health care, pharmaceuticals and consumer staples face stable or higher demand.</td><td>Defensive +</td></tr>
+  <tr><td><b>H3</b> Financially constrained firms fell more</td><td>With a revenue stop, high debt and little cash raise the risk of a liquidity shortfall and distress.</td><td>Leverage −, Cash +</td></tr>
+  <tr><td><b>H4</b> Profitable firms fell less</td><td>Pre-crisis profitability signals margins that can absorb a shock and easier access to financing.</td><td>Profitability +</td></tr>
+  <tr><td><b>H5</b> Firms with better ESG ratings fell less</td><td>ESG quality may reflect better risk management and more loyal investors (the "resilience" argument).</td><td>ESG +</td></tr></table>
+  <p>Retail is treated with care: firms with physical stores and firms that sell online were affected differently, so retail is neither "exposed" nor "defensive".</p>
+</section>
+<section class="module" id="data">
+  <div class="modnum">3</div>
+  <h2>The data we would ideally need, and what FactSet gives</h2>
+  <table class="args"><tr><th>Concept</th><th>Ideal measure</th><th>FactSet item (code)</th><th>Comment</th></tr>
+  <tr><td>Universe</td><td>All French listed firms at the start of the crisis</td><td>Benchmark Constituents of the CAC All-Tradable on 20 February 2020 (<code>FG_CONSTITUENTS(02/20/2020)</code>, index <code>CACT-ENX</code>)</td><td>One formula returns the members of the index at that date, including the firms that have left the index or been delisted since. Taking today's members instead would drop those firms, often small and loss-making ones, and bias the sample towards survivors.</td></tr>
+  <tr><td>Performance</td><td>Total return, dividends included, over the window</td><td>Compounded total return (<code>P_TOTAL_RETURNC</code>)</td><td>The return is expressed in percent.</td></tr>
+  <tr><td>Industry</td><td>Industry classification</td><td>FactSet sector (<code>FG_FACTSET_SECTOR</code>)</td><td>The sector is used to define the exposed and defensive groups.</td></tr>
+  <tr><td>Leverage</td><td>Total debt / total assets, FY2019</td><td><code>FF_DEBT</code>, <code>FF_ASSETS</code></td><td>Not comparable for banks and insurers: they are excluded from the final sample (step 5).</td></tr>
+  <tr><td>Cash</td><td>Cash and short-term investments / total assets</td><td><code>FF_CASH_ST</code></td><td></td></tr>
+  <tr><td>Profitability</td><td>EBITDA / total assets</td><td><code>FF_EBITDA_OPER</code></td><td></td></tr>
+  <tr><td>Size</td><td>Log market value before the crisis</td><td><code>P_MARKET_VAL</code> at 12/31/2019</td><td>Market value of the listed share, in millions of euros for a Paris listing, measured before the crash. It exists also for the firms delisted since.</td></tr>
+  <tr><td>ESG</td><td>An ESG score for every firm</td><td>FTSE Russell ESG Rating (<code>FESG_RATING</code>, 0 to 5) at 12/31/2019</td><td>The rating goes from 0 to 5, and 5 is the best. It covers mostly large firms, so ESG is tested on the subsample of rated firms.</td></tr></table>
+</section>
+<section class="module" id="model">
+  <div class="modnum">4</div>
+  <h2>The regression</h2>
+  <div class="eq">CovidReturn<sub>i</sub> = α + β<sub>1</sub> Leverage<sub>i</sub> + β<sub>2</sub> Cash<sub>i</sub> + β<sub>3</sub> Profitability<sub>i</sub> + β<sub>4</sub> Size<sub>i</sub> + γ<sub>1</sub> Exposed<sub>i</sub> + γ<sub>2</sub> Defensive<sub>i</sub> (+ δ ESG<sub>i</sub>) + ε<sub>i</sub></div>
+  <p>CovidReturn<sub>i</sub>: total return of firm i from 20 February to 16 March 2020 (%). Exposed / Defensive: dummies equal to 1 for the firms of the exposed / defensive sectors. Estimated by OLS (Excel <code>LINEST</code>) in four specifications: (1) firm characteristics, (2) industry dummies, (3) both, (4) both plus ESG on the firms with an ESG rating.</p>
+</section>
+
+<section class="module" id="own">
+  <div class="modnum">5</div>
+  <h2>Your turn: run the project on your own</h2>
+  <p class="lead">Before opening the steps below, build the project yourself in Excel with FactSet 365, from the list of firms to the regressions. Think about each point.</p>
+  <ol class="steps">
+    <li><b>Universe.</b> Which index covers the largest set of French listed firms? Find its FactSet identifier and get, with one formula, its constituents at the start of the crisis rather than today. Why does the date of the list matter?</li>
+    <li><b>Performance.</b> Which measure of performance, over which window? Total return or price change? How do you write the dates in the FactSet request?</li>
+    <li><b>Firm characteristics.</b> Which items measure leverage, cash, profitability, size and ESG? For which fiscal year and which date, so that they are known <b>before</b> the crisis? In which unit and currency?</li>
+    <li><b>Industry.</b> How do you classify firms as exposed or defensive with the FactSet sector? Which sectors go in each group, and which do you leave out?</li>
+    <li><b>Sample.</b> Which firms have all the variables? What do you do with missing values? Should banks and insurers stay in a study that uses debt over assets? How many firms have an ESG rating?</li>
+    <li><b>Analysis.</b> Descriptive statistics and correlations; differences in mean return between groups (t-tests); OLS regressions with several specifications.</li>
+    <li><b>Conclusion.</b> Which hypotheses are supported, at which significance level, and what are the limits of your analysis?</li>
+  </ol>
+  <p>Then compare your work with the steps and their solutions below.</p>
+</section>
+
+<section class="module" id="steps">
+  <div class="modnum">6</div>
+  <h2>The steps and their solutions: one sheet each</h2>
+  <p>Download the workbook from the Files section, or build your own sheet by sheet. Each step names its sheet.</p>
+
+  <article class="test" id="s1">
+    <div class="test-head"><h3>Step 1 · Constituents of the CAC All-Tradable on 20 February 2020</h3></div>
+    <div class="obj"><b>The step asks for:</b> one row per member of the CAC All-Tradable index on 20 February 2020, with the company name and its FactSet sector (sheet <b>1_Constituents</b>).</div>
+    <div class="try"><h4>Your turn</h4><dl>
+      <dt>Where to look</dt><dd>Excel, <b>FactSet 365 › Insert Formula</b>: search <i>constituents</i>, then <i>company name</i> and <i>sector</i>.</dd>
+      <dt>Pay attention to</dt><dd><ul><li>The list comes from one formula on the index identifier: no download from the platform.</li><li>Ask for the members on the first day of the window, not today's members. Today's list misses the firms that left the index or were delisted after 2020, and it includes firms that joined later; a study of 2020 built on it would look only at the survivors.</li></ul></dd>
+      <dt>Expected result</dt><dd>Close to three hundred firms spill down, each with a name and a sector. That is more than in today's index, because many firms have left it since 2020.</dd>
+    </dl></div>
+    <details class="hint"><summary>Hint</summary><p>The item <b>Benchmark Constituents</b> (<code>FG_CONSTITUENTS</code>) reads the index in the identifier cell; the CAC All-Tradable is <code>CACT-ENX</code>. Without an argument it returns today's members. With a date in brackets, <code>FG_CONSTITUENTS(02/20/2020)</code>, it returns the members on that date.</p></details>
+    <details class="sol"><summary>Solution</summary>
+<pre><button type="button" class="copy">Copy</button>B3: CACT-ENX    B4: 02/20/2020
+A6: =FDS($B$3,"FG_CONSTITUENTS("&amp;$B$4&amp;")")
+B6: =IF($A6="","",IFERROR(FDS($A6,"FG_COMPANY_NAME"),""))
+C6: =IF($A6="","",IFERROR(FDS($A6,"FG_FACTSET_SECTOR"),""))</pre><p>The date in B4 is written MM/DD/YYYY, as in every FactSet request. A6 spills one identifier (SEDOL) per member, and B6:C6 are copied down. The solution workbook lists <b>294</b> firms on 20 February 2020.</p>
+    </details>
+    <label class="done-toggle"><input type="checkbox" id="done-1"> I have completed step 1</label>
+  </article>
+
+  <article class="test" id="s2">
+    <div class="test-head"><h3>Step 2 · Performance during the crash</h3></div>
+    <div class="obj"><b>The step asks for:</b> the total return of each firm from 20 February to 16 March 2020, in % (sheet <b>2_Returns</b>).</div>
+    <div class="try"><h4>Your turn</h4><dl>
+      <dt>Where to look</dt><dd>Insert Formula: search <i>total return</i>.</dd>
+      <dt>Pay attention to</dt><dd><ul><li>Total return includes dividends.</li><li>Dates inside the request are written MM/DD/YYYY; keep them in yellow cells so you can change the window.</li></ul></dd>
+      <dt>Expected result</dt><dd>Almost every firm has a negative return. A few firms have no price over the window, and their cell stays empty.</dd>
+    </dl></div>
+    <details class="hint"><summary>Hint</summary><p><code>P_TOTAL_RETURNC(start,end)</code>, the compounded total return between two dates, seen in Module 4.</p></details>
+    <details class="sol"><summary>Solution</summary>
+<pre><button type="button" class="copy">Copy</button>B3: 02/20/2020    B4: 03/16/2020
+B6: =IF($A6="","",IFERROR(FDS($A6,"P_TOTAL_RETURNC("&amp;$B$3&amp;","&amp;$B$4&amp;")"),""))</pre>
+    </details>
+    <label class="done-toggle"><input type="checkbox" id="done-2"> I have completed step 2</label>
+  </article>
+
+  <article class="test" id="s3">
+    <div class="test-head"><h3>Step 3 · Pre-crisis characteristics and ESG</h3></div>
+    <div class="obj"><b>The step asks for:</b> for fiscal year 2019: total debt, cash and short-term investments, EBITDA, total assets; the market value at 31 December 2019; the ESG rating at the same date (sheet <b>3_Fundamentals_ESG</b>).</div>
+    <div class="try"><h4>Your turn</h4><dl>
+      <dt>Where to look</dt><dd>Insert Formula: search <i>debt</i>, <i>cash</i>, <i>EBITDA</i>, <i>total assets</i>, <i>market value</i>, <i>FTSE ESG</i>.</dd>
+      <dt>Pay attention to</dt><dd><ul><li>Measure the characteristics <b>before</b> the crisis: fiscal year 2019, market value and ESG at end 2019.</li><li>Accounting values are in millions of the reporting currency: the ratios of step 4 remove the currency.</li><li>The FTSE Russell ESG rating covers mainly large firms.</li></ul></dd>
+      <dt>Expected result</dt><dd>Almost every firm has its accounting data, but only a minority has an ESG rating.</dd>
+    </dl></div>
+    <details class="hint"><summary>Hint</summary><p><code>FF_DEBT</code>, <code>FF_CASH_ST</code>, <code>FF_EBITDA_OPER</code>, <code>FF_ASSETS</code> with <code>(ANN,2019)</code>; <code>P_MARKET_VAL(12/31/2019)</code>; <code>FESG_RATING(12/31/2019,,,"ABS")</code>.</p></details>
+    <details class="sol"><summary>Solution</summary>
+<pre><button type="button" class="copy">Copy</button>B3: 2019    D3: 12/31/2019
+B6: =IF($A6="","",IFERROR(FDS($A6,"FF_DEBT(ANN,"&amp;$B$3&amp;")"),""))
+C6: same with FF_CASH_ST     D6: FF_EBITDA_OPER     E6: FF_ASSETS
+F6: =IF($A6="","",IFERROR(FDS($A6,"P_MARKET_VAL("&amp;$D$3&amp;")"),""))
+G6: =IF($A6="","",IFERROR(FDS($A6,"FESG_RATING("&amp;$D$3&amp;",,,""ABS"")"),""))</pre><table class='res'><tr><th>Item</th><th>Code</th><th>Meaning</th></tr><tr><td>Total Debt</td><td>FF_DEBT</td><td>short- and long-term debt</td></tr><tr><td>Cash & ST Investments</td><td>FF_CASH_ST</td><td>cash and short-term investments</td></tr><tr><td>EBITDA</td><td>FF_EBITDA_OPER</td><td>operating income before depreciation</td></tr><tr><td>Total Assets</td><td>FF_ASSETS</td><td>total assets</td></tr><tr><td>Market Value</td><td>P_MARKET_VAL(date)</td><td>market value of the listed share at the date, in millions of the trading currency (EUR in Paris)</td></tr><tr><td>FTSE ESG Rating</td><td>FESG_RATING(date,,,"ABS")</td><td>FTSE Russell ESG rating from 0 to 5 (absolute)</td></tr></table><p><b>The FTSE Russell ESG rating.</b> From 0 to 5; <b>5 is the best</b>. It is built from the firm's practices on environmental, social and governance themes (climate change, pollution, labour standards, human rights, anti-corruption, risk management…), each theme score weighted by how exposed the firm is to it given its business and countries. <code>"ABS"</code> asks for the absolute rating, comparable across industries; a relative rating compares a firm with the others of its industry. A missing value means FactSet has no FTSE Russell rating for the firm, not a rating of 0.</p>
+    </details>
+    <label class="done-toggle"><input type="checkbox" id="done-3"> I have completed step 3</label>
+  </article>
+
+  <article class="test" id="s4">
+    <div class="test-head"><h3>Step 4 · One dataset, the variables</h3></div>
+    <div class="obj"><b>The step asks for:</b> one row per firm with the return, leverage (debt / assets), cash ratio (cash / assets), profitability (EBITDA / assets), size (log of market value), ESG, the Exposed and Defensive dummies, and a flag for complete rows (sheet <b>4_Dataset</b>).</div>
+    <div class="try"><h4>Your turn</h4><dl>
+      <dt>Where to look</dt><dd>This step uses Excel only: no FactSet formula is needed, the data are already in the workbook.</dd>
+      <dt>Pay attention to</dt><dd><ul><li>Same row = same firm in every sheet: the identifiers of sheet 1 drive all the others, so no merge is needed.</li><li>A ratio with a missing input must stay empty, not 0.</li><li>Exposed: Transportation, Energy Minerals, Consumer Services. Defensive: Health Technology, Health Services, Consumer Non-Durables.</li></ul></dd>
+      <dt>Expected result</dt><dd>Most firms have all the variables except ESG. Far fewer have all the variables including ESG.</dd>
+    </dl></div>
+    <details class="hint"><summary>Hint</summary><p>Wrap each division in <code>IFERROR(…,"")</code> so that a missing input gives an empty cell. Take the natural logarithm of market value with <code>LN</code> for size. Build each dummy with <code>OR</code> on the sector names.</p></details>
+    <details class="sol"><summary>Solution</summary>
+<pre><button type="button" class="copy">Copy</button>E6: =IFERROR('3_Fundamentals_ESG'!B6/'3_Fundamentals_ESG'!E6,"")      leverage
+F6: =IFERROR('3_Fundamentals_ESG'!C6/'3_Fundamentals_ESG'!E6,"")      cash ratio
+G6: =IFERROR('3_Fundamentals_ESG'!D6/'3_Fundamentals_ESG'!E6,"")      profitability
+H6: =IFERROR(LN('3_Fundamentals_ESG'!F6),"")                       size
+J6: =IF(A6="","",IF(OR(C6="Transportation",C6="Energy Minerals",C6="Consumer Services"),1,0))
+L6: =IF(A6="","",IF(AND(ISNUMBER(D6),ISNUMBER(E6),ISNUMBER(F6),ISNUMBER(G6),ISNUMBER(H6)),1,0))</pre><p>In the solution workbook, <b>282</b> of the 294 firms are complete without ESG.</p>
+    </details>
+    <label class="done-toggle"><input type="checkbox" id="done-4"> I have completed step 4</label>
+  </article>
+
+  <article class="test" id="s5">
+    <div class="test-head"><h3>Step 5 · Final sample</h3></div>
+    <div class="obj"><b>The step asks for:</b> the complete rows only, without banks and insurers (sheet <b>5_Final_Sample</b>).</div>
+    <div class="try"><h4>Your turn</h4><dl>
+      <dt>Where to look</dt><dd>This step uses Excel only: no FactSet formula is needed, the data are already in the workbook.</dd>
+      <dt>Pay attention to</dt><dd><ul><li>Banks and insurers (FactSet sector Finance) finance themselves mostly with debt and deposits: their debt over assets does not measure the same thing as for other firms, so they are excluded.</li><li>ESG is not required: a firm without an ESG rating stays in the sample; ESG is tested on the rated firms only (step 8).</li></ul></dd>
+      <dt>Expected result</dt><dd>The final sample has fewer firms than step 4, and about a quarter of them have an ESG rating.</dd>
+    </dl></div>
+    <details class="hint"><summary>Hint</summary><p>Use <code>FILTER</code> with two conditions multiplied together: the row is complete, and the sector is different from Finance.</p></details>
+    <details class="sol"><summary>Solution</summary>
+<pre><button type="button" class="copy">Copy</button>A6: =FILTER('4_Dataset'!A6:K405,('4_Dataset'!L6:L405=1)*('4_Dataset'!C6:C405&lt;&gt;"Finance"),"")
+N3: =COUNTA(A6:A405)       observations
+N4: =COUNT(I6:I405)        firms with an ESG rating</pre><p>In the solution workbook: <b>256</b> firms, of which <b>69</b> with an ESG rating.</p>
+    </details>
+    <label class="done-toggle"><input type="checkbox" id="done-5"> I have completed step 5</label>
+  </article>
+
+  <article class="test" id="s6">
+    <div class="test-head"><h3>Step 6 · Summary statistics</h3></div>
+    <div class="obj"><b>The step asks for:</b> the number of observations, mean, standard deviation, minimum, quartiles and maximum of each variable, and the correlation matrix (sheet <b>6_Summary_Stats</b>).</div>
+    <div class="try"><h4>Your turn</h4><dl>
+      <dt>Where to look</dt><dd>This step uses Excel only: no FactSet formula is needed, the data are already in the workbook.</dd>
+      <dt>Pay attention to</dt><dd><ul><li>Exposed = 1 for Transportation, Energy Minerals and Consumer Services (airlines, transport, oil and gas, hotels, restaurants, leisure); Defensive = 1 for Health Technology, Health Services and Consumer Non-Durables (pharmaceuticals, medical devices, health care, food, beverages, household products); 0 otherwise.</li><li>ESG has fewer observations: compute its statistics and correlations on the firms that have a rating.</li></ul></dd>
+      <dt>Expected result</dt><dd>The average firm lost a large part of its value, and the correlations between the return and each characteristic are weak.</dd>
+    </dl></div>
+    <details class="hint"><summary>Hint</summary><p>Use <code>COUNT</code> for the number of observations, <code>AVERAGE</code> and <code>STDEV.S</code> for the mean and standard deviation, <code>QUARTILE.INC</code> and <code>MEDIAN</code> for the distribution, and <code>CORREL</code> for each pair of variables.</p></details>
+    <details class="sol"><summary>Solution</summary>
+<pre><button type="button" class="copy">Copy</button>C5: =AVERAGE(FILTER(x,ISNUMBER(x)))      x = the column of the final sample, first N rows
+B15: =CORREL(FILTER(x,ISNUMBER(x)*ISNUMBER(y)),FILTER(y,ISNUMBER(x)*ISNUMBER(y)))</pre><table class='res'><tr><th>Dummy</th><th>Firms = 1</th><th>Share</th></tr><tr><td>Exposed</td><td>23</td><td>9.0%</td></tr><tr><td>Defensive</td><td>52</td><td>20.3%</td></tr></table><table class='res'><tr><th></th><th>N</th><th>Mean</th><th>SD</th><th>Min</th><th>P25</th><th>Median</th><th>P75</th><th>Max</th></tr><tr><td>Covid Return</td><td>256</td><td>-37.917</td><td>12.734</td><td>-72.764</td><td>-46.872</td><td>-38.683</td><td>-31.086</td><td>10.072</td></tr><tr><td>Leverage</td><td>256</td><td>0.287</td><td>0.185</td><td>0.000</td><td>0.162</td><td>0.263</td><td>0.374</td><td>1.300</td></tr><tr><td>Cash ratio</td><td>256</td><td>0.170</td><td>0.157</td><td>0.005</td><td>0.073</td><td>0.126</td><td>0.198</td><td>0.893</td></tr><tr><td>Profitability</td><td>256</td><td>0.030</td><td>0.214</td><td>-1.169</td><td>0.048</td><td>0.088</td><td>0.122</td><td>0.420</td></tr><tr><td>Size</td><td>256</td><td>6.416</td><td>2.514</td><td>0.533</td><td>4.455</td><td>6.278</td><td>8.431</td><td>12.252</td></tr><tr><td>ESG</td><td>69</td><td>3.762</td><td>0.679</td><td>2.000</td><td>3.300</td><td>3.900</td><td>4.300</td><td>4.800</td></tr></table><table class='res'><tr><th></th><th>Covid Return</th><th>Leverage</th><th>Cash ratio</th><th>Profitability</th><th>Size</th><th>ESG</th></tr><tr><td>Covid Return</td><td>1.00</td><td>-0.12</td><td>-0.08</td><td>0.16</td><td>0.05</td><td>0.01</td></tr><tr><td>Leverage</td><td>-0.12</td><td>1.00</td><td>-0.20</td><td>0.03</td><td>0.04</td><td>0.01</td></tr><tr><td>Cash ratio</td><td>-0.08</td><td>-0.20</td><td>1.00</td><td>-0.49</td><td>-0.24</td><td>-0.13</td></tr><tr><td>Profitability</td><td>0.16</td><td>0.03</td><td>-0.49</td><td>1.00</td><td>0.37</td><td>-0.18</td></tr><tr><td>Size</td><td>0.05</td><td>0.04</td><td>-0.24</td><td>0.37</td><td>1.00</td><td>0.28</td></tr><tr><td>ESG</td><td>0.01</td><td>0.01</td><td>-0.13</td><td>-0.18</td><td>0.28</td><td>1.00</td></tr></table><p><b>First reading against the hypotheses.</b> The correlations with the Covid Return are all small. Leverage (−0.12) and profitability (+0.16) have the signs expected by H3a and H4. Cash (−0.08) has the sign opposite to H3b. ESG (+0.01) is not related to the return at all, on the rated firms only (H5). Cash is negatively correlated with profitability (−0.49) and with size (−0.24): the firms with the most cash are often small and loss-making. Profitability is positively correlated with size (+0.37). Because these variables move together, the regressions must hold them together. The dummies show that about one firm in eleven is exposed and one in five is defensive.</p>
+    </details>
+    <label class="done-toggle"><input type="checkbox" id="done-6"> I have completed step 6</label>
+  </article>
+
+  <article class="test" id="s7">
+    <div class="test-head"><h3>Step 7 · t-tests and industry distribution</h3></div>
+    <div class="obj"><b>The step asks for:</b> the number of firms and the mean and median return of each sector; t-tests of the difference in mean return between exposed and other firms, defensive and other firms, and between the firms above and below the median of leverage, cash, profitability, size and ESG (sheet <b>7_TTests_Industry</b>).</div>
+    <div class="try"><h4>Your turn</h4><dl>
+      <dt>Where to look</dt><dd>This step uses Excel only: no FactSet formula is needed, the data are already in the workbook.</dd>
+      <dt>Pay attention to</dt><dd><ul><li>Two-tailed t-test with unequal variances: <code>T.TEST(group1,group2,2,3)</code>.</li><li>A sector with few firms gives a fragile mean.</li></ul></dd>
+      <dt>Expected result</dt><dd>Consumer staples are the least affected sector, and defensive firms did significantly better than the others.</dd>
+    </dl></div>
+    <details class="hint"><summary>Hint</summary><p>Build the list of sectors with <code>SORTBY(UNIQUE(sector),COUNTIF(…),-1)</code>, the mean return of each sector with <code>AVERAGEIF</code>, each group with <code>FILTER</code>, and compare two groups with <code>T.TEST</code>.</p></details>
+    <details class="sol"><summary>Solution</summary>
+<pre><button type="button" class="copy">Copy</button>A5: =SORTBY(UNIQUE(sector),COUNTIF(sector,UNIQUE(sector)),-1)
+C5: =AVERAGEIF(sector,A5,return)
+J5: =T.TEST(FILTER(return,exposed=1),FILTER(return,exposed=0),2,3)</pre><table class='res'><tr><th>Sector</th><th>Firms</th><th>Mean return (%)</th><th>Median (%)</th></tr><tr><td>Technology Services</td><td>35</td><td>-32.46</td><td>-33.66</td></tr><tr><td>Electronic Technology</td><td>33</td><td>-41.17</td><td>-42.83</td></tr><tr><td>Health Technology</td><td>32</td><td>-35.77</td><td>-36.16</td></tr><tr><td>Commercial Services</td><td>26</td><td>-39.85</td><td>-38.28</td></tr><tr><td>Producer Manufacturing</td><td>23</td><td>-38.85</td><td>-39.20</td></tr><tr><td>Consumer Non-Durables</td><td>16</td><td>-29.88</td><td>-27.61</td></tr><tr><td>Consumer Services</td><td>14</td><td>-39.44</td><td>-37.83</td></tr><tr><td>Consumer Durables</td><td>13</td><td>-39.41</td><td>-42.86</td></tr><tr><td>Retail Trade</td><td>9</td><td>-41.80</td><td>-47.76</td></tr><tr><td>Process Industries</td><td>9</td><td>-36.65</td><td>-36.08</td></tr><tr><td>Industrial Services</td><td>8</td><td>-48.81</td><td>-45.11</td></tr><tr><td>Utilities</td><td>8</td><td>-35.10</td><td>-39.03</td></tr><tr><td>Distribution Services</td><td>7</td><td>-42.07</td><td>-46.93</td></tr><tr><td>Transportation</td><td>6</td><td>-39.86</td><td>-38.29</td></tr><tr><td>Non-Energy Minerals</td><td>6</td><td>-46.91</td><td>-46.18</td></tr><tr><td>Communications</td><td>4</td><td>-34.29</td><td>-31.50</td></tr><tr><td>Health Services</td><td>4</td><td>-34.99</td><td>-35.02</td></tr><tr><td>Energy Minerals</td><td>3</td><td>-41.97</td><td>-45.53</td></tr></table><table class='res'><tr><th>Comparison</th><th>Group 1</th><th>Group 2</th><th>Difference</th><th>p-value</th><th>N1 / N2</th></tr><tr><td>Exposed sectors vs others</td><td>-39.88</td><td>-37.72</td><td>-2.16</td><td>0.444 </td><td>23 / 233</td></tr><tr><td>Defensive sectors vs others</td><td>-33.90</td><td>-38.94</td><td>5.05</td><td>0.026 **</td><td>52 / 204</td></tr><tr><td>High vs low leverage (median split)</td><td>-38.66</td><td>-37.18</td><td>-1.48</td><td>0.353 </td><td>128 / 128</td></tr><tr><td>High vs low cash ratio</td><td>-39.42</td><td>-36.42</td><td>-3.00</td><td>0.060 *</td><td>128 / 128</td></tr><tr><td>High vs low profitability</td><td>-37.03</td><td>-38.81</td><td>1.78</td><td>0.265 </td><td>128 / 128</td></tr><tr><td>Large vs small firms</td><td>-38.02</td><td>-37.82</td><td>-0.20</td><td>0.899 </td><td>128 / 128</td></tr><tr><td>High vs low ESG rating (rated firms)</td><td>-36.70</td><td>-36.80</td><td>0.10</td><td>0.971 </td><td>34 / 35</td></tr></table><h4>What the t-tests say about the hypotheses</h4>
+<p>Each t-test compares two groups of firms as they are, without holding anything else constant. Group 1 is the exposed, defensive or above-median group; the difference is group 1 minus group 2, in percentage points of return.</p>
+<ul>
+<li><b>H1:</b> exposed firms lost about 2 points more than the others, which is the expected sign, but the difference is not significant (p = 0.44). The exposed group is small, with about twenty firms.</li>
+<li><b>H2:</b> defensive firms lost about 5 points less than the others, and the difference is significant at 5% (p = 0.026). This is the clearest result of the t-tests.</li>
+<li><b>H3a:</b> the more indebted half of the sample lost about 1.5 points more than the less indebted half, which is the expected sign, but the difference is not significant (p = 0.35).</li>
+<li><b>H3b:</b> the half with more cash lost about 3 points more than the other half. This is the opposite of H3b, and the difference is significant at 10% only (p = 0.060).</li>
+<li><b>H4:</b> the more profitable half lost about 1.8 points less than the less profitable half, which is the expected sign, but the difference is not significant (p = 0.26).</li>
+<li><b>H5:</b> among the rated firms, those above the median ESG rating did no better than those below it (p = 0.97).</li>
+</ul>
+<p>A split at the median hides what happens in the tails. The effect of leverage and profitability comes mostly from the firms at the extremes, the most indebted and the loss-making ones, and comparing two halves dilutes them among many average firms. The regressions of step 8 use the actual values of each variable and hold the others constant.</p>
+    </details>
+    <label class="done-toggle"><input type="checkbox" id="done-7"> I have completed step 7</label>
+  </article>
+
+  <article class="test" id="s8">
+    <div class="test-head"><h3>Step 8 · Regression analysis</h3></div>
+    <div class="obj"><b>The step asks for:</b> the OLS regression of the crisis return in four specifications: (1) firm characteristics, (2) industry dummies, (3) both, (4) both plus ESG on the firms with a rating; coefficients, standard errors, t-statistics, p-values, R² and observations (sheet <b>8_Regressions</b>).</div>
+    <div class="try"><h4>Your turn</h4><dl>
+      <dt>Where to look</dt><dd>This step uses Excel only, with the function <code>LINEST</code>.</dd>
+      <dt>Pay attention to</dt><dd><ul><li><code>LINEST(y,X,TRUE,TRUE)</code> returns 5 rows; the columns of X come back in <b>reverse order</b>, the constant last.</li><li>t = coefficient / standard error; p-value = <code>T.DIST.2T(ABS(t),df)</code>, df in row 4, column 2 of LINEST.</li><li>Specification 4 uses only the firms with an ESG rating: compare it with specification 3 before concluding.</li></ul></dd>
+      <dt>Expected result</dt><dd>Each block of variables alone gives a low R². Together they explain more, and the defensive dummy, leverage and profitability come out significant.</dd>
+    </dl></div>
+    <details class="hint"><summary>Hint</summary><p><code>HSTACK</code> puts the explanatory variables side by side; <code>INDEX</code> reads each cell of the LINEST output.</p></details>
+    <details class="sol"><summary>Solution</summary>
+<pre><button type="button" class="copy">Copy</button>J5: =LINEST(return,HSTACK(leverage,cash,profitability,size),TRUE,TRUE)
+B6: =INDEX($J$5:$N$9,1,4)      coefficient of leverage (first X column = last LINEST column)
+C6: =INDEX($J$5:$N$9,2,4)      standard error
+D6: =B6/C6                     t-stat
+E6: =T.DIST.2T(ABS(D6),INDEX($J$5:$N$9,4,2))   p-value</pre><p>* p < 0.10, ** p < 0.05, *** p < 0.01.</p><h4>(1) Firm characteristics</h4><table class='res'><tr><th>Variable</th><th>Coefficient</th><th>Std. error</th><th>t</th><th>p</th></tr><tr><td>Leverage</td><td>-8.724 **</td><td>4.356</td><td>-2.00</td><td>0.046</td></tr><tr><td>Cash ratio</td><td>-2.965 </td><td>5.889</td><td>-0.50</td><td>0.615</td></tr><tr><td>Profitability</td><td>8.944 **</td><td>4.431</td><td>2.02</td><td>0.045</td></tr><tr><td>Size</td><td>-0.062 </td><td>0.338</td><td>-0.18</td><td>0.854</td></tr><tr><td>Constant</td><td>-34.778 ***</td><td>2.938</td><td>-11.84</td><td>0.000</td></tr><tr><td>R²</td><td>0.041</td><td></td><td></td><td></td></tr><tr><td>Observations</td><td>256</td><td></td><td></td><td></td></tr></table><h4>(2) Industry exposure</h4><table class='res'><tr><th>Variable</th><th>Coefficient</th><th>Std. error</th><th>t</th><th>p</th></tr><tr><td>Exposed</td><td>-1.058 </td><td>2.793</td><td>-0.38</td><td>0.705</td></tr><tr><td>Defensive</td><td>4.927 **</td><td>1.985</td><td>2.48</td><td>0.014</td></tr><tr><td>Constant</td><td>-38.823 ***</td><td>0.938</td><td>-41.40</td><td>0.000</td></tr><tr><td>R²</td><td>0.026</td><td></td><td></td><td></td></tr><tr><td>Observations</td><td>256</td><td></td><td></td><td></td></tr></table><h4>(3) Both</h4><table class='res'><tr><th>Variable</th><th>Coefficient</th><th>Std. error</th><th>t</th><th>p</th></tr><tr><td>Leverage</td><td>-9.385 **</td><td>4.218</td><td>-2.23</td><td>0.027</td></tr><tr><td>Cash ratio</td><td>-7.780 </td><td>5.804</td><td>-1.34</td><td>0.181</td></tr><tr><td>Profitability</td><td>15.415 ***</td><td>4.534</td><td>3.40</td><td>0.001</td></tr><tr><td>Size</td><td>-0.300 </td><td>0.332</td><td>-0.90</td><td>0.366</td></tr><tr><td>Exposed</td><td>-1.811 </td><td>2.708</td><td>-0.67</td><td>0.504</td></tr><tr><td>Defensive</td><td>9.049 ***</td><td>2.136</td><td>4.24</td><td>0.000</td></tr><tr><td>Constant</td><td>-34.109 ***</td><td>2.854</td><td>-11.95</td><td>0.000</td></tr><tr><td>R²</td><td>0.110</td><td></td><td></td><td></td></tr><tr><td>Observations</td><td>256</td><td></td><td></td><td></td></tr></table><h4>(4) Both + ESG (firms with an FTSE ESG rating)</h4><table class='res'><tr><th>Variable</th><th>Coefficient</th><th>Std. error</th><th>t</th><th>p</th></tr><tr><td>Leverage</td><td>-6.028 </td><td>10.460</td><td>-0.58</td><td>0.567</td></tr><tr><td>Cash ratio</td><td>1.728 </td><td>17.200</td><td>0.10</td><td>0.920</td></tr><tr><td>Profitability</td><td>45.414 </td><td>31.248</td><td>1.45</td><td>0.151</td></tr><tr><td>Size</td><td>-0.605 </td><td>1.499</td><td>-0.40</td><td>0.688</td></tr><tr><td>Exposed</td><td>-4.345 </td><td>4.289</td><td>-1.01</td><td>0.315</td></tr><tr><td>Defensive</td><td>11.058 ***</td><td>3.938</td><td>2.81</td><td>0.007</td></tr><tr><td>ESG</td><td>1.369 </td><td>2.021</td><td>0.68</td><td>0.501</td></tr><tr><td>Constant</td><td>-41.094 **</td><td>15.623</td><td>-2.63</td><td>0.011</td></tr><tr><td>R²</td><td>0.264</td><td></td><td></td><td></td></tr><tr><td>Observations</td><td>69</td><td></td><td></td><td></td></tr></table><h4>What the regressions say about the hypotheses</h4>
+<p>H1 to H4 are read in specification 3 (all firms, industry and financial characteristics together, R² 0.110); H5 in specification 4 (the 69 firms with an ESG rating).</p>
+<ul>
+<li><b>H1, exposed sectors fell more:</b> Exposed −1.81 (p = 0.504). The sign is the expected one, but the effect is small and not significant, so H1 is not supported. Only a few firms are in the exposed group, and the FactSet sector Consumer Services mixes hotels and restaurants with media and publishing firms, which were much less affected.</li>
+<li><b>H2, defensive sectors fell less:</b> Defensive +9.05 (p < 0.001). The sign is the expected one and the effect is significant at 1%, so H2 is supported: with the same financial characteristics, defensive firms lost about 9 points less than the others.</li>
+<li><b>H3a, high leverage, worse return:</b> Leverage −9.38 (p = 0.027). The sign is the expected one and the effect is significant at 5%, so H3a is supported: a firm with 10 points more debt over assets lost almost 1 point more.</li>
+<li><b>H3b, high cash, better return:</b> Cash −7.78 (p = 0.181). The sign is the opposite of H3b, but the effect is not significant, so H3b is not supported. The firms with the most cash are mostly loss-making biotech firms (cash and profitability have a correlation of −0.49); once profitability is in the model, cash adds little information of its own.</li>
+<li><b>H4, profitable firms fell less:</b> Profitability +15.42 (p < 0.001). The sign is the expected one and the effect is significant at 1%, so H4 is supported: 10 more points of EBITDA over assets go with a return about 1.5 points better.</li>
+<li><b>H5, better ESG rating, better return:</b> ESG +1.37 (p = 0.501) in specification 4. The effect is not significant, so H5 is not supported.</li>
+</ul>
+<p><b>Why the date of the list matters.</b> With today's members of the index instead of the members of February 2020, leverage and profitability were not significant and the cash coefficient was significantly negative. The firms that have left the index since 2020 are a large part of the sample, and they are smaller and more often loss-making than the others. Leaving them out removes precisely the firms where leverage and profitability made a difference, and changes the conclusions on H3 and H4.</p>
+    </details>
+    <label class="done-toggle"><input type="checkbox" id="done-8"> I have completed step 8</label>
+  </article>
+
+  <article class="test" id="s9">
+    <div class="test-head"><h3>Step 9 · Which hypotheses are supported? Conclusion</h3></div>
+    <div class="obj"><b>The step asks for:</b> for each hypothesis, the coefficient and p-value of specification 3 (specification 4 for ESG), the verdict at 5% and at 10%, and a short conclusion that discusses the limits (sheet <b>9_Hypotheses</b>).</div>
+    <div class="try"><h4>Your turn</h4><dl>
+      <dt>Where to look</dt><dd>Use the results of sheets 7 (t-tests) and 8 (regressions).</dd>
+      <dt>Pay attention to</dt><dd><ul><li>Supported = significant with the expected sign. A significant coefficient with the opposite sign contradicts the hypothesis.</li><li>Read the t-tests and the regressions together: an effect can be invisible in a t-test and appear in the regression once the other variables are held constant, or the reverse.</li></ul></dd>
+      <dt>Expected result</dt><dd>Defensive firms, low leverage and high profitability go with a smaller loss; exposed sectors, cash and ESG find no support.</dd>
+    </dl></div>
+    <details class="hint"><summary>Hint</summary><p><code>IF(p&lt;0.05,IF(SIGN(coefficient)=expected sign,"Supported","Opposite sign"),"Not supported")</code></p></details>
+    <details class="sol"><summary>Solution</summary>
+<table class='res'><tr><th></th><th>Hypothesis</th><th>Sign</th><th>Coefficient</th><th>p</th><th>Verdict 5%</th><th>Verdict 10%</th></tr><tr><td>H1</td><td>Exposed sectors (transport, energy, tourism) fell more</td><td>-</td><td>-1.811</td><td>0.504</td><td>Not supported</td><td>Not supported</td></tr><tr><td>H2</td><td>Defensive sectors (health, staples) fell less</td><td>+</td><td>9.049</td><td>0.000</td><td>Supported</td><td>Supported</td></tr><tr><td>H3a</td><td>High leverage: worse return</td><td>-</td><td>-9.385</td><td>0.027</td><td>Supported</td><td>Supported</td></tr><tr><td>H3b</td><td>High cash holdings: better return</td><td>+</td><td>-7.780</td><td>0.181</td><td>Not supported</td><td>Not supported</td></tr><tr><td>H4</td><td>High pre-crisis profitability: better return</td><td>+</td><td>15.415</td><td>0.001</td><td>Supported</td><td>Supported</td></tr><tr><td>H5</td><td>Higher ESG rating: better return (resilience)</td><td>+</td><td>1.369</td><td>0.501</td><td>Not supported</td><td>Not supported</td></tr></table><h4>Conclusion of the solution</h4>
+<ul>
+<li><b>Industry: H2 is supported, H1 is not.</b> Defensive firms (health, consumer staples) lost about 9 points less than the others with the same financial characteristics, significant at 1%; the t-test gives the same picture. Exposed firms did not fall significantly more, in the t-test or in the regression. The exposed group is small, and the FactSet sector Consumer Services also contains media and publishing firms, which dilutes the effect of hotels, restaurants and leisure.</li>
+<li><b>Financial constraints: H3a is supported, H3b is not.</b> Holding profitability, size and industry constant, the more indebted firms lost more (significant at 5%), as expected when revenue stops and debt must still be served. Cash has the sign opposite to H3b but is not significant: the firms with the most cash are mostly loss-making biotech firms, and their cash says more about their business model than about their resilience.</li>
+<li><b>Profitability: H4 is supported, although the t-test did not show it.</b> The two tools answer different questions. The t-test compares the more and the less profitable halves of the sample as they are, and finds a small difference that is not significant. The regression finds a strong effect for two reasons. First, it uses the actual values: the less profitable half is mostly made of profitable firms, and the loss-making firms, which lost about 41% against 37% for the others, are diluted among them. Second, it holds industry constant: about half of the defensive firms are loss-making biotech or medtech firms, and the good performance of the defensive group as a whole hides their losses in a simple comparison. Once the Defensive dummy captures the industry bonus, the effect of profitability appears clearly.</li>
+<li><b>ESG: H5 is not supported.</b> The ESG rating has no effect on the firms it covers, neither in the t-test nor in specification 4.</li>
+<li><b>The date of the list changes the conclusions.</b> With today's members of the index, leverage and profitability were not significant. The firms that have left the index since 2020 are smaller and more often loss-making; dropping them biases the sample towards survivors and hides the role of financial health in the crash.</li>
+<li><b>Fit.</b> The R² stays low, about 0.11 in specification 3. Most of the crash was common to all firms: all firms but three fell, and the median firm lost about 39%. The characteristics in the model explain only a small part of the differences between firms; the rest comes from factors that the model does not capture.</li>
+<li><b>Limits.</b> Several limits call for caution when reading these results.
+<ul>
+<li>The event window is short: it covers less than a month, from 20 February to 16 March 2020. It captures the panic of the crash, not the recovery that followed, and a firm that fell sharply may have recovered quickly afterwards.</li>
+<li>The FactSet sector is only a rough measure of a firm's exposure to the pandemic. All firms of a sector receive the same dummy, although they can be affected very differently: Health Technology mixes pharmaceutical groups and loss-making biotech firms, and Consumer Services mixes hotels and restaurants with media.</li>
+<li>Banks and insurers are excluded because debt over assets does not measure the same thing for them. The results therefore say nothing about the financial sector.</li>
+<li>The FTSE Russell ESG rating covers only about a quarter of the sample, mostly large firms. The test of H5 rests on a small group of firms that is not representative of the whole index.</li>
+<li>The regressions measure correlations, not causal effects. A coefficient tells us that firms with a given characteristic did better or worse on average, not that this characteristic caused the difference: another variable that is not in the model may explain both.</li>
+</ul></li>
+</ul>
+    </details>
+    <label class="done-toggle"><input type="checkbox" id="done-9"> I have completed step 9</label>
+  </article>
+</section>
+
+<section class="module" id="files">
+  <div class="modnum">Files</div>
+  <h2>Files</h2>
+  <p class="files"><a class="dl" href="covid_project.xlsx">Solution workbook covid_project.xlsx</a> <a class="dl" href="covid_final_sample.csv">Final sample covid_final_sample.csv</a> <a class="dl" href="covid_dataset_raw.csv">Raw dataset covid_dataset_raw.csv</a></p>
+  <p>The workbook keeps the FactSet formulas: sign in to FactSet 365 and refresh (FactSet 365 › Refresh › Workbook) to update it. The CSV files hold the frozen data of the solution, ready for Stata, R or Python.</p>
+  <p>Shortcuts: copy a formula down with <span class="win-only"><kbd>Ctrl</kbd>+<kbd>D</kbd></span><span class="mac-only"><kbd>⌘ Cmd</kbd>+<kbd>D</kbd></span>; paste values only with <span class="win-only"><kbd>Ctrl</kbd>+<kbd>Alt</kbd>+<kbd>V</kbd> › Values</span><span class="mac-only"><kbd>Ctrl</kbd>+<kbd>⌘ Cmd</kbd>+<kbd>V</kbd> › Values</span>.</p>
+</section>
+</main>
+</div>
+<script>
+(function(){
+  var store={get:function(k){try{return localStorage.getItem(k)}catch(e){return null}},
+             set:function(k,v){try{localStorage.setItem(k,v)}catch(e){}}};
+  function setOS(os){
+    document.body.classList.remove('os-win','os-mac');
+    document.body.classList.add('os-'+os);
+    document.querySelectorAll('.seg button').forEach(function(b){b.setAttribute('aria-pressed',b.dataset.os===os?'true':'false');});
+    store.set('fds-course-os',os);
+  }
+  var saved=store.get('fds-course-os');
+  if(!saved){saved=/Mac|iPhone|iPad/.test(navigator.platform||navigator.userAgent)?'mac':'win';}
+  setOS(saved);
+  document.querySelectorAll('.seg button').forEach(function(b){b.addEventListener('click',function(){setOS(b.dataset.os);});});
+
+  var prog=document.getElementById('progress');
+  function refresh(){
+    var n=0;
+    for(var i=1;i<=14;i++){
+      var cb=document.getElementById('done-'+i),on=cb?cb.checked:store.get('covid-done-'+i)==='1';
+      if(on)n++;
+      var link=document.querySelector('nav.toc a[data-t="'+i+'"]');
+      if(link)link.classList.toggle('done',!!on);
+    }
+    if(prog)prog.textContent=n+' / 14 tests done';
+  }
+  document.querySelectorAll('.done-toggle input').forEach(function(cb){
+    cb.checked=store.get('covid-'+cb.id)==='1';
+    cb.addEventListener('change',function(){store.set('covid-'+cb.id,cb.checked?'1':'0');refresh();});
+  });
+  refresh();
+
+  document.querySelectorAll('pre .copy').forEach(function(btn){
+    btn.addEventListener('click',function(){
+      var text=btn.parentElement.innerText.replace(/^Cop(y|ier)\s*/,'');
+      if(navigator.clipboard){navigator.clipboard.writeText(text).then(function(){btn.textContent='Copied';setTimeout(function(){btn.textContent='Copy'},1500);},function(){btn.textContent='Select & copy';});}
+    });
+  });
+
+  var links=Array.prototype.slice.call(document.querySelectorAll('nav.toc a[href^="#"]'));
+  if('IntersectionObserver' in window){
+    var obs=new IntersectionObserver(function(entries){
+      entries.forEach(function(en){
+        if(en.isIntersecting){links.forEach(function(a){a.classList.toggle('active',a.getAttribute('href')==='#'+en.target.id);});}
+      });
+    },{rootMargin:'-70px 0px -70% 0px'});
+    links.forEach(function(a){var t=document.querySelector(a.getAttribute('href'));if(t)obs.observe(t);});
+  }
+})();
+
+</script>
+</body>
+</html>
