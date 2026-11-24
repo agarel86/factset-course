@@ -35,7 +35,7 @@ b,strong{color:var(--navy);font-weight:700}
 code,kbd{font-family:var(--mono);font-size:.88em}
 code{background:var(--grey-050);color:var(--navy);padding:.1em .4em;border-radius:6px;overflow-wrap:anywhere}
 kbd{border:1px solid var(--grey-200);border-bottom-width:2px;border-radius:6px;padding:.05em .45em;background:#fff;color:var(--navy);white-space:nowrap}
-pre{background:var(--navy);color:#fff;border-radius:1rem;padding:1rem 1.2rem;overflow-x:auto;font-family:var(--mono);font-size:.86rem;line-height:1.55;margin:.8rem 0}
+pre{background:var(--navy);color:#fff;border-radius:1rem;padding:1rem 1.2rem;white-space:pre-wrap;overflow-wrap:anywhere;font-family:var(--mono);font-size:.86rem;line-height:1.55;margin:.8rem 0}code{overflow-wrap:anywhere}
 pre code{background:none;color:inherit}
 
 /* header */
@@ -126,7 +126,7 @@ details{border-radius:1rem;padding:10px 16px;margin:10px 0;background:var(--grey
 details summary{cursor:pointer;font-weight:700;color:var(--navy)}
 .cols2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
 @media (max-width:700px){.cols2{grid-template-columns:1fr}}
-.copy{float:right;font:inherit;font-size:.75rem;font-weight:600;border:0;background:var(--sky);color:var(--navy);border-radius:999px;padding:2px 12px;cursor:pointer;margin:-2px -4px 0 8px}
+.copy{display:block;float:none;position:sticky;left:100%;font:inherit;font-size:.75rem;font-weight:600;border:0;background:var(--sky);color:var(--navy);border-radius:999px;padding:2px 12px;cursor:pointer;margin:0 0 .5rem auto}
 
 /* screenshots and data tour */
 figure.shot{margin:16px 0;border-radius:1rem;overflow:hidden;background:var(--grey-050);border:1px solid var(--grey-200)}
@@ -176,6 +176,7 @@ article.data h3{margin-top:0}
 .rx-none{font-size:.88rem;font-style:italic}
 .rx-note{font-size:.9rem}
 @media (max-width:900px){.rx{grid-template-columns:1fr}.rx-panel{position:static}}
+table.illus{width:auto;margin:.5rem 0 .6rem;background:#fff;border-collapse:collapse}table.illus td,table.illus th{border:1px solid var(--grey-200);padding:3px 12px;font-family:var(--mono);font-size:.82rem;white-space:nowrap}table.illus th{background:var(--grey-050);color:var(--navy)}
 </style>
 </head>
 <body class="os-win">
@@ -219,6 +220,7 @@ article.data h3{margin-top:0}
     <li class="sub"><a href="data-2.html#d-rel">Chaîne d'approvisionnement &amp; chiffre d'affaires</a></li>
     <li class="sub"><a href="data-3.html#d-esg">ESG</a></li>
     <li class="sub"><a href="data-3.html#d-opt">Options</a></li>
+    <li><a href="data-3.html#beyond">Au-delà d'une entreprise : fonds, marchés et screening</a></li>
     <li class="sub"><a href="data-3.html#d-fund">Fonds &amp; ETF</a></li>
     <li class="sub"><a href="data-3.html#d-macro">Marchés &amp; économie</a></li>
     <li class="sub"><a href="data-3.html#d-screen">Screening</a></li>
@@ -229,9 +231,9 @@ article.data h3{margin-top:0}
     <li class="part">Partie III · Construire des échantillons</li>
     <li><a href="tests.html#method">5. Méthode</a></li>
     <li><a href="tests.html#tests">6. Les 14 tests</a></li>
-    <li class="sub"><a href="tests.html#t1" data-t="1">1 · Apple : cours, rentabilités, graphique</a></li>
+    <li class="sub"><a href="tests.html#t1" data-t="1">1 · Apple : cours quotidiens</a></li>
     <li class="sub"><a href="tests.html#t2" data-t="2">2 · Obligations vertes françaises, coupon</a></li>
-    <li class="sub"><a href="tests.html#t3" data-t="3">3 · Fusions-acquisitions France 2024</a></li>
+    <li class="sub"><a href="tests.html#t3" data-t="3">3 · M&amp;A France 2024</a></li>
     <li class="sub"><a href="tests.html#t4" data-t="4">4 · Le portefeuille d'un fonds et l'ESG</a></li>
     <li class="sub"><a href="tests.html#t5" data-t="5">5 · BPA (EPS) FY1 de MSFT, tous les analystes</a></li>
     <li class="sub"><a href="tests.html#t6" data-t="6">6 · Panel de données fondamentales</a></li>
@@ -240,7 +242,7 @@ article.data h3{margin-top:0}
     <li class="sub"><a href="tests.html#t9" data-t="9">9 · Actualité de Tesla</a></li>
     <li class="sub"><a href="tests.html#t10" data-t="10">10 · Actualité ESG de TotalEnergies</a></li>
     <li class="sub"><a href="tests.html#t11" data-t="11">11 · Qui détient LVMH ?</a></li>
-    <li class="sub"><a href="tests.html#t12" data-t="12">12 · Rentabilités et bêta</a></li>
+    <li class="sub"><a href="tests.html#t12" data-t="12">12 · Cours mensuels et bêta</a></li>
     <li class="sub"><a href="tests.html#t13" data-t="13">13 · CAC 40, cours mensuels</a></li>
     <li class="sub"><a href="tests.html#t14" data-t="14">14 · NASDAQ-100, fondamentaux</a></li>
     <li><a href="tests.html#thesis">7. Les données de votre mémoire</a></li>
@@ -256,7 +258,7 @@ article.data h3{margin-top:0}
   <div class="modnum">Module 2</div>
   <h2>Les données disponibles, avec Microsoft comme exemple</h2>
   <p class="lead">Nous ouvrons maintenant chaque rapport pour Microsoft (<code>MSFT-US</code>) et expliquons ce qu'il contient. Faites de même sur votre écran : tapez MSFT dans la zone de recherche et cliquez sur les rapports au fil de votre lecture.</p>
-  <p>Pour chaque type de données, vous trouverez : la capture d'écran, ce que montre le rapport, son usage en recherche et la documentation officielle de FactSet. Les liens de documentation ouvrent l'<b>Online Assistant</b> de FactSet et nécessitent d'être connecté (voir la page <a href="resources.html">Ressources clés</a>).</p>
+  <p>Pour chaque type de données, vous trouverez : la capture d'écran, ce que montre le rapport, son usage en recherche et, lorsqu'elle existe, la documentation officielle de FactSet. Les liens de documentation ouvrent l'<b>Online Assistant</b> de FactSet et nécessitent d'être connecté (voir la page <a href="resources.html">Ressources clés</a>).</p>
 
   <article class="data" id="d-snapshot">
     <h3>2.1 Snapshot : la page de synthèse</h3>

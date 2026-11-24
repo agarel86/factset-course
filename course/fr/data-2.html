@@ -35,7 +35,7 @@ b,strong{color:var(--navy);font-weight:700}
 code,kbd{font-family:var(--mono);font-size:.88em}
 code{background:var(--grey-050);color:var(--navy);padding:.1em .4em;border-radius:6px;overflow-wrap:anywhere}
 kbd{border:1px solid var(--grey-200);border-bottom-width:2px;border-radius:6px;padding:.05em .45em;background:#fff;color:var(--navy);white-space:nowrap}
-pre{background:var(--navy);color:#fff;border-radius:1rem;padding:1rem 1.2rem;overflow-x:auto;font-family:var(--mono);font-size:.86rem;line-height:1.55;margin:.8rem 0}
+pre{background:var(--navy);color:#fff;border-radius:1rem;padding:1rem 1.2rem;white-space:pre-wrap;overflow-wrap:anywhere;font-family:var(--mono);font-size:.86rem;line-height:1.55;margin:.8rem 0}code{overflow-wrap:anywhere}
 pre code{background:none;color:inherit}
 
 /* header */
@@ -126,7 +126,7 @@ details{border-radius:1rem;padding:10px 16px;margin:10px 0;background:var(--grey
 details summary{cursor:pointer;font-weight:700;color:var(--navy)}
 .cols2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
 @media (max-width:700px){.cols2{grid-template-columns:1fr}}
-.copy{float:right;font:inherit;font-size:.75rem;font-weight:600;border:0;background:var(--sky);color:var(--navy);border-radius:999px;padding:2px 12px;cursor:pointer;margin:-2px -4px 0 8px}
+.copy{display:block;float:none;position:sticky;left:100%;font:inherit;font-size:.75rem;font-weight:600;border:0;background:var(--sky);color:var(--navy);border-radius:999px;padding:2px 12px;cursor:pointer;margin:0 0 .5rem auto}
 
 /* screenshots and data tour */
 figure.shot{margin:16px 0;border-radius:1rem;overflow:hidden;background:var(--grey-050);border:1px solid var(--grey-200)}
@@ -176,6 +176,7 @@ article.data h3{margin-top:0}
 .rx-none{font-size:.88rem;font-style:italic}
 .rx-note{font-size:.9rem}
 @media (max-width:900px){.rx{grid-template-columns:1fr}.rx-panel{position:static}}
+table.illus{width:auto;margin:.5rem 0 .6rem;background:#fff;border-collapse:collapse}table.illus td,table.illus th{border:1px solid var(--grey-200);padding:3px 12px;font-family:var(--mono);font-size:.82rem;white-space:nowrap}table.illus th{background:var(--grey-050);color:var(--navy)}
 </style>
 </head>
 <body class="os-win">
@@ -219,6 +220,7 @@ article.data h3{margin-top:0}
     <li class="sub"><a href="#d-rel">Chaîne d'approvisionnement &amp; chiffre d'affaires</a></li>
     <li class="sub"><a href="data-3.html#d-esg">ESG</a></li>
     <li class="sub"><a href="data-3.html#d-opt">Options</a></li>
+    <li><a href="data-3.html#beyond">Au-delà d'une entreprise : fonds, marchés et screening</a></li>
     <li class="sub"><a href="data-3.html#d-fund">Fonds &amp; ETF</a></li>
     <li class="sub"><a href="data-3.html#d-macro">Marchés &amp; économie</a></li>
     <li class="sub"><a href="data-3.html#d-screen">Screening</a></li>
@@ -229,9 +231,9 @@ article.data h3{margin-top:0}
     <li class="part">Partie III · Construire des échantillons</li>
     <li><a href="tests.html#method">5. Méthode</a></li>
     <li><a href="tests.html#tests">6. Les 14 tests</a></li>
-    <li class="sub"><a href="tests.html#t1" data-t="1">1 · Apple : cours, rentabilités, graphique</a></li>
+    <li class="sub"><a href="tests.html#t1" data-t="1">1 · Apple : cours quotidiens</a></li>
     <li class="sub"><a href="tests.html#t2" data-t="2">2 · Obligations vertes françaises, coupon</a></li>
-    <li class="sub"><a href="tests.html#t3" data-t="3">3 · Fusions-acquisitions France 2024</a></li>
+    <li class="sub"><a href="tests.html#t3" data-t="3">3 · M&amp;A France 2024</a></li>
     <li class="sub"><a href="tests.html#t4" data-t="4">4 · Le portefeuille d'un fonds et l'ESG</a></li>
     <li class="sub"><a href="tests.html#t5" data-t="5">5 · BPA (EPS) FY1 de MSFT, tous les analystes</a></li>
     <li class="sub"><a href="tests.html#t6" data-t="6">6 · Panel de données fondamentales</a></li>
@@ -240,7 +242,7 @@ article.data h3{margin-top:0}
     <li class="sub"><a href="tests.html#t9" data-t="9">9 · Actualité de Tesla</a></li>
     <li class="sub"><a href="tests.html#t10" data-t="10">10 · Actualité ESG de TotalEnergies</a></li>
     <li class="sub"><a href="tests.html#t11" data-t="11">11 · Qui détient LVMH ?</a></li>
-    <li class="sub"><a href="tests.html#t12" data-t="12">12 · Rentabilités et bêta</a></li>
+    <li class="sub"><a href="tests.html#t12" data-t="12">12 · Cours mensuels et bêta</a></li>
     <li class="sub"><a href="tests.html#t13" data-t="13">13 · CAC 40, cours mensuels</a></li>
     <li class="sub"><a href="tests.html#t14" data-t="14">14 · NASDAQ-100, fondamentaux</a></li>
     <li><a href="tests.html#thesis">7. Les données de votre mémoire</a></li>
@@ -282,7 +284,7 @@ article.data h3{margin-top:0}
     <ul>
       <li><b>Bond Detail</b> : toutes les obligations de Microsoft et de ses filiales (onglets Outstanding / Matured) : ISIN, émetteur, coupon, date d'échéance, remboursable par anticipation (callable), devise, rang de séniorité (46 obligations en circulation).</li>
       <li><b>Capital Structure</b> : capitalisation boursière et dette (court terme, long terme, totale) trimestre par trimestre.</li>
-      <li><b>DCS Overview</b> (Debt Capital Structure) : notations de crédit actuelles, <b>spreads de CDS</b> par échéance (de 1 à 10 ans), synthèse de la dette, liquidité, échéancier.</li>
+      <li><b>DCS Overview</b> (Debt Capital Structure) : notations de crédit actuelles, <b>spreads de CDS (credit default swaps)</b> par échéance (de 1 à 10 ans), synthèse de la dette, liquidité, échéancier.</li>
       <li><b>Ratings</b> : historique des notations S&amp;P (Microsoft : AAA) et notations des émetteurs liés. Dans notre accès, la section Moody's affiche « No Current Moody's Rating Data ».</li>
       <li><b>Source of Capital</b> : émissions de dette et d'actions dans le temps (montant levé, type, utilisation des fonds).</li>
     </ul>
@@ -335,7 +337,7 @@ article.data h3{margin-top:0}
       <li><b>Supply Chain</b> (FactSet Revere) : 3 765 relations avec 3 148 entreprises : 614 fournisseurs, 1 649 clients, 1 502 partenaires, avec la valeur de la relation, la corrélation des cours et le risque de crédit.</li>
       <li><b>Geographic Revenue</b> (FactSet Revere GeoRev) : exposition du chiffre d'affaires par pays (États-Unis 51,5 %, Chine 11,3 %…), par région et par type d'économie.</li>
       <li><b>RBICS with Revenue</b> : répartition du chiffre d'affaires selon la classification sectorielle détaillée de FactSet (par ex. 39 % Diversified IT Infrastructure Software) et principaux concurrents dans chaque segment.</li>
-      <li><b>Comps Analysis</b> : un tableau de pairs (FactSet peer group) avec chiffre d'affaires, EBITDA, EBIT, free cash flow, marges et multiples de valorisation pour FY1 et FY2.</li>
+      <li><b>Comps Analysis</b> : un tableau de pairs (FactSet peer group) avec chiffre d'affaires, EBITDA, EBIT, free cash flow, marges et multiples de valorisation pour FY1 et FY2 (les deux prochains exercices non encore publiés).</li>
     </ul>
   </article>
 </section>

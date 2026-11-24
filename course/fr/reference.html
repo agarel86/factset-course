@@ -35,7 +35,7 @@ b,strong{color:var(--navy);font-weight:700}
 code,kbd{font-family:var(--mono);font-size:.88em}
 code{background:var(--grey-050);color:var(--navy);padding:.1em .4em;border-radius:6px;overflow-wrap:anywhere}
 kbd{border:1px solid var(--grey-200);border-bottom-width:2px;border-radius:6px;padding:.05em .45em;background:#fff;color:var(--navy);white-space:nowrap}
-pre{background:var(--navy);color:#fff;border-radius:1rem;padding:1rem 1.2rem;overflow-x:auto;font-family:var(--mono);font-size:.86rem;line-height:1.55;margin:.8rem 0}
+pre{background:var(--navy);color:#fff;border-radius:1rem;padding:1rem 1.2rem;white-space:pre-wrap;overflow-wrap:anywhere;font-family:var(--mono);font-size:.86rem;line-height:1.55;margin:.8rem 0}code{overflow-wrap:anywhere}
 pre code{background:none;color:inherit}
 
 /* header */
@@ -126,7 +126,7 @@ details{border-radius:1rem;padding:10px 16px;margin:10px 0;background:var(--grey
 details summary{cursor:pointer;font-weight:700;color:var(--navy)}
 .cols2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
 @media (max-width:700px){.cols2{grid-template-columns:1fr}}
-.copy{float:right;font:inherit;font-size:.75rem;font-weight:600;border:0;background:var(--sky);color:var(--navy);border-radius:999px;padding:2px 12px;cursor:pointer;margin:-2px -4px 0 8px}
+.copy{display:block;float:none;position:sticky;left:100%;font:inherit;font-size:.75rem;font-weight:600;border:0;background:var(--sky);color:var(--navy);border-radius:999px;padding:2px 12px;cursor:pointer;margin:0 0 .5rem auto}
 
 /* screenshots and data tour */
 figure.shot{margin:16px 0;border-radius:1rem;overflow:hidden;background:var(--grey-050);border:1px solid var(--grey-200)}
@@ -176,6 +176,7 @@ article.data h3{margin-top:0}
 .rx-none{font-size:.88rem;font-style:italic}
 .rx-note{font-size:.9rem}
 @media (max-width:900px){.rx{grid-template-columns:1fr}.rx-panel{position:static}}
+table.illus{width:auto;margin:.5rem 0 .6rem;background:#fff;border-collapse:collapse}table.illus td,table.illus th{border:1px solid var(--grey-200);padding:3px 12px;font-family:var(--mono);font-size:.82rem;white-space:nowrap}table.illus th{background:var(--grey-050);color:var(--navy)}
 </style>
 </head>
 <body class="os-win">
@@ -209,16 +210,17 @@ article.data h3{margin-top:0}
     <li><a href="data-1.html#tour">2. Les données, avec Microsoft</a></li>
     <li class="sub"><a href="data-1.html#d-snapshot">Snapshot</a></li>
     <li class="sub"><a href="data-1.html#d-profile">Profil &amp; structure</a></li>
-    <li class="sub"><a href="data-1.html#d-prices">Cours boursiers</a></li>
+    <li class="sub"><a href="data-1.html#d-prices">Cours de bourse</a></li>
     <li class="sub"><a href="data-1.html#d-fin">Financials</a></li>
     <li class="sub"><a href="data-1.html#d-est">Estimations des analystes</a></li>
     <li class="sub"><a href="data-2.html#d-own">Actionnariat</a></li>
     <li class="sub"><a href="data-2.html#d-debt">Dette, obligations, crédit</a></li>
-    <li class="sub"><a href="data-2.html#d-tx">Transactions, fusions-acquisitions, PE/VC</a></li>
-    <li class="sub"><a href="data-2.html#d-news">Actualités, StreetAccount, documents réglementaires</a></li>
+    <li class="sub"><a href="data-2.html#d-tx">Transactions, M&amp;A, PE/VC</a></li>
+    <li class="sub"><a href="data-2.html#d-news">Actualités, StreetAccount, publications réglementaires</a></li>
     <li class="sub"><a href="data-2.html#d-rel">Chaîne d'approvisionnement &amp; chiffre d'affaires</a></li>
     <li class="sub"><a href="data-3.html#d-esg">ESG</a></li>
     <li class="sub"><a href="data-3.html#d-opt">Options</a></li>
+    <li><a href="data-3.html#beyond">Au-delà d'une entreprise : fonds, marchés et screening</a></li>
     <li class="sub"><a href="data-3.html#d-fund">Fonds &amp; ETF</a></li>
     <li class="sub"><a href="data-3.html#d-macro">Marchés &amp; économie</a></li>
     <li class="sub"><a href="data-3.html#d-screen">Screening</a></li>
@@ -226,12 +228,12 @@ article.data h3{margin-top:0}
     <li class="part">Partie II · Excel</li>
     <li><a href="excel.html#install">3. Installer FactSet 365</a></li>
     <li><a href="excel.html#formulas">4. Les formules FactSet</a></li>
-    <li class="part">Partie III · Constituer des échantillons</li>
+    <li class="part">Partie III · Construire des échantillons</li>
     <li><a href="tests.html#method">5. Méthode</a></li>
     <li><a href="tests.html#tests">6. Les 14 tests</a></li>
-    <li class="sub"><a href="tests.html#t1" data-t="1">1 · Apple : cours, rentabilités, graphique</a></li>
+    <li class="sub"><a href="tests.html#t1" data-t="1">1 · Apple : cours quotidiens</a></li>
     <li class="sub"><a href="tests.html#t2" data-t="2">2 · Obligations vertes françaises, coupon</a></li>
-    <li class="sub"><a href="tests.html#t3" data-t="3">3 · Fusions-acquisitions France 2024</a></li>
+    <li class="sub"><a href="tests.html#t3" data-t="3">3 · M&amp;A France 2024</a></li>
     <li class="sub"><a href="tests.html#t4" data-t="4">4 · Le portefeuille d'un fonds et l'ESG</a></li>
     <li class="sub"><a href="tests.html#t5" data-t="5">5 · BPA (EPS) FY1 de MSFT, tous les analystes</a></li>
     <li class="sub"><a href="tests.html#t6" data-t="6">6 · Panel de données fondamentales</a></li>
@@ -240,12 +242,12 @@ article.data h3{margin-top:0}
     <li class="sub"><a href="tests.html#t9" data-t="9">9 · Actualité de Tesla</a></li>
     <li class="sub"><a href="tests.html#t10" data-t="10">10 · Actualité ESG de TotalEnergies</a></li>
     <li class="sub"><a href="tests.html#t11" data-t="11">11 · Qui détient LVMH ?</a></li>
-    <li class="sub"><a href="tests.html#t12" data-t="12">12 · Rentabilités et bêta</a></li>
+    <li class="sub"><a href="tests.html#t12" data-t="12">12 · Cours mensuels et bêta</a></li>
     <li class="sub"><a href="tests.html#t13" data-t="13">13 · CAC 40, cours mensuels</a></li>
     <li class="sub"><a href="tests.html#t14" data-t="14">14 · NASDAQ-100, fondamentaux</a></li>
     <li><a href="tests.html#thesis">7. Les données de votre mémoire</a></li>
     <li class="part">Référence</li>
-    <li><a href="#trouble">8. Résolution des problèmes</a></li>
+    <li><a href="#trouble">8. Dépannage</a></li>
     <li><a href="#cheat">9. Aide-mémoire &amp; glossaire</a></li>
     <li><a href="resources.html">Ressources clés (page séparée)</a></li>
   </ol>
@@ -254,11 +256,11 @@ article.data h3{margin-top:0}
 <!-- ============================================================ 7 -->
 <section class="module" id="trouble">
   <div class="modnum">Module 8</div>
-  <h2>Résolution des problèmes</h2>
+  <h2>Dépannage</h2>
   <p>D'après la page officielle de FactSet <a href="https://my.apps.factset.com/oa/pages/22644" target="_blank">FactSet 365 Troubleshooting Steps (OA 22644)</a>.</p>
   <div class="tablewrap"><table>
     <tr><th>Ce que vous voyez</th><th>Cause</th><th>Que faire</th></tr>
-    <tr><td><code>#NAME?</code> dans toutes les cellules FactSet, et Refresh ne change rien</td><td>Le fichier a été ouvert avant la fin du chargement du complément FactSet 365 : Excel n'a pas reconnu FDS. Refresh ignore les cellules déjà en erreur.</td><td>1. Vérifiez que l'onglet FactSet 365 est présent et que vous êtes connecté (Refresh n'est pas grisé).<br>2. Sélectionnez la feuille (<span class="win-only"><kbd>Ctrl</kbd>+<kbd>A</kbd></span><span class="mac-only"><kbd>⌘ Cmd</kbd>+<kbd>A</kbd></span>), ouvrez <b>Rechercher et remplacer</b> (<kbd>Ctrl</kbd>+<kbd>H</kbd>), remplacez <code>=</code> par <code>=</code>, cliquez sur <b>Remplacer tout</b>. Toutes les formules sont ressaisies et affichent <code>#Calc</code>.<br>3. <b>FactSet 365 › Refresh › Workbook</b>.</td></tr>
+    <tr><td><code>#NAME?</code> dans toutes les cellules FactSet</td><td>Le fichier a été ouvert avant la fin du chargement du complément FactSet 365 : Excel n'a pas reconnu FDS.</td><td>1. Vérifiez que l'onglet FactSet 365 est présent et que vous êtes connecté (Refresh n'est pas grisé).<br>2. <b>FactSet 365 › Refresh › Workbook</b>.</td></tr>
     <tr><td><code>#NAME?</code> dans une seule cellule</td><td>FDS tapé en minuscules, ou complément non chargé.</td><td>Retapez FDS en majuscules. Rechargez le complément : <b>Home › Add-ins › FactSet 365</b> (sous My Add-ins).</td></tr>
     <tr><td>Refresh est grisé, ou toutes les cellules restent sur <code>#Calc</code></td><td>Vous n'êtes pas connecté à FactSet 365.</td><td><b>FactSet 365 › Sign In</b>, puis Refresh › Workbook. Les gros fichiers prennent une minute : attendez qu'il ne reste plus de <code>#Calc</code>.</td></tr>
     <tr><td>« Add-in Error » à l'ouverture d'un fichier</td><td>Le fichier a été enregistré avec une autre instance du complément.</td><td>Cliquez sur <b>Restart</b> dans la notification, ou cliquez sur Insert Formula.</td></tr>
@@ -267,72 +269,73 @@ article.data h3{margin-top:0}
     <tr><td><code>#SPILL!</code></td><td>Une série n'a pas de cellules vides dans lesquelles se déverser.</td><td>Videz les cellules situées en dessous ou à droite.</td></tr>
     <tr><td><code>NA</code> ou résultat vide</td><td>Identifiant erroné, code erroné, pas de données à cette date.</td><td>Vérifiez l'identifiant dans la barre de recherche, reconstruisez la formule avec Insert Formula, essayez une autre date, consultez la même donnée sur la plateforme en ligne FactSet.</td></tr>
     <tr><td>Date renvoyée incorrecte</td><td>Date saisie au format DD/MM/YYYY.</td><td>Les dates FactSet sont au format MM/DD/YYYY (mois/jour/année).</td></tr>
-    <tr><td>Formule refusée</td><td>Séparateur propre à la langue de votre Excel.</td><td>Utilisez <code>;</code> entre les arguments Excel si votre Excel n'est pas en anglais.</td></tr>
+    <tr><td>Formule refusée</td><td>Mauvais séparateur : il suit les paramètres régionaux de votre ordinateur, pas la langue d'Excel.</td><td>Utilisez <code>;</code> entre les arguments Excel si votre ordinateur utilise des paramètres régionaux français (virgule décimale), même avec Excel en anglais ; avec des paramètres anglais, utilisez <code>,</code>.</td></tr>
     <tr><td>Valeurs différentes de celles de la plateforme en ligne FactSet</td><td>La devise, l'unité, la date ou la période fiscale diffèrent.</td><td>Vérifiez les arguments dans Insert Formula (période ANN/QTR, date, devise).</td></tr>
   </table></div>
-  <p>Toujours bloqué : le chat en direct et l'aide de FactSet (icône <b>?</b> en haut à droite de la plateforme en ligne FactSet ; Office Assistance dans l'onglet FactSet), ou les contacts du support sur la page <a href="resources.html">Ressources clés</a>.</p>
+  <p>Toujours bloqué : le chat en direct et l'aide de FactSet (icône <b>?</b> en haut à droite de la plateforme en ligne FactSet ; Online Assistant dans l'onglet FactSet 365), ou les contacts du support sur la page <a href="resources.html">Ressources clés</a>.</p>
 </section><!-- ============================================================ 8 -->
 <section class="module" id="cheat">
   <div class="modnum">Module 9</div>
   <h2>Aide-mémoire &amp; glossaire</h2>
-  <p>Tous les codes FactSet, arguments et fonctions Excel utilisés dans ce cours. <b>M4</b> = Module 4 (formules FactSet), <b>T1…T14</b> = les tests. <code>A1</code> contient l'identifiant. Excel en français : remplacez la virgule entre les deux arguments de FDS par <code>;</code>.</p>
+  <p>Tous les codes FactSet, arguments et fonctions Excel utilisés dans ce cours. <b>M4</b> = Module 4 (formules FactSet), <b>T1…T14</b> = les tests. <code>A1</code> contient l'identifiant. Les formules sont écrites avec <code>;</code> (paramètres régionaux français) ; sur un ordinateur aux paramètres anglais (point décimal), remplacez <code>;</code> entre les deux arguments de FDS par une virgule.</p>
   <h3>Codes FactSet</h3>
   <div class="tablewrap"><table class="compact">
     <tr><th>Besoin</th><th>Formule</th><th>Utilisé dans</th></tr>
     <tr><th colspan="3">Prix (P_)</th></tr>
-    <tr><td>Dernier cours de clôture</td><td><code>=FDS(A1,"P_PRICE(0)")</code></td><td><a href="excel.html#formulas">M4</a></td></tr>
-    <tr><td>Cours de clôture à une date (MM/DD/YYYY)</td><td><code>=FDS(A1,"P_PRICE(12/31/2025)")</code></td><td><a href="excel.html#formulas">M4</a>, <a href="tests.html#t12">T12</a></td></tr>
-    <tr><td>Cours quotidiens du dernier mois, et leurs dates</td><td><code>=FDS(A1,"P_PRICE(-1M,0,D)")</code><br><code>=FDS(A1,"P_DATE(-1M,0,D,""DATEJ"")")</code></td><td><a href="excel.html#formulas">M4</a>, <a href="tests.html#t1">T1</a></td></tr>
-    <tr><td>Série quotidienne entre deux dates</td><td><code>=FDS(A1,"P_PRICE(01/01/2024,12/31/2024,D)")</code></td><td><a href="tests.html#t7">T7</a></td></tr>
-    <tr><td>Cours de fin de mois sur 10 ans, et leurs dates</td><td><code>=FDS(A1,"P_PRICE(-10AY,0,M)")</code><br><code>=FDS(A1,"P_DATE(-10AY,0,M,""DATEJ"")")</code></td><td><a href="tests.html#t13">T13</a></td></tr>
-    <tr><td>Rentabilité totale composée entre deux dates</td><td><code>=FDS(A1,"P_TOTAL_RETURNC(12/31/2024,12/31/2025)")</code></td><td><a href="excel.html#formulas">M4</a>, <a href="../../covid project/covid_project_fr.html">COVID</a></td></tr>
-    <tr><td>Cours de fin de mois des 12 derniers mois, et leurs dates</td><td><code>=FDS(A1,"P_PRICE(-12M,0,M)")</code><br><code>=FDS(A1,"P_DATE(-12M,0,M,""DATEJ"")")</code></td><td><a href="tests.html#t4">T4</a></td></tr>
-    <tr><td>Devise de cotation</td><td><code>=FDS(A1,"P_CURRENCY")</code></td><td><a href="excel.html#formulas">M4</a></td></tr>
-    <tr><td>Taux de change EUR→USD</td><td><code>=FDS("EURUSD","P_PRICE(0)")</code></td><td><a href="excel.html#formulas">M4</a>, <a href="tests.html#t7">T7</a></td></tr>
-    <tr><td>Capitalisation boursière de l'entreprise (millions)</td><td><code>=FDS(A1,"P_MARKET_VAL_CO(EUR,1)")</code></td><td><a href="excel.html#formulas">M4</a>, <a href="tests.html#t8">T8</a></td></tr>
+    <tr><td>Dernier cours de clôture</td><td><code>=FDS(A1;"P_PRICE(0)")</code></td><td><a href="excel.html#formulas">M4</a></td></tr>
+    <tr><td>Cours de clôture à une date (MM/DD/YYYY)</td><td><code>=FDS(A1;"P_PRICE(12/31/2025)")</code></td><td><a href="excel.html#formulas">M4</a>, <a href="tests.html#t12">T12</a></td></tr>
+    <tr><td>Cours quotidiens du dernier mois, et leurs dates</td><td><code>=FDS(A1;"P_PRICE(-1AM,0,D)")</code><br><code>=FDS(A1;"P_DATE(-1AM,0,D,""DATEJ"")")</code></td><td><a href="excel.html#formulas">M4</a>, <a href="tests.html#t1">T1</a></td></tr>
+    <tr><td>Série quotidienne entre deux dates</td><td><code>=FDS(A1;"P_PRICE(01/01/2024,12/31/2024,D)")</code></td><td><a href="tests.html#t7">T7</a></td></tr>
+    <tr><td>Cours de fin de mois sur 10 ans, et leurs dates</td><td><code>=FDS(A1;"P_PRICE(-10AY,0,M)")</code><br><code>=FDS(A1;"P_DATE(-10AY,0,M,""DATEJ"")")</code></td><td><a href="tests.html#t13">T13</a></td></tr>
+    <tr><td>Rentabilité totale composée entre deux dates</td><td><code>=FDS(A1;"P_TOTAL_RETURNC(12/31/2024,12/31/2025)")</code></td><td><a href="excel.html#formulas">M4</a>, <a href="../../covid project/covid_project_fr.html">COVID</a></td></tr>
+    <tr><td>Cours de fin de mois des 12 derniers mois, et leurs dates</td><td><code>=FDS(A1;"P_PRICE(-12M,0,M)")</code><br><code>=FDS(A1;"P_DATE(-12M,0,M,""DATEJ"")")</code></td><td><a href="tests.html#t4">T4</a></td></tr>
+    <tr><td>Devise de cotation</td><td><code>=FDS(A1;"P_CURRENCY")</code></td><td><a href="excel.html#formulas">M4</a></td></tr>
+    <tr><td>Taux de change EUR→USD</td><td><code>=FDS("EURUSD";"P_PRICE(0)")</code></td><td><a href="excel.html#formulas">M4</a>, <a href="tests.html#t7">T7</a></td></tr>
+    <tr><td>Capitalisation boursière de l'entreprise (millions)</td><td><code>=FDS(A1;"P_MARKET_VAL_CO(EUR,1)")</code></td><td><a href="excel.html#formulas">M4</a>, <a href="tests.html#t8">T8</a></td></tr>
     <tr><th colspan="3">Descriptif et ratios (FG_)</th></tr>
-    <tr><td>Nom de l'entreprise</td><td><code>=FDS(A1,"FG_COMPANY_NAME")</code></td><td><a href="excel.html#formulas">M4</a></td></tr>
-    <tr><td>Secteur / industrie FactSet</td><td><code>=FDS(A1,"FG_FACTSET_SECTOR")</code><br><code>=FDS(A1,"FG_FACTSET_IND")</code></td><td><a href="excel.html#formulas">M4</a>, <a href="tests.html#t4">T4</a></td></tr>
-    <tr><td>Ratio cours / bénéfice (PER)</td><td><code>=FDS(A1,"FG_PE")</code></td><td><a href="tests.html#t8">T8</a></td></tr>
-    <tr><td>Série de taux (taux d'emprunt d'État)</td><td><code>=FDS("TRYFR10Y-FDS","FG_YIELD(01/01/2024,12/31/2024,D)")</code></td><td><a href="tests.html#t7">T7</a></td></tr>
+    <tr><td>Nom de l'entreprise</td><td><code>=FDS(A1;"FG_COMPANY_NAME")</code></td><td><a href="excel.html#formulas">M4</a>, <a href="tests.html#t3">T3</a>, <a href="tests.html#t8">T8</a>, <a href="tests.html#t13">T13</a>, <a href="tests.html#t14">T14</a></td></tr>
+    <tr><td>Secteur / industrie FactSet</td><td><code>=FDS(A1;"FG_FACTSET_SECTOR")</code><br><code>=FDS(A1;"FG_FACTSET_IND")</code></td><td><a href="excel.html#formulas">M4</a>, <a href="tests.html#t4">T4</a>, <a href="tests.html#t8">T8</a></td></tr>
+    <tr><td>Ratio cours / bénéfice (PER)</td><td><code>=FDS(A1;"FG_PE")</code></td><td><a href="tests.html#t8">T8</a></td></tr>
+    <tr><td>Série de taux (taux d'emprunt d'État)</td><td><code>=FDS("TRYFR10Y-FDS";"FG_YIELD(01/01/2024,12/31/2024,D)")</code><br><code>=FDS("TRYUS3M-FDS";"FG_YIELD(12/31/2025)")</code></td><td><a href="tests.html#t7">T7</a>, <a href="tests.html#t12">T12</a></td></tr>
     <tr><th colspan="3">Données comptables (FF_)</th></tr>
-    <tr><td>Chiffre d'affaires, dernier exercice</td><td><code>=FDS(A1,"FF_SALES(ANN,0,,,RF)")</code></td><td><a href="excel.html#formulas">M4</a>, <a href="tests.html#t3">T3</a></td></tr>
-    <tr><td>Chiffre d'affaires, exercice 2024</td><td><code>=FDS(A1,"FF_SALES(ANN,2024)")</code></td><td><a href="excel.html#formulas">M4</a>, <a href="tests.html#t6">T6</a></td></tr>
-    <tr><td>Chiffre d'affaires, exercices 2016 à 2025 (10 valeurs)</td><td><code>=FDS(A1,"FF_SALES(ANN,2016,2025)")</code></td><td><a href="tests.html#t14">T14</a></td></tr>
-    <tr><td>EBIT / EBITDA</td><td><code>=FDS(A1,"FF_EBIT_OPER(ANN,2024)")</code><br><code>=FDS(A1,"FF_EBITDA_OPER(ANN,2024)")</code></td><td><a href="excel.html#formulas">M4</a>, <a href="tests.html#t6">T6</a></td></tr>
-    <tr><td>Résultat net</td><td><code>=FDS(A1,"FF_NET_INC(ANN,2024)")</code></td><td><a href="excel.html#formulas">M4</a>, <a href="tests.html#t6">T6</a></td></tr>
-    <tr><td>Total de l'actif / dette totale</td><td><code>=FDS(A1,"FF_ASSETS(ANN,2024)")</code><br><code>=FDS(A1,"FF_DEBT(ANN,2024)")</code></td><td><a href="excel.html#formulas">M4</a>, <a href="tests.html#t6">T6</a></td></tr>
-    <tr><td>Nombre d'actions en circulation</td><td><code>=FDS(A1,"FF_COM_SHS_OUT(ANN,0,,,RF)")</code></td><td><a href="excel.html#formulas">M4</a></td></tr>
-    <tr><td>Investissements (capex) / dépenses de R&amp;D</td><td><code>=FDS(A1,"FF_CAPEX(ANN,2016,2025)")</code><br><code>=FDS(A1,"FF_RD_EXP(ANN,2016,2025)")</code></td><td><a href="tests.html#t14">T14</a></td></tr>
-    <tr><td>Date de clôture d'un exercice (date Excel)</td><td><code>=FDS(A1,"FF_FISCAL_DATE(ANN,2024,,,,""DATEJ"")")</code></td><td><a href="tests.html#t6">T6</a>, <a href="tests.html#t14">T14</a></td></tr>
+    <tr><td>Chiffre d'affaires, dernier exercice</td><td><code>=FDS(A1;"FF_SALES(ANN,0,,,RF)")</code></td><td><a href="excel.html#formulas">M4</a>, <a href="tests.html#t3">T3</a></td></tr>
+    <tr><td>Chiffre d'affaires, exercice 2024</td><td><code>=FDS(A1;"FF_SALES(ANN,2024)")</code></td><td><a href="excel.html#formulas">M4</a>, <a href="tests.html#t6">T6</a></td></tr>
+    <tr><td>Chiffre d'affaires, exercices 2016 à 2025 (10 valeurs)</td><td><code>=FDS(A1;"FF_SALES(ANN,2016,2025)")</code></td><td><a href="tests.html#t14">T14</a></td></tr>
+    <tr><td>EBIT / EBITDA</td><td><code>=FDS(A1;"FF_EBIT_OPER(ANN,2024)")</code><br><code>=FDS(A1;"FF_EBITDA_OPER(ANN,2024)")</code></td><td><a href="excel.html#formulas">M4</a>, <a href="tests.html#t6">T6</a></td></tr>
+    <tr><td>Résultat net</td><td><code>=FDS(A1;"FF_NET_INC(ANN,2024)")</code></td><td><a href="excel.html#formulas">M4</a>, <a href="tests.html#t6">T6</a></td></tr>
+    <tr><td>Total de l'actif / dette totale</td><td><code>=FDS(A1;"FF_ASSETS(ANN,2024)")</code><br><code>=FDS(A1;"FF_DEBT(ANN,2024)")</code></td><td><a href="excel.html#formulas">M4</a>, <a href="tests.html#t6">T6</a></td></tr>
+    <tr><td>Nombre d'actions en circulation</td><td><code>=FDS(A1;"FF_COM_SHS_OUT(ANN,0,,,RF)")</code></td><td><a href="excel.html#formulas">M4</a></td></tr>
+    <tr><td>Investissements (capex) / dépenses de R&amp;D</td><td><code>=FDS(A1;"FF_CAPEX(ANN,2016,2025)")</code><br><code>=FDS(A1;"FF_RD_EXP(ANN,2016,2025)")</code></td><td><a href="tests.html#t14">T14</a></td></tr>
+    <tr><td>Date de clôture d'un exercice (date Excel)</td><td><code>=FDS(A1;"FF_FISCAL_DATE(ANN,2024,,,,""DATEJ"")")</code></td><td><a href="tests.html#t6">T6</a>, <a href="tests.html#t14">T14</a></td></tr>
     <tr><th colspan="3">Estimations (FE_)</th></tr>
-    <tr><td>Consensus : prévision moyenne de BPA, FY1</td><td><code>=FDS(A1,"FE_ESTIMATE(EPS,MEAN,ANNUAL_ROLL,+1,0,,,'')")</code></td><td><a href="excel.html#formulas">M4</a>, <a href="tests.html#t5">T5</a></td></tr>
-    <tr><td>Nombre d'estimations du consensus</td><td><code>=FDS(A1,"FE_ESTIMATE(EPS,NEST,ANNUAL_ROLL,+1,0,,,'')")</code></td><td><a href="excel.html#formulas">M4</a>, <a href="tests.html#t5">T5</a></td></tr>
-    <tr><td>Prévision moyenne de chiffre d'affaires, FY2</td><td><code>=FDS(A1,"FE_ESTIMATE(SALES,MEAN,ANNUAL_ROLL,+2,0,,,'')")</code></td><td><a href="excel.html#formulas">M4</a></td></tr>
-    <tr><td>BPA moyen, douze prochains mois</td><td><code>=FDS(A1,"FE_ESTIMATE(EPS,MEAN,NTMA,,0,,,'')")</code></td><td><a href="excel.html#formulas">M4</a></td></tr>
-    <tr><td>Clôture de l'exercice FY1 / publication attendue du réel FY1 (AAAAMMJJ)</td><td><code>=FDS(A1,"FE_ACTUAL_DATE(FISCALPERIODEND,,ANN_ROLL,+1,'YYYYMMDD',,,,'')")</code><br><code>=FDS(A1,"FE_ACTUAL_DATE(RPT_DATE,,ANN_ROLL,+1,'YYYYMMDD',,,,'')")</code></td><td><a href="tests.html#t5">T5</a></td></tr>
-    <tr><td>Chaque broker : nom / analyste / estimation / date de l'estimation (BPA FY1)</td><td><code>=FDS(A1,"FE_BROKER_ESTIMATE(SNAP,EPS,BKR_NAME,ANNUAL_ROLL,+1,0,,,'')")</code><br><code>=FDS(A1,"FE_BROKER_ESTIMATE(SNAP,EPS,AN_NAME,ANNUAL_ROLL,+1,0,,,'')")</code><br><code>=FDS(A1,"FE_BROKER_ESTIMATE(SNAP,EPS,EST_VALUE,ANNUAL_ROLL,+1,0,,,'')")</code><br><code>=FDS(A1,"FE_BROKER_ESTIMATE(SNAP,EPS,DATE,ANNUAL_ROLL,+1,0,,,'')")</code></td><td><a href="tests.html#t5">T5</a></td></tr>
-    <tr><th colspan="3">Actionnariat (LSD_)</th></tr>
-    <tr><td>Détenteurs institutionnels d'une entreprise : nom, actions, %OS, date</td><td><code>=FDS(A1,"LSD_NAME_TOP_INST(-1,""H"")")</code><br><code>=FDS(A1,"LSD_POS_TOP_INST(-1,""H"")")</code><br><code>=FDS(A1,"LSD_PCTOS_TOP_INST(-1,""H"")")</code><br><code>=FDS(A1,"LSD_RD_TOP_INST(-1,""H"")")</code></td><td><a href="excel.html#formulas">M4</a>, <a href="tests.html#t11">T11</a></td></tr>
-    <tr><td>Positions d'un fonds : identifiant, nom, actions, valeur, poids</td><td><code>=FDS(A1,"LSD_ID_TOP_HLDG(-1)")</code><br><code>=FDS(A1,"LSD_NAME_TOP_HLDG(-1)")</code><br><code>=FDS(A1,"LSD_POS_TOP_HLDG(-1)")</code><br><code>=FDS(A1,"LSD_MV_TOP_HLDG(-1)")</code><br><code>=FDS(A1,"LSD_PCPRT_TOP_HLDG(-1)")</code></td><td><a href="excel.html#formulas">M4</a>, <a href="tests.html#t4">T4</a></td></tr>
-    <tr><td>Date de reporting des positions d'un fonds</td><td><code>=FDS(A1,"LSD_RD_TOP_HLDG(1)")</code></td><td><a href="tests.html#t4">T4</a></td></tr>
+    <tr><td>Consensus : prévision moyenne de BPA, FY1</td><td><code>=FDS(A1;"FE_ESTIMATE(EPS,MEAN,ANNUAL_ROLL,+1,0,,,'')")</code></td><td><a href="excel.html#formulas">M4</a>, <a href="tests.html#t5">T5</a></td></tr>
+    <tr><td>Nombre d'estimations du consensus</td><td><code>=FDS(A1;"FE_ESTIMATE(EPS,NEST,ANNUAL_ROLL,+1,0,,,'')")</code></td><td><a href="excel.html#formulas">M4</a>, <a href="tests.html#t5">T5</a></td></tr>
+    <tr><td>Prévision moyenne de chiffre d'affaires, FY2</td><td><code>=FDS(A1;"FE_ESTIMATE(SALES,MEAN,ANNUAL_ROLL,+2,0,,,'')")</code></td><td><a href="excel.html#formulas">M4</a></td></tr>
+    <tr><td>BPA moyen, douze prochains mois</td><td><code>=FDS(A1;"FE_ESTIMATE(EPS,MEAN,NTMA,,0,,,'')")</code></td><td><a href="excel.html#formulas">M4</a></td></tr>
+    <tr><td>Clôture de l'exercice FY1 / publication attendue du réel FY1 (AAAAMMJJ)</td><td><code>=FDS(A1;"FE_ACTUAL_DATE(FISCALPERIODEND,,ANN_ROLL,+1,'YYYYMMDD',,,,'')")</code><br><code>=FDS(A1;"FE_ACTUAL_DATE(RPT_DATE,,ANN_ROLL,+1,'YYYYMMDD',,,,'')")</code></td><td><a href="tests.html#t5">T5</a></td></tr>
+    <tr><td>Chaque broker : nom / analyste / estimation / date de l'estimation (BPA FY1)</td><td><code>=FDS(A1;"FE_BROKER_ESTIMATE(SNAP,EPS,BKR_NAME,ANNUAL_ROLL,+1,0,,,'')")</code><br><code>=FDS(A1;"FE_BROKER_ESTIMATE(SNAP,EPS,AN_NAME,ANNUAL_ROLL,+1,0,,,'')")</code><br><code>=FDS(A1;"FE_BROKER_ESTIMATE(SNAP,EPS,EST_VALUE,ANNUAL_ROLL,+1,0,,,'')")</code><br><code>=FDS(A1;"FE_BROKER_ESTIMATE(SNAP,EPS,DATE,ANNUAL_ROLL,+1,0,,,'')")</code></td><td><a href="tests.html#t5">T5</a></td></tr>
+    <tr><th colspan="3">Actionnariat (OS_)</th></tr>
+    <tr><td>Détenteurs institutionnels d'une entreprise : nom, actions, %OS, date</td><td><code>=FDS(A1;"OS_TOP_HLDR_NAME(ALL)")</code><br><code>=FDS(A1;"OS_TOP_HLDR_POS(ALL)")</code><br><code>=FDS(A1;"OS_TOP_HLDR_PCTOS(ALL)")</code><br><code>=FDS(A1;"OS_TOP_HLDR_RDATE(ALL)")</code></td><td><a href="excel.html#formulas">M4</a>, <a href="tests.html#t11">T11</a></td></tr>
+    <tr><td>Positions d'un fonds : identifiant, nom, actions, valeur, poids</td><td><code>=FDS(A1;"OS_TOP_HLDG_SEDOL(ALL)")</code><br><code>=FDS(A1;"OS_TOP_HLDG_NAME(ALL)")</code><br><code>=FDS(A1;"OS_TOP_HLDG_POS(ALL)")</code><br><code>=FDS(A1;"OS_TOP_HLDG_MV(ALL)")</code><br><code>=FDS(A1;"OS_TOP_HLDG_PCPRT(ALL)")</code></td><td><a href="excel.html#formulas">M4</a>, <a href="tests.html#t4">T4</a></td></tr>
+    <tr><td>Date de reporting des positions d'un fonds</td><td><code>=FDS(A1;"OS_TOP_HLDG_RDATE(1)")</code></td><td><a href="tests.html#t4">T4</a></td></tr>
     <tr><th colspan="3">Obligations (FI_)</th></tr>
-    <tr><td>Taux de coupon à l'émission (%), à partir de l'ISIN</td><td><code>=FDS(A1,"FI_COUPON(CPN,CPN,0)")</code></td><td><a href="tests.html#t2">T2</a></td></tr>
+    <tr><td>Taux de coupon à l'émission (%), à partir de l'ISIN</td><td><code>=FDS(A1;"FI_COUPON(CPN,CPN,0)")</code></td><td><a href="tests.html#t2">T2</a></td></tr>
     <tr><td>Colonnes du screen : ISIN / devise / date d'échéance</td><td><code>FI_IDENTIFIER(ISIN)</code> · <code>FI_CURR(DENOM,CODE)</code> · <code>FI_ISSUE_DETAILS(MAT_DATE,MAT_DATE,0,LOCAL_DATE)</code></td><td><a href="tests.html#t2">T2</a></td></tr>
     <tr><th colspan="3">ESG (FESG_)</th></tr>
-    <tr><td>Note ESG FTSE Russell, la plus récente (0 à 5, 5 = meilleure)</td><td><code>=FDS(A1,"FESG_RATING(0,,,""ABS"")")</code></td><td><a href="tests.html#t4">T4</a>, <a href="tests.html#t8">T8</a></td></tr>
-    <tr><td>Note ESG FTSE Russell à une date</td><td><code>=FDS(A1,"FESG_RATING(12/31/2019,,,""ABS"")")</code></td><td><a href="../../covid project/covid_project_fr.html">COVID</a></td></tr>
+    <tr><td>Note ESG FTSE Russell, la plus récente (0 à 5, 5 = meilleure)</td><td><code>=FDS(A1;"FESG_RATING(0,,,""ABS"")")</code></td><td><a href="tests.html#t4">T4</a>, <a href="tests.html#t8">T8</a></td></tr>
+    <tr><td>Note ESG FTSE Russell à une date</td><td><code>=FDS(A1;"FESG_RATING(12/31/2019,,,""ABS"")")</code></td><td><a href="../../covid project/covid_project_fr.html">COVID</a></td></tr>
     <tr><th colspan="3">Membres d'indice et identifiants</th></tr>
-    <tr><td>Membres d'un indice (CAC 40 = 180454, NASDAQ-100 = NDX, CAC All-Tradable = CACT-ENX)</td><td><code>=FDS("180454","FG_CONSTITUENTS")</code></td><td><a href="tests.html#t8">T8</a>, <a href="tests.html#t13">T13</a>, <a href="tests.html#t14">T14</a></td></tr>
-    <tr><td>Membres d'un indice à une date passée (MM/DD/YYYY)</td><td><code>=FDS("CACT-ENX","FG_CONSTITUENTS(02/20/2020)")</code></td><td><a href="../../covid project/covid_project_fr.html">COVID</a></td></tr>
-    <tr><td>ISIN d'un titre</td><td><code>=FDS(A1,"FSYM_ISIN(NOW,""ID"")")</code></td><td><a href="tests.html#t4">T4</a></td></tr>
+    <tr><td>Membres d'un indice (CAC 40 = 180454, NASDAQ-100 = NDX, CAC All-Tradable = CACT-ENX)</td><td><code>=FDS("180454";"FG_CONSTITUENTS")</code></td><td><a href="tests.html#t8">T8</a>, <a href="tests.html#t13">T13</a>, <a href="tests.html#t14">T14</a></td></tr>
+    <tr><td>Membres d'un indice à une date passée (MM/DD/YYYY)</td><td><code>=FDS("CACT-ENX";"FG_CONSTITUENTS(02/20/2020)")</code></td><td><a href="../../covid project/covid_project_fr.html">COVID</a></td></tr>
+    <tr><td>ISIN d'un titre</td><td><code>=FDS(A1;"FSYM_ISIN(NOW,""ID"")")</code></td><td><a href="tests.html#t4">T4</a></td></tr>
   </table></div>
   <h3>Arguments</h3>
   <div class="tablewrap"><table class="compact">
     <tr><th>Écrire</th><th>Signification</th></tr>
     <tr><td><code>0</code></td><td>date la plus récente / dernier exercice</td></tr>
-    <tr><td><code>-5D, -1W, -1M, -1Q, -1Y</code></td><td>dates relatives : jours, semaines, mois, trimestres, années avant aujourd'hui</td></tr>
-    <tr><td><code>-1AY, -10AY</code></td><td>il y a 1 / 10 exercices</td></tr>
+    <tr><td><code>-5D, -1W</code></td><td>dates relatives : jours de bourse, semaines avant la date la plus récente</td></tr>
+    <tr><td><code>-1M, -1Q, -1Y</code></td><td>retour à une fin de période : fin de mois, de trimestre, d'exercice fiscal de l'entreprise</td></tr>
+    <tr><td><code>-1AM, -1AY, -10AY</code></td><td>périodes calendaires exactes : 1 mois, 1 an, 10 ans avant la date la plus récente</td></tr>
     <tr><td><code>12/31/2025</code></td><td>un jour, toujours MM/DD/YYYY (le mois d'abord)</td></tr>
     <tr><td><code>11/2025</code></td><td>une fin de mois, MM/YYYY</td></tr>
     <tr><td><code>2024 · 2016,2025</code></td><td>un exercice · une plage d'exercices</td></tr>
@@ -346,31 +349,24 @@ article.data h3{margin-top:0}
     <tr><td><code>MEAN, MED, HIGH, LOW, STDDEV, NEST</code></td><td>statistique du consensus : moyenne, médiane, haut, bas, écart-type, nombre d'estimations</td></tr>
     <tr><td><code>SNAP</code></td><td>estimations des brokers qui composent le consensus du jour</td></tr>
     <tr><td><code>BKR_NAME, AN_NAME, EST_VALUE</code></td><td>nom du broker, nom de l'analyste, estimation</td></tr>
-    <tr><td><code>(-1)</code></td><td>listes : toutes les lignes (tous les détenteurs, toutes les positions)</td></tr>
-    <tr><td><code>""H""</code></td><td>actionnariat : détenteurs</td></tr>
+    <tr><td><code>ALL</code></td><td>listes d'actionnariat : toutes les lignes (tous les détenteurs, toutes les positions)</td></tr>
     <tr><td><code>(EUR,1)</code></td><td>capitalisation : devise, en millions</td></tr>
   </table></div>
   <h3>Fonctions Excel</h3>
   <div class="tablewrap"><table class="compact">
-    <tr><th>Excel en anglais</th><th>Excel en français</th><th>À quoi ça sert</th><th>Utilisé dans</th></tr>
-    <tr><td><code>IFERROR(x,"")</code></td><td><code>SIERREUR(x;"")</code></td><td>cellule vide au lieu d'une erreur</td><td>T2–T14</td></tr>
-    <tr><td><code>IF, ISNUMBER</code></td><td><code>SI, ESTNUM</code></td><td>tester une condition / si une cellule contient un nombre</td><td>T1, T4, T13</td></tr>
-    <tr><td><code>COUNT, COUNTA</code></td><td><code>NB, NBVAL</code></td><td>compter les nombres / les cellules non vides</td><td>T1–T12</td></tr>
-    <tr><td><code>COUNTIF(S), SUMIF(S), AVERAGEIF(S)</code></td><td><code>NB.SI(.ENS), SOMME.SI(.ENS), MOYENNE.SI(.ENS)</code></td><td>compter, additionner, faire la moyenne des lignes qui remplissent un ou plusieurs critères</td><td>T2, T3, T4</td></tr>
-    <tr><td><code>SUM, AVERAGE, MEDIAN, MIN, MAX</code></td><td><code>SOMME, MOYENNE, MEDIANE, MIN, MAX</code></td><td>statistiques de base</td><td>T1–T12</td></tr>
-    <tr><td><code>STDEV.S</code></td><td><code>ECARTYPE.STANDARD</code></td><td>écart-type d'un échantillon</td><td>T1</td></tr>
-    <tr><td><code>AGGREGATE(1,6,range)</code></td><td><code>AGREGAT(1;6;plage)</code></td><td>moyenne qui ignore les cellules en erreur</td><td>T5</td></tr>
-    <tr><td><code>LARGE(range,{1,…,10})</code></td><td><code>GRANDE.VALEUR(plage;{1;…;10})</code></td><td>les n plus grandes valeurs (top 5, top 10)</td><td>T11</td></tr>
-    <tr><td><code>SUMPRODUCT</code></td><td><code>SOMMEPROD</code></td><td>somme de produits : indice de Herfindahl, comptes par mois</td><td>T3, T11</td></tr>
-    <tr><td><code>CORREL, SLOPE, LN</code></td><td><code>COEFFICIENT.CORRELATION, PENTE, LN</code></td><td>corrélation, bêta (pente), logarithme népérien</td><td>T7, T8, T12</td></tr>
-    <tr><td><code>INDEX, MATCH</code></td><td><code>INDEX, EQUIV</code></td><td>valeur à une position / position d'une valeur</td><td>T1, T11</td></tr>
-    <tr><td><code>XLOOKUP(…,-1)</code></td><td><code>RECHERCHEX(…;-1)</code></td><td>aligner des séries sur un calendrier (dernière valeur si absente)</td><td>T7</td></tr>
-    <tr><td><code>UNIQUE, SORT, SORTBY, TAKE, HSTACK</code></td><td><code>UNIQUE, TRIER, TRIERPAR, PRENDRE, ASSEMB.H</code></td><td>valeurs distinctes, triées, n premières, côte à côte</td><td>T2, T3, T4</td></tr>
-    <tr><td><code>FILTER</code></td><td><code>FILTRE</code></td><td>garder les lignes qui remplissent une condition</td><td>T8, T13, T14</td></tr>
-    <tr><td><code>TOCOL, SEQUENCE</code></td><td><code>DANSCOL, SEQUENCE</code></td><td>générer les lignes entreprise × année d'un panel</td><td>T6</td></tr>
+    <tr><th>Fonction (Excel en anglais)</th><th>Nom dans Excel en français</th><th>À quoi ça sert</th><th>Utilisé dans</th></tr>
+    <tr><td><code>SUM, ROUND</code></td><td><code>SOMME, ARRONDI</code></td><td>exemples de fonctions Excel : un nom suivi d'arguments</td><td>M4</td></tr>
+    <tr><td><code>IFERROR(x;"")</code></td><td><code>SIERREUR</code></td><td>cellule vide au lieu d'une erreur</td><td>T2–T6, T8, T13, T14</td></tr>
+    <tr><td><code>IF</code></td><td><code>SI</code></td><td>tester une condition, par exemple laisser la cellule vide sous la dernière ligne</td><td>T4, T6, T8–T10, T13, T14</td></tr>
+    <tr><td><code>DATE, LEFT, MID, RIGHT, VALUE, MATCH</code></td><td><code>DATE, GAUCHE, STXT, DROITE, CNUM, EQUIV</code></td><td>construire une date Excel à partir d'un texte (AAAAMMJJ, ou une date de News)</td><td>T5, T9, T10</td></tr>
+    <tr><td><code>XLOOKUP(…;-1)</code></td><td><code>RECHERCHEX</code></td><td>aligner des séries sur un calendrier (dernière valeur si absente)</td><td>T7</td></tr>
+    <tr><td><code>FILTER</code></td><td><code>FILTRE</code></td><td>garder les lignes qui remplissent une condition</td><td>T13, T14</td></tr>
+    <tr><td><code>TOCOL, SEQUENCE</code></td><td><code>DANSCOL, SEQUENCE</code></td><td>générer les lignes entreprise × année d'un panel</td><td>T6, T14</td></tr>
+    <tr><td><code>TAKE, COUNTA</code></td><td><code>PRENDRE, NBVAL</code></td><td>garder les n premières lignes d'une plage ; compter les cellules non vides</td><td>T14</td></tr>
     <tr><td><code>TRANSPOSE</code></td><td><code>TRANSPOSE</code></td><td>transformer une colonne en ligne</td><td>T13, T14</td></tr>
     <tr><td><code>EOMONTH, TODAY</code></td><td><code>FIN.MOIS, AUJOURDHUI</code></td><td>dates de fin de mois</td><td>T12</td></tr>
-    <tr><td><code>MONTH, DAY, YEAR, &amp;</code></td><td><code>MOIS, JOUR, ANNEE, &amp;</code></td><td>construire MM/DD/YYYY ou une requête à partir de cellules</td><td>M4, T6, T12</td></tr>
+    <tr><td><code>SLOPE(y;x)</code></td><td><code>PENTE</code></td><td>pente de la régression de y sur x : le bêta, sur rentabilités excédentaires</td><td>T12</td></tr>
+    <tr><td><code>MONTH, DAY, YEAR, &amp;</code></td><td><code>MOIS, JOUR, ANNEE, &amp;</code></td><td>construire MM/DD/YYYY ou une requête à partir de cellules</td><td>M4, T2, T6, T10, T12, T14</td></tr>
     <tr><td><code>$A$1 (F4)</code></td><td><code>$A$1 (F4)</code></td><td>figer une référence lors de la copie</td><td>M4</td></tr>
   </table></div>
   <h3>Glossaire</h3>
@@ -385,6 +381,8 @@ article.data h3{margin-top:0}
     <tr><td>Débordement (spill)</td><td>Une formule qui renvoie plusieurs valeurs remplissant les cellules en dessous ou à droite.</td></tr>
     <tr><td>#Calc</td><td>Une formule FactSet en attente de FactSet 365 › Refresh.</td></tr>
     <tr><td>Rentabilité</td><td>Variation du cours sur une période : P(t) / P(t−1) − 1.</td></tr>
+    <tr><td>Rentabilité excédentaire</td><td>Rentabilité moins le taux sans risque de la même période.</td></tr>
+    <tr><td>Bêta (CAPM)</td><td>Pente des rentabilités excédentaires d'une action sur celles du marché.</td></tr>
     <tr><td>Exercice</td><td>La période comptable de 12 mois d'une entreprise ; elle peut ne pas finir en décembre (Microsoft : juin).</td></tr>
     <tr><td>FY1 / FY2</td><td>Premier / deuxième exercice non encore publié.</td></tr>
     <tr><td>BPA (EPS)</td><td>Bénéfice par action.</td></tr>
@@ -399,15 +397,11 @@ article.data h3{margin-top:0}
     <tr><td>ETF</td><td>Fonds coté ; celui qui réplique un indice détient ses membres (IVV-US, CAC-FR, QQQ-US).</td></tr>
     <tr><td>%OS</td><td>Pourcentage des actions en circulation détenu par un actionnaire.</td></tr>
     <tr><td>Détenteur institutionnel</td><td>Gérant, banque ou assureur qui déclare ses positions (familles et sociétés non incluses).</td></tr>
-    <tr><td>Indice de Herfindahl</td><td>Somme des parts au carré (poids en % : 0 à 10 000) ; mesure la concentration.</td></tr>
-    <tr><td>Bêta</td><td>Pente des rentabilités d'une action sur celles du marché.</td></tr>
-    <tr><td>Corrélation</td><td>Co-mouvement de deux séries, de −1 à 1.</td></tr>
-    <tr><td>Point de base</td><td>0,01 point de pourcentage ; les variations de taux se mesurent en points de base.</td></tr>
     <tr><td>Coupon / coupon à l'émission</td><td>Taux d'intérêt annuel versé par une obligation / le taux fixé à son émission.</td></tr>
     <tr><td>Échéance / durée résiduelle</td><td>Date de remboursement de l'obligation / temps restant jusque-là.</td></tr>
     <tr><td>Obligation verte</td><td>Obligation dont les fonds financent des projets environnementaux.</td></tr>
     <tr><td>Pays de domicile / de risque</td><td>Là où l'émetteur a son siège (sa nationalité) / là où son activité est exposée.</td></tr>
-    <tr><td>Montant (publié)</td><td>Prix d'une opération de fusion-acquisition ; souvent non publié, ce qui n'est pas 0.</td></tr>
+    <tr><td>Montant (publié)</td><td>Prix d'une opération de M&amp;A ; souvent non publié, ce qui n'est pas 0.</td></tr>
     <tr><td>Panel en format long</td><td>Une ligne par unité × période.</td></tr>
     <tr><td>Biais du survivant</td><td>Biais lié au fait de ne garder que les entreprises qui existent encore.</td></tr>
   </table></div>

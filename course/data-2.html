@@ -35,7 +35,7 @@ b,strong{color:var(--navy);font-weight:700}
 code,kbd{font-family:var(--mono);font-size:.88em}
 code{background:var(--grey-050);color:var(--navy);padding:.1em .4em;border-radius:6px;overflow-wrap:anywhere}
 kbd{border:1px solid var(--grey-200);border-bottom-width:2px;border-radius:6px;padding:.05em .45em;background:#fff;color:var(--navy);white-space:nowrap}
-pre{background:var(--navy);color:#fff;border-radius:1rem;padding:1rem 1.2rem;overflow-x:auto;font-family:var(--mono);font-size:.86rem;line-height:1.55;margin:.8rem 0}
+pre{background:var(--navy);color:#fff;border-radius:1rem;padding:1rem 1.2rem;white-space:pre-wrap;overflow-wrap:anywhere;font-family:var(--mono);font-size:.86rem;line-height:1.55;margin:.8rem 0}code{overflow-wrap:anywhere}
 pre code{background:none;color:inherit}
 
 /* header */
@@ -126,7 +126,7 @@ details{border-radius:1rem;padding:10px 16px;margin:10px 0;background:var(--grey
 details summary{cursor:pointer;font-weight:700;color:var(--navy)}
 .cols2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
 @media (max-width:700px){.cols2{grid-template-columns:1fr}}
-.copy{float:right;font:inherit;font-size:.75rem;font-weight:600;border:0;background:var(--sky);color:var(--navy);border-radius:999px;padding:2px 12px;cursor:pointer;margin:-2px -4px 0 8px}
+.copy{display:block;float:none;position:sticky;left:100%;font:inherit;font-size:.75rem;font-weight:600;border:0;background:var(--sky);color:var(--navy);border-radius:999px;padding:2px 12px;cursor:pointer;margin:0 0 .5rem auto}
 
 /* screenshots and data tour */
 figure.shot{margin:16px 0;border-radius:1rem;overflow:hidden;background:var(--grey-050);border:1px solid var(--grey-200)}
@@ -153,6 +153,7 @@ article.data h3{margin-top:0}
 .lang a,.lang span{color:#fff;text-decoration:none;font-weight:700;font-size:.85rem;padding:6px 14px;border-radius:999px}
 .lang span{background:#fff;color:var(--navy)}
 .lang a.cur{background:#fff;color:var(--navy)}
+table.illus{width:auto;margin:.5rem 0 .6rem;background:#fff;border-collapse:collapse}table.illus td,table.illus th{border:1px solid var(--grey-200);padding:3px 12px;font-family:var(--mono);font-size:.82rem;white-space:nowrap}table.illus th{background:var(--grey-050);color:var(--navy)}
 </style>
 </head>
 <body class="os-win">
@@ -196,6 +197,7 @@ article.data h3{margin-top:0}
     <li class="sub"><a href="#d-rel">Supply chain &amp; revenue</a></li>
     <li class="sub"><a href="data-3.html#d-esg">ESG</a></li>
     <li class="sub"><a href="data-3.html#d-opt">Options</a></li>
+    <li><a href="data-3.html#beyond">Beyond one company: funds, markets and screening</a></li>
     <li class="sub"><a href="data-3.html#d-fund">Funds &amp; ETFs</a></li>
     <li class="sub"><a href="data-3.html#d-macro">Markets &amp; economics</a></li>
     <li class="sub"><a href="data-3.html#d-screen">Screening</a></li>
@@ -206,7 +208,7 @@ article.data h3{margin-top:0}
     <li class="part">Part III · Building samples</li>
     <li><a href="tests.html#method">5. Method</a></li>
     <li><a href="tests.html#tests">6. The 14 tests</a></li>
-    <li class="sub"><a href="tests.html#t1" data-t="1">1 · Apple: prices, returns, chart</a></li>
+    <li class="sub"><a href="tests.html#t1" data-t="1">1 · Apple: daily prices</a></li>
     <li class="sub"><a href="tests.html#t2" data-t="2">2 · French green bonds, coupon</a></li>
     <li class="sub"><a href="tests.html#t3" data-t="3">3 · M&amp;A France 2024</a></li>
     <li class="sub"><a href="tests.html#t4" data-t="4">4 · A fund's portfolio and ESG</a></li>
@@ -217,7 +219,7 @@ article.data h3{margin-top:0}
     <li class="sub"><a href="tests.html#t9" data-t="9">9 · Tesla news</a></li>
     <li class="sub"><a href="tests.html#t10" data-t="10">10 · TotalEnergies ESG news</a></li>
     <li class="sub"><a href="tests.html#t11" data-t="11">11 · Who owns LVMH?</a></li>
-    <li class="sub"><a href="tests.html#t12" data-t="12">12 · Returns &amp; beta</a></li>
+    <li class="sub"><a href="tests.html#t12" data-t="12">12 · Month-end prices and beta</a></li>
     <li class="sub"><a href="tests.html#t13" data-t="13">13 · CAC 40 monthly prices</a></li>
     <li class="sub"><a href="tests.html#t14" data-t="14">14 · NASDAQ-100 fundamentals</a></li>
     <li><a href="tests.html#thesis">7. Your thesis data</a></li>
@@ -259,7 +261,7 @@ article.data h3{margin-top:0}
     <ul>
       <li><b>Bond Detail</b>: every bond of Microsoft and its subsidiaries (Outstanding / Matured tabs): ISIN, issuer, coupon, maturity date, callable, currency, seniority (46 bonds outstanding).</li>
       <li><b>Capital Structure</b>: equity capitalisation and debt (short-term, long-term, total) quarter by quarter.</li>
-      <li><b>DCS Overview</b> (Debt Capital Structure): current credit ratings, <b>CDS spreads</b> by maturity (1 to 10 years), debt summary, liquidity, maturity schedule.</li>
+      <li><b>DCS Overview</b> (Debt Capital Structure): current credit ratings, <b>CDS (credit default swap) spreads</b> by maturity (1 to 10 years), debt summary, liquidity, maturity schedule.</li>
       <li><b>Ratings</b>: S&amp;P ratings history (Microsoft: AAA) and ratings of related issuers. In our access the Moody's section shows "No Current Moody's Rating Data".</li>
       <li><b>Source of Capital</b>: debt and equity offerings over time (amount raised, type, use of proceeds).</li>
     </ul>
@@ -312,7 +314,7 @@ article.data h3{margin-top:0}
       <li><b>Supply Chain</b> (FactSet Revere): 3,765 relationships with 3,148 companies: 614 suppliers, 1,649 customers, 1,502 partners, with relationship value, price correlation and credit risk.</li>
       <li><b>Geographic Revenue</b> (FactSet Revere GeoRev): revenue exposure by country (United States 51.5%, China 11.3%…), by region and by type of economy.</li>
       <li><b>RBICS with Revenue</b>: revenue split by FactSet's detailed industry classification (e.g. 39% Diversified IT Infrastructure Software) and the main competitors in each segment.</li>
-      <li><b>Comps Analysis</b>: a peer table (FactSet peer group) with sales, EBITDA, EBIT, free cash flow, margins and valuation multiples for FY1 and FY2.</li>
+      <li><b>Comps Analysis</b>: a peer table (FactSet peer group) with sales, EBITDA, EBIT, free cash flow, margins and valuation multiples for FY1 and FY2 (the next two fiscal years not yet reported).</li>
     </ul>
   </article>
 </section>
