@@ -232,7 +232,7 @@ table.illus{width:auto;margin:.5rem 0 .6rem;background:#fff;border-collapse:coll
   <tr><td>Secteur</td><td>Classification sectorielle</td><td>Secteur FactSet (<code>FG_FACTSET_SECTOR</code>)</td><td>Le secteur sert à définir les groupes exposé et défensif.</td></tr>
   <tr><td>Endettement</td><td>Dette totale / total de l'actif, exercice 2019</td><td><code>FF_DEBT</code>, <code>FF_ASSETS</code></td><td>Pas comparable pour les banques et assureurs : ils sont exclus de l'échantillon final (étape 5).</td></tr>
   <tr><td>Trésorerie</td><td>Trésorerie et placements à court terme / total de l'actif</td><td><code>FF_CASH_ST</code></td><td></td></tr>
-  <tr><td>Rentabilité</td><td>EBITDA / total de l'actif</td><td><code>FF_EBITDA_OPER</code></td><td></td></tr>
+  <tr><td>Rentabilité</td><td>EBITDA / total de l'actif</td><td><code>FF_EBITDA_OPER</code></td><td>L'EBITDA plutôt que le résultat net, pour comparer la rentabilité d'entreprises dont la dette, les impôts et les amortissements diffèrent ; diviser par le total de l'actif élimine la taille de l'entreprise.</td></tr>
   <tr><td>Taille</td><td>Log de la capitalisation avant la crise</td><td><code>P_MARKET_VAL</code> au 31/12/2019</td><td>Capitalisation de l'action cotée, en millions d'euros pour une cotation à Paris, mesurée avant le krach. Elle existe aussi pour les entreprises sorties de la cote depuis.</td></tr>
   <tr><td>ESG</td><td>Un score ESG pour chaque entreprise</td><td>FTSE Russell ESG Rating (<code>FESG_RATING</code>, de 0 à 5) au 31/12/2019</td><td>La note va de 0 à 5, et 5 est la meilleure. Elle couvre surtout les grandes entreprises, l'ESG est donc testé sur le sous-échantillon des entreprises notées.</td></tr></table>
 </section>

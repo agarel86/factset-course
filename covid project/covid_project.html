@@ -232,7 +232,7 @@ table.illus{width:auto;margin:.5rem 0 .6rem;background:#fff;border-collapse:coll
   <tr><td>Industry</td><td>Industry classification</td><td>FactSet sector (<code>FG_FACTSET_SECTOR</code>)</td><td>The sector is used to define the exposed and defensive groups.</td></tr>
   <tr><td>Leverage</td><td>Total debt / total assets, FY2019</td><td><code>FF_DEBT</code>, <code>FF_ASSETS</code></td><td>Not comparable for banks and insurers: they are excluded from the final sample (step 5).</td></tr>
   <tr><td>Cash</td><td>Cash and short-term investments / total assets</td><td><code>FF_CASH_ST</code></td><td></td></tr>
-  <tr><td>Profitability</td><td>EBITDA / total assets</td><td><code>FF_EBITDA_OPER</code></td><td></td></tr>
+  <tr><td>Profitability</td><td>EBITDA / total assets</td><td><code>FF_EBITDA_OPER</code></td><td>EBITDA rather than net income, so that the profitability of firms with different debt, taxes and depreciation can be compared; dividing by total assets removes the size of the firm.</td></tr>
   <tr><td>Size</td><td>Log market value before the crisis</td><td><code>P_MARKET_VAL</code> at 12/31/2019</td><td>Market value of the listed share, in millions of euros for a Paris listing, measured before the crash. It exists also for the firms delisted since.</td></tr>
   <tr><td>ESG</td><td>An ESG score for every firm</td><td>FTSE Russell ESG Rating (<code>FESG_RATING</code>, 0 to 5) at 12/31/2019</td><td>The rating goes from 0 to 5, and 5 is the best. It covers mostly large firms, so ESG is tested on the subsample of rated firms.</td></tr></table>
 </section>
