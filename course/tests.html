@@ -327,7 +327,7 @@ B4: =FDS("AAPL-US","P_PRICE(-1AM,0,D)")</pre>
           <li>type <i>Currency</i>, click <b>Currency</b> (source Corporate Government &amp; Agency Bonds), Information Displayed = Code (<code>FI_CURR(DENOM,CODE)</code>); click <b>Add New</b>;</li>
           <li>type <i>Maturity Date</i>, click <b>Maturity Date</b> (source Corporate Government &amp; Agency Bonds; <code>FI_ISSUE_DETAILS(MAT_DATE,MAT_DATE,0,LOCAL_DATE)</code>); click <b>Add New</b>.</li>
         </ul>
-        Check: the three new columns, at the right end of the table, are filled on every row (for example FR0014004628, EUR, 4/30/2030 for the first bond of Agence Métropolitaine des Déchets Ménagers). A column of - means the wrong source: delete it (small arrow under its heading › <b>Delete</b>) and add the right one.</li>
+        A new column showing only - means the wrong source: delete it (small arrow under its heading › <b>Delete</b>) and add the right one.</li>
       <li>Column <b>ESG Bond Type</b>: small arrow under its heading › <b>Filter</b> › tick <i>GREEN BOND</i> › Done: only the green bonds remain. The screen also holds social, sustainability and transition bonds, which the test does not ask for.</li>
       <li>Same arrow › <b>Group</b> › <b>Clear All</b> › Done: one row per bond, no group rows. Otherwise the group rows would end up in the downloaded file and distort the number of bonds.</li>
       <li>Download icon (arrow pointing down, toolbar at the top right) › <b>Download…</b>: Format = Excel, Output = Results, leave <i>Download Filtered Result</i> ticked, so that only the filtered green bonds are downloaded › <b>Download</b>.</li>
@@ -341,7 +341,6 @@ B4: =FDS("AAPL-US","P_PRICE(-1AM,0,D)")</pre>
     <tr><td><code>K4</code></td><td>the ISIN of the bond, from the download</td></tr>
     <tr><td><code>FI_COUPON(CPN,CPN,0)</code></td><td>the coupon rate of the bond at issuance, in %</td></tr>
     <tr><td><code>IFERROR(…,"")</code></td><td>an empty cell when FactSet has no coupon for that bond</td></tr></table>
-    <p>Check: for a fixed-rate bond, the coupon at issuance equals the column Coupon of the screen.</p>
 
     <a class="dl" href="excel/02_French_Green_Bonds.xlsx">Download the solution workbook 02_French_Green_Bonds.xlsx</a>
     </details>
@@ -836,6 +835,7 @@ E6: =TOCOL(IF(TAKE(Fundamentals!$C$8:$L$117,$J$3)="","",TAKE(Fundamentals!$C$8:$
   </ul>
   <p>If the data are not there, adjust the sample, the period or the variables, and discuss it with your supervisor before going further.</p>
 </section>
+
 
 
 

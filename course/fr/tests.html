@@ -350,7 +350,7 @@ B4 : =FDS("AAPL-US";"P_PRICE(-1AM,0,D)")</pre>
           <li>tapez <i>Currency</i>, cliquez sur <b>Currency</b> (source Corporate Government &amp; Agency Bonds), Information Displayed = Code (<code>FI_CURR(DENOM,CODE)</code>) ; cliquez sur <b>Add New</b> ;</li>
           <li>tapez <i>Maturity Date</i>, cliquez sur <b>Maturity Date</b> (source Corporate Government &amp; Agency Bonds ; <code>FI_ISSUE_DETAILS(MAT_DATE,MAT_DATE,0,LOCAL_DATE)</code>) ; cliquez sur <b>Add New</b>.</li>
         </ul>
-        Vérification : les trois nouvelles colonnes, à droite du tableau, sont remplies sur chaque ligne (par exemple FR0014004628, EUR, 4/30/2030 pour la première obligation de l'Agence Métropolitaine des Déchets Ménagers). Une colonne de - signifie la mauvaise source : supprimez-la (petite flèche sous son titre › <b>Delete</b>) et ajoutez la bonne.</li>
+        Une nouvelle colonne qui ne montre que des - signifie la mauvaise source : supprimez-la (petite flèche sous son titre › <b>Delete</b>) et ajoutez la bonne.</li>
       <li>Colonne <b>ESG Bond Type</b> : petite flèche sous son titre › <b>Filter</b> › cochez <i>GREEN BOND</i> › Done : seules les obligations vertes restent. Le screen contient aussi les obligations sociales, durables et de transition, que le test ne demande pas.</li>
       <li>Même flèche › <b>Group</b> › <b>Clear All</b> › Done : une ligne par obligation, sans lignes de groupe. Sinon, les lignes de groupe arriveraient dans le fichier téléchargé et fausseraient le nombre d'obligations.</li>
       <li>Icône de téléchargement (flèche vers le bas, barre d'outils en haut à droite) › <b>Download…</b> : Format = Excel, Output = Results, laissez <i>Download Filtered Result</i> coché, pour ne télécharger que les obligations vertes filtrées › <b>Download</b>.</li>
@@ -364,7 +364,6 @@ B4 : =FDS("AAPL-US";"P_PRICE(-1AM,0,D)")</pre>
     <tr><td><code>K4</code></td><td>l'ISIN de l'obligation, issu du téléchargement</td></tr>
     <tr><td><code>FI_COUPON(CPN,CPN,0)</code></td><td>le taux de coupon de l'obligation à l'émission, en %</td></tr>
     <tr><td><code>SIERREUR(…;"")</code></td><td>une cellule vide quand FactSet n'a pas de coupon pour cette obligation</td></tr></table>
-    <p>Vérification : pour une obligation à taux fixe, le coupon à l'émission est égal à la colonne Coupon du screen.</p>
 
     <a class="dl" href="../excel/02_French_Green_Bonds.xlsx">Télécharger le classeur solution 02_French_Green_Bonds.xlsx</a>
     </details>
@@ -859,6 +858,7 @@ E6 : =DANSCOL(SI(PRENDRE(Fundamentals!$C$8:$L$117;$J$3)="";"";PRENDRE(Fundamenta
   </ul>
   <p>Si les données ne sont pas là, ajustez l'échantillon, la période ou les variables, et parlez-en à votre directeur de mémoire avant d'aller plus loin.</p>
 </section>
+
 
 
 
